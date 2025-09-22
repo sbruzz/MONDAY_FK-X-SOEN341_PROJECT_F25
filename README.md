@@ -10,12 +10,12 @@ Organizing events at scale is often tedious and overwhelming, this project aims 
 
 ## Team Members
 - Sana Asgharpour
-- Salvatore Bruzzese
+- Salvatore Bruzzese - - sbruzz
 - Souleymane Camara
 - Dimitrii Cazacu
 - Abed-Elmouhsen Cherkawi
 - Jack Di Spirito
-- Kevin Ung
+- Kevin Ung - 40259218 - pengukev
 ## Technologies
 - *TBD*
 ## 
