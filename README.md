@@ -16,6 +16,7 @@ Organizing events at scale is often tedious and overwhelming, this project aims 
 - Abed-Elmouhsen Cherkawi
 - Jack Di Spirito
 - Kevin Ung - 40259218 - pengukev
+- Nand Patel - 40294756 - NS
 ## Technologies
 - *TBD*
 ## 
