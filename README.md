@@ -10,7 +10,7 @@ Organizing events at scale is often tedious and overwhelming, this project aims 
 
 ## Team Members
 - Sana Asgharpour
-- Salvatore Bruzzese - - sbruzz
+- Salvatore Bruzzese - 40112201 - sbruzz
 - Souleymane Camara
 - Dimitrii Cazacu
 - Abed-Elmouhsen Cherkawi
