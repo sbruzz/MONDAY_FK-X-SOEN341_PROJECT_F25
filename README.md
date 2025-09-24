@@ -29,7 +29,7 @@ Organizing events at scale is often tedious and overwhelming, this project aims 
 - Sana Asgharpour          - 40244364 -
 - Salvatore Bruzzese       - 40112201 - sbruzz
 - Souleymane Camara        - 40183807 - 
-- Dimitrii Cazacu          - 40314501 - 
+- Dmitrii Cazacu           - 40314501 - Hildthelsta
 - Abed-Elmouhsen Cherkawi  - 40323359 - A-CHERKAWI
 - Jack Di Spirito          - 40287812 - hildthesta
 - Kevin Ung                - 40259218 - pengukev
