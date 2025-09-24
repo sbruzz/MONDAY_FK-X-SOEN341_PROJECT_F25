@@ -28,7 +28,7 @@ Organizing events at scale is often tedious and overwhelming, this project aims 
 ## Team Members
 - Sana Asgharpour          - 40244364 -
 - Salvatore Bruzzese       - 40112201 - sbruzz
-- Souleymane Camara        - 40183807 - 
+- Souleymane Camara        - 40183807 - mistersuun
 - Dmitrii Cazacu           - 40314501 - Hildthelsta
 - Abed-Elmouhsen Cherkawi  - 40323359 - A-CHERKAWI
 - Jack Di Spirito          - 40287812 - hildthesta
