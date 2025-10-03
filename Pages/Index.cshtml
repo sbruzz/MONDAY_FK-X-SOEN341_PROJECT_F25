@@ -1,0 +1,723 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Campus Events & Ticketing";
+}
+
+<div class="landing-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">Transform Your Campus Event Experience</h1>
+                    <p class="hero-subtitle">The complete platform for discovering, organizing, and managing campus events. Built for students, organizers, and administrators.</p>
+                    <div class="hero-cta">
+                        <a href="/Login" class="btn btn-primary btn-lg me-3">Get Started</a>
+                        <a href="#features" class="btn btn-outline btn-lg">Learn More</a>
+                    </div>
+                    <div class="hero-stats mt-5">
+                        <div class="stat-item">
+                            <span class="stat-number">500+</span>
+                            <span class="stat-label">Active Events</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">10K+</span>
+                            <span class="stat-label">Students</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">Organizations</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <div class="floating-card card-1">
+                            <div class="card-icon">🎭</div>
+                            <div class="card-content">
+                                <h4>Theater Night</h4>
+                                <p>150 tickets available</p>
+                            </div>
+                        </div>
+                        <div class="floating-card card-2">
+                            <div class="card-icon">🎵</div>
+                            <div class="card-content">
+                                <h4>Live Concert</h4>
+                                <p>Sold out</p>
+                            </div>
+                        </div>
+                        <div class="floating-card card-3">
+                            <div class="card-icon">🏀</div>
+                            <div class="card-content">
+                                <h4>Basketball Game</h4>
+                                <p>Free admission</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Overview -->
+    <section class="features-overview" id="features">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <span class="section-tag">What We Offer</span>
+                <h2 class="section-title">Everything You Need in One Platform</h2>
+                <p class="section-description">Streamline your campus event experience with our comprehensive suite of tools</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-box">
+                        <div class="feature-icon">🔍</div>
+                        <h3>Smart Discovery</h3>
+                        <p>Find events tailored to your interests with advanced filters and search</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-box">
+                        <div class="feature-icon">🎫</div>
+                        <h3>Instant Ticketing</h3>
+                        <p>Claim tickets instantly with digital QR codes for seamless check-in</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-box">
+                        <div class="feature-icon">📊</div>
+                        <h3>Real-time Analytics</h3>
+                        <p>Track attendance, engagement, and ticket sales in real-time</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-box">
+                        <div class="feature-icon">🔐</div>
+                        <h3>Secure Platform</h3>
+                        <p>Role-based access control ensures data security and privacy</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Students Section -->
+    <section class="user-section student-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="user-content">
+                        <span class="section-tag">For Students</span>
+                        <h2>Never Miss an Event Again</h2>
+                        <p class="lead">Stay connected with campus life through our intuitive event discovery platform</p>
+                        <ul class="feature-list">
+                            <li>
+                                <span class="feature-icon-small">🔎</span>
+                                <div>
+                                    <strong>Browse & Filter Events</strong>
+                                    <p>Search by date, category, organization, or keyword to find exactly what you're looking for</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="feature-icon-small">📅</span>
+                                <div>
+                                    <strong>Personal Calendar</strong>
+                                    <p>Save events to your personalized calendar and never miss what matters to you</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="feature-icon-small">💳</span>
+                                <div>
+                                    <strong>Free & Paid Tickets</strong>
+                                    <p>Claim both free and paid tickets with our simple checkout process</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="feature-icon-small">📱</span>
+                                <div>
+                                    <strong>Digital Tickets with QR</strong>
+                                    <p>Access all your tickets in one place with secure QR codes for quick entry</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="user-visual">
+                        <div class="screenshot-placeholder">Student Dashboard Preview</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Organizers Section -->
+    <section class="user-section organizer-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <div class="user-content">
+                        <span class="section-tag">For Organizers</span>
+                        <h2>Powerful Tools for Event Management</h2>
+                        <p class="lead">Create, manage, and analyze your events with professional-grade tools</p>
+                        <ul class="feature-list">
+                            <li>
+                                <span class="feature-icon-small">✏️</span>
+                                <div>
+                                    <strong>Easy Event Creation</strong>
+                                    <p>Set up events in minutes with our intuitive form: title, description, date, location, capacity, and pricing</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="feature-icon-small">📈</span>
+                                <div>
+                                    <strong>Per-Event Analytics Dashboard</strong>
+                                    <p>Monitor tickets issued, attendance rates, and remaining capacity in real-time</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="feature-icon-small">📄</span>
+                                <div>
+                                    <strong>Export Attendee Lists</strong>
+                                    <p>Download complete attendee information as CSV files for your records</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="feature-icon-small">✅</span>
+                                <div>
+                                    <strong>QR Code Validation</strong>
+                                    <p>Scan and validate tickets at the door with our integrated QR code scanner</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <div class="user-visual">
+                        <div class="screenshot-placeholder">Organizer Dashboard Preview</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Admins Section -->
+    <section class="user-section admin-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="user-content">
+                        <span class="section-tag">For Administrators</span>
+                        <h2>Complete Platform Oversight</h2>
+                        <p class="lead">Maintain quality and security with comprehensive administrative controls</p>
+                        <ul class="feature-list">
+                            <li>
+                                <span class="feature-icon-small">👥</span>
+                                <div>
+                                    <strong>Organizer Approval</strong>
+                                    <p>Review and approve organizer account requests to maintain platform integrity</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="feature-icon-small">🛡️</span>
+                                <div>
+                                    <strong>Event Moderation</strong>
+                                    <p>Review event listings for policy compliance before they go live</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="feature-icon-small">📊</span>
+                                <div>
+                                    <strong>Global Analytics</strong>
+                                    <p>View platform-wide statistics: total events, tickets issued, and participation trends</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="feature-icon-small">🏢</span>
+                                <div>
+                                    <strong>Organization Management</strong>
+                                    <p>Create and manage campus organizations with role assignments</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="user-visual">
+                        <div class="screenshot-placeholder">Admin Dashboard Preview</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <span class="section-tag">How It Works</span>
+                <h2 class="section-title">Get Started in Three Simple Steps</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>Create Your Account</h3>
+                        <p>Sign up as a student, request organizer access, or log in as an administrator</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>Explore or Create</h3>
+                        <p>Students browse events, organizers create them, admins oversee the platform</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>Engage & Track</h3>
+                        <p>Claim tickets, check attendance, and monitor event success with built-in analytics</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" style="background: linear-gradient(135deg, #e3d5ca 0%, #d5bdaf 100%); padding: 120px 5% 150px; width: 100%;">
+        <div class="container text-center" style="max-width: 1400px; margin: 0 auto;">
+            <h2 class="cta-title" style="font-size: 3rem; font-weight: 800; color: #3d3d3d; margin-bottom: 1.5rem; line-height: 1.2;">Ready to Transform Your Campus Events?</h2>
+            <p class="cta-subtitle" style="font-size: 1.35rem; color: #3d3d3d; margin-bottom: 3rem; opacity: 0.8;">Join hundreds of students and organizers already using our platform</p>
+            <a href="/Login" class="btn btn-primary btn-lg" style="background: #d5bdaf; color: white; padding: 1.125rem 2.75rem; font-weight: 600; border-radius: 12px; font-size: 1.125rem; text-decoration: none; display: inline-block; border: none; transition: all 0.3s ease;">Get Started Now</a>
+        </div>
+    </section>
+</div>
+
+<style>
+    :root {
+        --isabelline: #edede9;
+        --timberwolf: #d6ccc2;
+        --linen: #f5ebe0;
+        --champagne-pink: #e3d5ca;
+        --pale-dogwood: #d5bdaf;
+        --text-dark: #3d3d3d;
+        --text-light: #6b6b6b;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .landing-page {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: var(--text-dark);
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        background: white;
+        padding: 120px 5% 100px;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .hero-section .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        line-height: 1.1;
+        color: var(--text-dark);
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+        font-size: 1.35rem;
+        color: var(--text-light);
+        margin-bottom: 2.5rem;
+        line-height: 1.7;
+        max-width: 600px;
+    }
+
+    .hero-cta .btn {
+        padding: 1.125rem 2.75rem;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        font-size: 1.125rem;
+    }
+
+    .btn-primary {
+        background: var(--pale-dogwood);
+        border: none;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: var(--timberwolf);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(213, 189, 175, 0.4);
+        color: white;
+    }
+
+    .btn-outline {
+        background: white;
+        border: 2px solid var(--pale-dogwood);
+        color: var(--text-dark);
+    }
+
+    .btn-outline:hover {
+        background: var(--pale-dogwood);
+        color: white;
+        border-color: var(--pale-dogwood);
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 3rem;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text-dark);
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: var(--text-light);
+    }
+
+    /* Floating Cards Animation */
+    .hero-image {
+        position: relative;
+        height: 500px;
+    }
+
+    .floating-card {
+        position: absolute;
+        background: var(--linen);
+        padding: 1.5rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 50px rgba(213, 189, 175, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        animation: float 6s ease-in-out infinite;
+        border: 1px solid var(--champagne-pink);
+    }
+
+    .card-1 {
+        top: 50px;
+        right: 100px;
+        animation-delay: 0s;
+    }
+
+    .card-2 {
+        top: 200px;
+        right: 50px;
+        animation-delay: 2s;
+    }
+
+    .card-3 {
+        top: 350px;
+        right: 150px;
+        animation-delay: 4s;
+    }
+
+    .card-icon {
+        font-size: 2.5rem;
+    }
+
+    .card-content h4 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .card-content p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--text-light);
+    }
+
+    @@keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+
+    /* Section Styles */
+    .features-overview,
+    .how-it-works {
+        padding: 100px 5%;
+        background: white;
+        width: 100%;
+    }
+
+    .features-overview .container,
+    .how-it-works .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .user-section {
+        padding: 100px 5%;
+        width: 100%;
+        background: white;
+    }
+
+    .user-section .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .student-section {
+        background: white;
+    }
+
+    .organizer-section {
+        background: white;
+    }
+
+    .admin-section {
+        background: white;
+    }
+
+    .section-tag {
+        display: inline-block;
+        padding: 0.625rem 1.25rem;
+        background: var(--linen);
+        color: var(--text-dark);
+        border-radius: 25px;
+        font-size: 0.875rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+    }
+
+    .section-description {
+        font-size: 1.125rem;
+        color: var(--text-light);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Feature Box */
+    .feature-box {
+        background: var(--linen);
+        padding: 2.5rem;
+        border-radius: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        height: 100%;
+        border: 2px solid transparent;
+    }
+
+    .feature-box:hover {
+        background: var(--champagne-pink);
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(213, 189, 175, 0.25);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-box h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+    }
+
+    .feature-box p {
+        font-size: 0.95rem;
+        color: var(--text-light);
+        line-height: 1.6;
+    }
+
+    /* User Section */
+    .user-content h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        color: var(--text-dark);
+    }
+
+    .user-content .lead {
+        font-size: 1.125rem;
+        color: var(--text-light);
+        margin-bottom: 2rem;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .feature-list li {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        align-items: flex-start;
+    }
+
+    .feature-icon-small {
+        font-size: 2rem;
+        flex-shrink: 0;
+    }
+
+    .feature-list strong {
+        display: block;
+        font-size: 1.125rem;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .feature-list p {
+        color: var(--text-light);
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .user-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .screenshot-placeholder {
+        width: 100%;
+        height: 450px;
+        background: linear-gradient(135deg, var(--linen) 0%, var(--champagne-pink) 100%);
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 1.25rem;
+        box-shadow: 0 20px 60px rgba(213, 189, 175, 0.3);
+    }
+
+    /* Steps */
+    .step-card {
+        background: var(--linen);
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        text-align: center;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .step-card:hover {
+        background: var(--champagne-pink);
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(213, 189, 175, 0.25);
+    }
+
+    .step-number {
+        width: 60px;
+        height: 60px;
+        background: var(--pale-dogwood);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0 auto 1.5rem;
+    }
+
+    .step-card h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+    }
+
+    .step-card p {
+        color: var(--text-light);
+        line-height: 1.6;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, var(--champagne-pink) 0%, var(--pale-dogwood) 100%);
+        padding: 120px 5%;
+        width: 100%;
+        min-height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cta-section .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .cta-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+    }
+
+    .cta-subtitle {
+        font-size: 1.35rem;
+        color: var(--text-dark);
+        margin-bottom: 3rem;
+        opacity: 0.8;
+    }
+
+    /* Responsive */
+    @@media (max-width: 992px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-image {
+            display: none;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+        }
+    }
+</style>
