@@ -1,0 +1,40 @@
+@page
+@model StudentHomeModel
+@{
+    ViewData["Title"] = "Student Home";
+}
+
+<div class="container mt-4">
+    <h1>Welcome, @Model.UserName!</h1>
+    <p class="lead">Discover and attend amazing campus events</p>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Browse Events</h5>
+                    <p class="card-text">Explore upcoming campus events</p>
+                    <a href="/Student/Events" class="btn btn-primary">View Events</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">My Tickets</h5>
+                    <p class="card-text">View your claimed tickets</p>
+                    <a href="/Student/Tickets" class="btn btn-primary">My Tickets</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Saved Events</h5>
+                    <p class="card-text">Your bookmarked events</p>
+                    <a href="/Student/Saved" class="btn btn-primary">View Saved</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,290 @@
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="login-container">
+    <div class="login-card">
+        <h2 class="text-center mb-4">Campus Events Login</h2>
+
+        <!-- Three-way Toggle Tabs (Visual only for signup) -->
+        <div class="role-tabs mb-4">
+            <input type="radio" name="role-tab" id="student-tab" value="Student" checked>
+            <input type="radio" name="role-tab" id="organizer-tab" value="Organizer">
+            <input type="radio" name="role-tab" id="admin-tab" value="Admin">
+
+            <label for="student-tab" class="tab-label">Student</label>
+            <label for="organizer-tab" class="tab-label">Organizer</label>
+            <label for="admin-tab" class="tab-label">Admin</label>
+
+            <div class="tab-indicator"></div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="auth-section" id="login-section">
+            <form method="post" asp-page-handler="Login">
+                <div class="mb-3">
+                    <label for="login-email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="login-email" name="Email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="login-password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="login-password" name="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+            </form>
+            <p class="text-center mb-0">
+                Don't have an account? <a href="#" id="show-signup">Sign up</a>
+            </p>
+        </div>
+
+        <!-- Signup Form (Hidden by default) -->
+        <div class="auth-section" id="signup-section" style="display: none;">
+            <form method="post" asp-page-handler="Signup" id="signup-form">
+                <input type="hidden" name="Role" id="signup-role" value="Student">
+                <div class="mb-3">
+                    <label for="signup-name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="signup-name" name="Name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="signup-email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="signup-email" name="Email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="signup-password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="signup-password" name="Password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="signup-confirm-password" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="signup-confirm-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mb-3" id="signup-btn">Sign Up as Student</button>
+            </form>
+            <p class="text-center mb-0">
+                Already have an account? <a href="#" id="show-login">Login</a>
+            </p>
+        </div>
+
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-info mt-3">
+                @TempData["Message"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger mt-3">
+                @TempData["Error"]
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    :root {
+        --isabelline: #edede9;
+        --timberwolf: #d6ccc2;
+        --linen: #f5ebe0;
+        --champagne-pink: #e3d5ca;
+        --pale-dogwood: #d5bdaf;
+        --text-dark: #3d3d3d;
+        --text-light: #6b6b6b;
+    }
+
+    .login-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--linen) 0%, var(--champagne-pink) 100%);
+        padding: 2rem;
+    }
+
+    .login-card {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        max-width: 480px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    }
+
+    .login-card h2 {
+        color: var(--text-dark);
+        font-weight: 800;
+    }
+
+    /* Three-way Toggle Tabs */
+    .role-tabs {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        background: var(--isabelline);
+        border-radius: 12px;
+        padding: 6px;
+        gap: 4px;
+    }
+
+    .role-tabs input[type="radio"] {
+        display: none;
+    }
+
+    .tab-label {
+        text-align: center;
+        padding: 0.875rem;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        z-index: 2;
+        border-radius: 8px;
+        margin: 0;
+        color: var(--text-light);
+    }
+
+    .role-tabs input[type="radio"]:checked + label {
+        color: white;
+    }
+
+    .tab-indicator {
+        position: absolute;
+        height: calc(100% - 12px);
+        width: calc(33.333% - 6px);
+        background: var(--pale-dogwood);
+        border-radius: 8px;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1;
+        top: 6px;
+        left: 6px;
+        box-shadow: 0 2px 8px rgba(213, 189, 175, 0.3);
+    }
+
+    #student-tab:checked ~ .tab-indicator {
+        transform: translateX(0);
+    }
+
+    #organizer-tab:checked ~ .tab-indicator {
+        transform: translateX(calc(100% + 4px));
+    }
+
+    #admin-tab:checked ~ .tab-indicator {
+        transform: translateX(calc(200% + 8px));
+    }
+
+    .auth-section {
+        animation: fadeIn 0.3s ease;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border: 2px solid var(--isabelline);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--pale-dogwood);
+        box-shadow: 0 0 0 3px rgba(213, 189, 175, 0.1);
+    }
+
+    .btn-primary {
+        background: var(--pale-dogwood);
+        border: none;
+        padding: 0.875rem;
+        font-weight: 600;
+        border-radius: 10px;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: var(--timberwolf);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(213, 189, 175, 0.3);
+    }
+
+    a {
+        color: var(--pale-dogwood);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    a:hover {
+        color: var(--timberwolf);
+        text-decoration: underline;
+    }
+
+    .alert-info {
+        background: var(--linen);
+        border-color: var(--champagne-pink);
+        color: var(--text-dark);
+    }
+
+    .alert-danger {
+        background: #fde8e8;
+        border-color: #f5c6c6;
+        color: #c53030;
+    }
+</style>
+
+<script>
+    // Toggle between login and signup
+    document.getElementById('show-signup').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('signup-section').style.display = 'block';
+    });
+
+    document.getElementById('show-login').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('signup-section').style.display = 'none';
+        document.getElementById('login-section').style.display = 'block';
+    });
+
+    // Update signup button text and hidden role field based on selected tab
+    const tabs = document.querySelectorAll('input[name="role-tab"]');
+    const signupBtn = document.getElementById('signup-btn');
+    const roleInput = document.getElementById('signup-role');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('change', function() {
+            const role = this.value;
+            roleInput.value = role;
+
+            if (role === 'Organizer') {
+                signupBtn.textContent = 'Request Organizer Account';
+            } else {
+                signupBtn.textContent = `Sign Up as ${role}`;
+            }
+        });
+    });
+
+    // Password confirmation validation
+    const signupForm = document.getElementById('signup-form');
+    signupForm.addEventListener('submit', function(e) {
+        const password = document.getElementById('signup-password').value;
+        const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Passwords do not match!');
+        }
+    });
+</script>
