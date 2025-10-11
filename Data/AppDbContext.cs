@@ -1,15 +1,15 @@
-using Microsoft.EntityFrameworkCore;
 using CampusEvents.Models;
-
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 namespace CampusEvents.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<User, IdentityRole, string>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
-
-    public DbSet<User> Users { get; set; }
+     
     public DbSet<Event> Events { get; set; }
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<Organization> Organizations { get; set; }
@@ -56,6 +56,21 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Ticket>()
             .HasIndex(t => t.UniqueCode)
             .IsUnique();
+
+        ////TEST VALUE FOR TICKETS
+        //modelBuilder.Entity<Event>().HasData(
+        //new Event
+        //{
+
+        //    Id = 1, // Make sure this is unique
+        //    Title = "Test Event",
+        //    Description = "This is a test event for verifying ticket creation.",
+        //    EventDate = DateTime.Now.AddDays(1), // Tomorrow
+        //    Location = "Test",
+        //    OrganizerId = 1,
+        //    Capacity = 50,
+        //    Category = "Test"
+        //});
 
         // Seed some initial data
         modelBuilder.Entity<Organization>().HasData(

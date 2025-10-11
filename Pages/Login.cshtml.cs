@@ -51,7 +51,7 @@ public class LoginModel : PageModel
         }
 
         // Store user ID in session (simplified - in production use proper authentication)
-        HttpContext.Session.SetInt32("UserId", user.Id);
+        //HttpContext.Session.SetInt32("UserId", user.Id);
         HttpContext.Session.SetString("UserRole", user.Role.ToString());
 
         // Redirect based on role
@@ -88,7 +88,7 @@ public class LoginModel : PageModel
         {
             Email = Email,
             PasswordHash = passwordHash,
-            Name = Name,
+            //Name = UserName,
             Role = userRole,
             ApprovalStatus = userRole == UserRole.Student ? ApprovalStatus.Approved : ApprovalStatus.Pending
         };
@@ -99,7 +99,7 @@ public class LoginModel : PageModel
         if (userRole == UserRole.Student)
         {
             // Auto-login students
-            HttpContext.Session.SetInt32("UserId", user.Id);
+           // HttpContext.Session.SetInt32("UserId", user.UserName);
             HttpContext.Session.SetString("UserRole", user.Role.ToString());
             TempData["Message"] = "Account created successfully!";
             return RedirectToPage("/Student/Home");

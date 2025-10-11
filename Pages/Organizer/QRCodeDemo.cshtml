@@ -1,0 +1,16 @@
+﻿@page
+@model MONDAY_FK_X_SOEN341_PROJECT_F25.Pages.Organizer.QRCodeDemoModel
+@{
+    ViewData["Title"] = "QR Code PDF Generator";
+}
+
+<h2>QR Code PDF Generator</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label for="inputText" class="form-label">Enter text or URL:</label>
+        <input type="text" class="form-control" id="inputText" name="InputText" value="@Model.InputText" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Generate & Download PDF</button>
+</form>

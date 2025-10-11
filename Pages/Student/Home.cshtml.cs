@@ -27,7 +27,7 @@ public class StudentHomeModel : PageModel
         var user = await _context.Users.FindAsync(userId);
         if (user != null)
         {
-            UserName = user.Name;
+            UserName = user.UserName;
         }
 
         return Page();

@@ -18,7 +18,7 @@ public class Event
     public TicketType TicketType { get; set; }
     public decimal Price { get; set; } = 0;
     public required string Category { get; set; }
-    public int OrganizerId { get; set; }
+    public required int OrganizerId { get; set; }
     public int? OrganizationId { get; set; }
     public bool IsApproved { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

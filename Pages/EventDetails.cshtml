@@ -1,0 +1,24 @@
+﻿@page
+@model CampusEvents.Pages.EventDetailsModel
+
+<h2>@Model.Event.Title</h2>
+<p>Date: @Model.Event.EventDate.ToShortDateString()</p>
+
+@if (!Model.Tickets.Any())
+{
+    <form method="post">
+        <button type="submit" asp-page-handler="ClaimTicket" class="btn btn-primary">
+            Claim Ticket
+        </button>
+    </form>
+}
+else
+{
+    <ul>
+        @foreach (var ticket in Model.Tickets)
+        {
+            <li>@ticket.UniqueCode</li>
+        }
+    </ul>
+}
+

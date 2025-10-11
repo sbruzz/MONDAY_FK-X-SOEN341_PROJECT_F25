@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace CampusEvents.Models;
 
 public enum UserRole
@@ -14,18 +16,20 @@ public enum ApprovalStatus
     Rejected
 }
 
-public class User
+//inherit identity user browser knows id
+public class User:IdentityUser
 {
-    public int Id { get; set; }
-    public required string Email { get; set; }
-    public required string PasswordHash { get; set; }
-    public required string Name { get; set; }
+    //IdentityUser already has a native variables for these overriding caused issues
+    //public string Id { get; set; }
+    //public required string Email { get; set; }
+    //public required string PasswordHash { get; set; }
+    //public required string Name { get; set; }
     public UserRole Role { get; set; }
     public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
-    public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+   
     public ICollection<Event> OrganizedEvents { get; set; } = new List<Event>();
     public ICollection<SavedEvent> SavedEvents { get; set; } = new List<SavedEvent>();
 }
