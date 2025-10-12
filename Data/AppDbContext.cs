@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 namespace CampusEvents.Data;
 
-public class AppDbContext : IdentityDbContext<User, IdentityRole, string>
+public class AppDbContext:DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {

@@ -2,7 +2,7 @@ namespace CampusEvents.Models;
 
 public class SavedEvent
 {
-    public string UserId { get; set; }
+    public int UserId { get; set; }
     public int EventId { get; set; }
     public DateTime SavedAt { get; set; } = DateTime.UtcNow;
 

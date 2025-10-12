@@ -17,13 +17,13 @@ public enum ApprovalStatus
 }
 
 //inherit identity user browser knows id
-public class User:IdentityUser
+public class User
 {
     //IdentityUser already has a native variables for these overriding caused issues
-    //public string Id { get; set; }
-    //public required string Email { get; set; }
-    //public required string PasswordHash { get; set; }
-    //public required string Name { get; set; }
+    public required string Id { get; set; }
+    public required string Email { get; set; }
+    public required string PasswordHash { get; set; }
+    public required string Name { get; set; }
     public UserRole Role { get; set; }
     public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
