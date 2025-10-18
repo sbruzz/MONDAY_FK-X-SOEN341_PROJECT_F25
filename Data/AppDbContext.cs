@@ -3,26 +3,80 @@ using CampusEvents.Models;
 
 namespace CampusEvents.Data;
 
+/// <summary>
+/// Entity Framework Core database context for the Campus Events application
+/// Manages database connections, entity sets, and relationship configurations
+/// </summary>
 public class AppDbContext : DbContext
 {
+    /// <summary>
+    /// Initializes a new instance of the AppDbContext
+    /// </summary>
+    /// <param name="options">Database context options (typically configured in Program.cs)</param>
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
 
+    // Core entity sets
+    
+    /// <summary>
+    /// Database set for User entities
+    /// </summary>
     public DbSet<User> Users { get; set; }
+    
+    /// <summary>
+    /// Database set for Event entities
+    /// </summary>
     public DbSet<Event> Events { get; set; }
+    
+    /// <summary>
+    /// Database set for Ticket entities
+    /// </summary>
     public DbSet<Ticket> Tickets { get; set; }
+    
+    /// <summary>
+    /// Database set for Organization entities
+    /// </summary>
     public DbSet<Organization> Organizations { get; set; }
+    
+    /// <summary>
+    /// Database set for SavedEvent entities (many-to-many join table)
+    /// </summary>
     public DbSet<SavedEvent> SavedEvents { get; set; }
 
     // Carpool system entities (US.04)
+    
+    /// <summary>
+    /// Database set for Driver entities (carpool system)
+    /// </summary>
     public DbSet<Driver> Drivers { get; set; }
+    
+    /// <summary>
+    /// Database set for CarpoolOffer entities
+    /// </summary>
     public DbSet<CarpoolOffer> CarpoolOffers { get; set; }
+    
+    /// <summary>
+    /// Database set for CarpoolPassenger entities
+    /// </summary>
     public DbSet<CarpoolPassenger> CarpoolPassengers { get; set; }
 
     // Room rental system entities (US.04)
+    
+    /// <summary>
+    /// Database set for Room entities
+    /// </summary>
     public DbSet<Room> Rooms { get; set; }
+    
+    /// <summary>
+    /// Database set for RoomRental entities
+    /// </summary>
     public DbSet<RoomRental> RoomRentals { get; set; }
+    /// <summary>
+    /// Configures the model relationships, constraints, and indexes
+    /// Called by Entity Framework when creating the database model
+    /// </summary>
+    /// <param name="modelBuilder">Model builder instance</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
