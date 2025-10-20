@@ -26,7 +26,7 @@ Organizing events at scale is often tedious and overwhelming, this project aims 
 - Analytics: View number of events, their tickets issued, and participation trends.
 
 ## Team Members
-- Sana Asgharpour          - 40244364 - -
+- Sana Asgharpour          - 40244364 - -(left)
 - Salvatore Bruzzese       - 40112201 - sbruzz - Backend
 - Souleymane Camara        - 40183807 - mistersuun - Frontend
 - Dmitrii Cazacu           - 40314501 - Hildthelsta - Backend
