@@ -113,7 +113,7 @@ public class EventsController : ControllerBase
 
         // TODO: Check if user is organizer or admin
         var userId = GetCurrentUserId();
-        if (userId == null || (eventEntity.OrganizerId != userId && !IsAdmin(userId)))
+        if (userId == null || (eventEntity.OrganizerId != userId.Value && !IsAdmin(userId.Value)))
         {
             return Unauthorized();
         }
@@ -144,7 +144,7 @@ public class EventsController : ControllerBase
 
         // TODO: Check if user is organizer or admin
         var userId = GetCurrentUserId();
-        if (userId == null || (eventEntity.OrganizerId != userId && !IsAdmin(userId)))
+        if (userId == null || (eventEntity.OrganizerId != userId.Value && !IsAdmin(userId.Value)))
         {
             return Unauthorized();
         }

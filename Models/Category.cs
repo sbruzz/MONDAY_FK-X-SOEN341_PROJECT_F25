@@ -1,15 +1,13 @@
 namespace CampusEvents.Models;
 
-public class Organization
+public class Category
 {
     public int Id { get; set; }
     public required string Name { get; set; }
     public string? Description { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public string? LogoUrl { get; set; }
+    public string? IconName { get; set; }
     public bool IsActive { get; set; } = true;
 
     // Navigation properties
     public ICollection<Event> Events { get; set; } = new List<Event>();
-    public ICollection<OrganizationMember> Members { get; set; } = new List<OrganizationMember>();
 }
