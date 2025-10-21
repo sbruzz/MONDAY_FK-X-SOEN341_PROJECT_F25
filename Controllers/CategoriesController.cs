@@ -16,6 +16,7 @@ public class CategoriesController : ControllerBase
         _context = context;
     }
 
+    // Get all active categories
     [HttpGet]
     public async Task<IActionResult> GetCategories()
     {
@@ -27,6 +28,7 @@ public class CategoriesController : ControllerBase
         return Ok(categories.Select(MapCategoryToDto));
     }
 
+    // Get single category by ID
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCategory(int id)
     {
@@ -34,20 +36,26 @@ public class CategoriesController : ControllerBase
 
         if (category == null)
         {
-            return NotFound();
+            return NotFound(new { message = "Category not found" });
         }
 
         return Ok(MapCategoryToDto(category));
     }
 
+    // Create new category (admin only)
     [HttpPost]
     public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequest request)
     {
-        // TODO: Check if user is admin
-        var userId = GetCurrentUserId();
-        if (userId == null || !IsAdmin(userId.Value))
+        // Check if user is admin
+        if (!IsAdmin())
         {
-            return Unauthorized();
+            return Forbid("Only administrators can create categories");
+        }
+
+        // Basic validation
+        if (string.IsNullOrEmpty(request.Name))
+        {
+            return BadRequest(new { message = "Category name is required" });
         }
 
         var category = new Category
@@ -64,46 +72,54 @@ public class CategoriesController : ControllerBase
         return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, MapCategoryToDto(category));
     }
 
+    // Update category (admin only)
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryRequest request)
     {
-        // TODO: Check if user is admin
-        var userId = GetCurrentUserId();
-        if (userId == null || !IsAdmin(userId.Value))
+        // Check if user is admin
+        if (!IsAdmin())
         {
-            return Unauthorized();
+            return Forbid("Only administrators can update categories");
         }
 
         var category = await _context.Categories.FindAsync(id);
         if (category == null)
         {
-            return NotFound();
+            return NotFound(new { message = "Category not found" });
         }
 
-        category.Name = request.Name ?? category.Name;
-        category.Description = request.Description ?? category.Description;
-        category.IconName = request.IconName ?? category.IconName;
-        category.IsActive = request.IsActive ?? category.IsActive;
+        // Update fields if provided
+        if (!string.IsNullOrEmpty(request.Name))
+            category.Name = request.Name;
+        
+        if (request.Description != null)
+            category.Description = request.Description;
+        
+        if (request.IconName != null)
+            category.IconName = request.IconName;
+        
+        if (request.IsActive.HasValue)
+            category.IsActive = request.IsActive.Value;
 
         await _context.SaveChangesAsync();
 
         return Ok(MapCategoryToDto(category));
     }
 
+    // Delete category (admin only) - soft delete
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCategory(int id)
     {
-        // TODO: Check if user is admin
-        var userId = GetCurrentUserId();
-        if (userId == null || !IsAdmin(userId.Value))
+        // Check if user is admin
+        if (!IsAdmin())
         {
-            return Unauthorized();
+            return Forbid("Only administrators can delete categories");
         }
 
         var category = await _context.Categories.FindAsync(id);
         if (category == null)
         {
-            return NotFound();
+            return NotFound(new { message = "Category not found" });
         }
 
         // Soft delete - set IsActive to false
@@ -113,18 +129,14 @@ public class CategoriesController : ControllerBase
         return NoContent();
     }
 
-    private int? GetCurrentUserId()
+    // Helper method to check if current user is admin
+    private bool IsAdmin()
     {
-        // TODO: Implement proper session/auth check
-        return null;
+        var role = HttpContext.Session.GetString("UserRole");
+        return role == "Admin";
     }
 
-    private bool IsAdmin(int userId)
-    {
-        // TODO: Implement admin check
-        return false;
-    }
-
+    // Simple mapping to return category data
     private static object MapCategoryToDto(Category category) => new
     {
         category.Id,
@@ -135,6 +147,7 @@ public class CategoriesController : ControllerBase
     };
 }
 
+// Simple request classes
 public class CreateCategoryRequest
 {
     public required string Name { get; set; }
@@ -149,3 +162,4 @@ public class UpdateCategoryRequest
     public string? IconName { get; set; }
     public bool? IsActive { get; set; }
 }
+
