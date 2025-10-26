@@ -1,0 +1,408 @@
+@using CampusEvents.Data
+@using Microsoft.EntityFrameworkCore
+@inject AppDbContext DbContext
+@{
+    var userId = Context.Session.GetInt32("UserId");
+    var userName = "Student";
+    var ticketsCount = 0;
+    var savedCount = 0;
+
+    if (userId.HasValue)
+    {
+        var user = await DbContext.Users.FindAsync(userId.Value);
+        if (user != null)
+        {
+            userName = user.Name;
+        }
+        ticketsCount = await DbContext.Tickets.CountAsync(t => t.UserId == userId.Value);
+        savedCount = await DbContext.SavedEvents.CountAsync(se => se.UserId == userId.Value);
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CampusEvents</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    @await RenderSectionAsync("Styles", required: false)
+    <style>
+        :root {
+            --primary: #d5bdaf;
+            --primary-dark: #c9a999;
+            --secondary: #e3d5ca;
+            --accent: #d6ccc2;
+            --success: #90b494;
+            --warning: #e8b17e;
+            --danger: #d4756e;
+            --bg: #f5ebe0;
+            --card-bg: #ffffff;
+            --text: #3d3d3d;
+            --text-light: #6b6b6b;
+            --border: #e3d5ca;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Student Header */
+        .student-header {
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .header-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .header-brand i {
+            font-size: 1.5rem;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: var(--bg);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-link .badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 10px;
+            padding: 0.125rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg);
+            border-radius: 30px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .header-container {
+                flex-wrap: wrap;
+            }
+
+            .header-nav {
+                overflow-x: auto;
+                width: 100%;
+            }
+
+            .nav-link span {
+                display: none;
+            }
+        }
+
+        /* Global Bootstrap Overrides - Modern Rounded Style */
+        .btn {
+            border-radius: 20px;
+            font-weight: 600;
+            padding: 0.625rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(213, 189, 175, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(213, 189, 175, 0.4);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #7a9d7e;
+            border-color: #7a9d7e;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-secondary {
+            border-radius: 20px;
+        }
+
+        .btn-outline-secondary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            border-radius: 16px;
+            padding: 0.5rem 1.25rem;
+        }
+
+        .card {
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header {
+            border-radius: 20px 20px 0 0 !important;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-footer {
+            border-radius: 0 0 20px 20px !important;
+            border-top: 1px solid var(--border);
+        }
+
+        .badge {
+            border-radius: 12px;
+            padding: 0.375rem 0.75rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 0.625rem 1rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(213, 189, 175, 0.25);
+        }
+
+        .alert {
+            border-radius: 16px;
+            border: none;
+        }
+
+        .progress {
+            border-radius: 20px;
+            height: 8px;
+        }
+
+        .progress-bar {
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Student Header -->
+    <header class="student-header">
+        <div class="header-container">
+            <a href="/Student/Home" class="header-brand">
+                <i class="bi bi-calendar-event"></i>
+                <span>CampusEvents</span>
+            </a>
+            <nav class="header-nav">
+                <a href="/Student/Home" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Home") ? "active" : "")">
+                    <i class="bi bi-house-door"></i>
+                    <span>Discover</span>
+                </a>
+                <a href="/Student/Events" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Events") && !Context.Request.Path.StartsWithSegments("/Student/EventDetails") ? "active" : "")">
+                    <i class="bi bi-search"></i>
+                    <span>Browse All</span>
+                </a>
+                <a href="/Student/Tickets" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Tickets") ? "active" : "")">
+                    <i class="bi bi-ticket-perforated"></i>
+                    <span>My Tickets</span>
+                    @if (ticketsCount > 0)
+                    {
+                        <span class="badge">@ticketsCount</span>
+                    }
+                </a>
+                <a href="/Student/Saved" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Saved") ? "active" : "")">
+                    <i class="bi bi-bookmark-heart"></i>
+                    <span>Saved</span>
+                    @if (savedCount > 0)
+                    {
+                        <span class="badge">@savedCount</span>
+                    }
+                </a>
+            </nav>
+            <div class="header-user">
+                <div class="user-avatar">@userName.Substring(0, 1).ToUpper()</div>
+                <span class="user-name">@userName</span>
+            </div>
+            <a href="/Logout" class="logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        @RenderBody()
+    </main>
+
+    <footer style="background: #edede9; padding: 4rem 5% 2rem; margin: 0; width: 100%; border-top: 1px solid #d6ccc2;">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+                <!-- Brand Column -->
+                <div>
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: #3d3d3d; margin-bottom: 1rem;">CampusEvents</h3>
+                    <p style="color: #6b6b6b; line-height: 1.6; margin-bottom: 1.5rem;">The complete platform for discovering, organizing, and managing campus events.</p>
+                </div>
+
+                <!-- Product Column -->
+                <div>
+                    <h4 style="font-size: 0.875rem; font-weight: 700; color: #3d3d3d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;">Product</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 0.75rem;"><a href="/Index" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">Home</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="/About" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">About Us</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="/FAQ" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal Column -->
+                <div>
+                    <h4 style="font-size: 0.875rem; font-weight: 700; color: #3d3d3d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;">Legal</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 0.75rem;"><a href="/Privacy" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources Column -->
+                <div>
+                    <h4 style="font-size: 0.875rem; font-weight: 700; color: #3d3d3d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;">Resources</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 0.75rem;"><a href="/Student/Home" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">Discover Events</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="/Student/Tickets" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">My Tickets</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div style="border-top: 1px solid #d6ccc2; padding-top: 2rem; text-align: center;">
+                <p style="margin: 0; color: #6b6b6b; font-size: 0.875rem;">&copy; 2025 CampusEvents. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

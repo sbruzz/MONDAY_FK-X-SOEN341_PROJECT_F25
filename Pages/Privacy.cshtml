@@ -1,41 +1,316 @@
-﻿@page
+@page
 @model PrivacyModel
 @{
     ViewData["Title"] = "Privacy Policy";
 }
 
-<div style="padding: 100px 5%; max-width: 1400px; margin: 0 auto;">
-    <h1 style="font-size: 3rem; font-weight: 800; color: #3d3d3d; margin-bottom: 2rem;">Privacy Policy</h1>
+<style>
+    :root {
+        --primary: #d5bdaf;
+        --primary-dark: #c9a999;
+        --bg: #f5ebe0;
+        --card-bg: #ffffff;
+        --text: #3d3d3d;
+        --text-light: #6b6b6b;
+        --border: #e3d5ca;
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">1. Information We Collect</h2>
-    </section>
+    body {
+        background: linear-gradient(135deg, #f5ebe0 0%, #e3d5ca 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">2. How We Use Your Information</h2>
-    </section>
+    .privacy-container {
+        padding: 100px 5%;
+        max-width: none;
+        margin: 0 auto;
+        width: 90%;
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">3. Information Sharing and Disclosure</h2>
-    </section>
+    .hero-section {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">4. Data Security</h2>
-    </section>
+    .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 1rem;
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">5. Your Rights</h2>
-    </section>
+    .hero-section p {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        max-width: 700px;
+        margin: 0 auto;
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">6. Cookies and Tracking</h2>
-    </section>
+    .section {
+        background: var(--card-bg);
+        border-radius: 24px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">7. Changes to This Policy</h2>
-    </section>
+    .section h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--border);
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">8. Contact Us</h2>
-    </section>
+    .section h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .section p {
+        font-size: 1rem;
+        color: var(--text-light);
+        line-height: 1.8;
+        margin-bottom: 1rem;
+    }
+
+    .section ul {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+
+    .section li {
+        font-size: 1rem;
+        color: var(--text-light);
+        line-height: 1.8;
+        margin-bottom: 0.5rem;
+    }
+
+    .highlight-box {
+        background: var(--bg);
+        border-left: 4px solid var(--primary);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 1.5rem 0;
+    }
+
+    .highlight-box p {
+        margin: 0;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .last-updated {
+        text-align: center;
+        color: var(--text-light);
+        font-size: 0.95rem;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+    }
+</style>
+
+<div class="privacy-container">
+    <div class="hero-section">
+        <h1>Privacy Policy</h1>
+        <p>Your privacy is important to us. This policy explains how we collect, use, and protect your personal information.</p>
+    </div>
+
+    <div class="section">
+        <h2>1. Information We Collect</h2>
+
+        <h3>Student Accounts</h3>
+        <ul>
+            <li>Full name and email address</li>
+            <li>Password (encrypted using BCrypt)</li>
+            <li>Student ID number</li>
+            <li>Academic program and year of study</li>
+            <li>Phone number (optional)</li>
+            <li>Event tickets claimed and attendance history</li>
+            <li>Saved events and preferences</li>
+        </ul>
+
+        <h3>Organizer Accounts</h3>
+        <ul>
+            <li>Full name and email address</li>
+            <li>Password (encrypted using BCrypt)</li>
+            <li>Organization affiliation</li>
+            <li>Position and department</li>
+            <li>Phone number</li>
+            <li>Events created and managed</li>
+            <li>Attendee data for events you organize</li>
+        </ul>
+
+        <h3>Automatically Collected Information</h3>
+        <ul>
+            <li>Session data to keep you logged in</li>
+            <li>Browser type and version</li>
+            <li>Date and time of access</li>
+            <li>Pages visited within the platform</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>2. How We Use Your Information</h2>
+
+        <p>We use your personal information for the following purposes:</p>
+
+        <ul>
+            <li><strong>Account Management:</strong> To create and maintain your account, authenticate your identity, and provide access to platform features</li>
+            <li><strong>Event Discovery:</strong> To show you relevant campus events based on your academic program and interests</li>
+            <li><strong>Ticketing Services:</strong> To issue QR code tickets, track attendance, and manage event capacity</li>
+            <li><strong>Communication:</strong> To send you important updates about events you've registered for or changes to the platform</li>
+            <li><strong>Analytics:</strong> To help event organizers understand attendance patterns and improve future events</li>
+            <li><strong>Security:</strong> To detect and prevent fraudulent activity, abuse, or security threats</li>
+            <li><strong>Platform Improvement:</strong> To analyze usage patterns and enhance user experience</li>
+        </ul>
+
+        <div class="highlight-box">
+            <p>We will never sell your personal information to third parties.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>3. Information Sharing and Disclosure</h2>
+
+        <h3>Event Organizers</h3>
+        <p>When you claim a ticket for an event, the organizer of that event can see:</p>
+        <ul>
+            <li>Your name</li>
+            <li>Your email address</li>
+            <li>Your student ID</li>
+            <li>Your attendance status</li>
+        </ul>
+        <p>This information is necessary for event management, attendance tracking, and communication about the specific event.</p>
+
+        <h3>Administrators</h3>
+        <p>System administrators have access to user information for the purpose of:</p>
+        <ul>
+            <li>Approving organizer accounts</li>
+            <li>Providing technical support</li>
+            <li>Ensuring platform security and integrity</li>
+            <li>Generating anonymized system-wide analytics</li>
+        </ul>
+
+        <h3>Legal Requirements</h3>
+        <p>We may disclose your information if required by law, court order, or governmental request, or to protect the rights, property, or safety of Campus Events, our users, or the public.</p>
+
+        <div class="highlight-box">
+            <p>We do not share your information with external marketing companies or advertisers.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>4. Data Security</h2>
+
+        <p>We implement industry-standard security measures to protect your personal information:</p>
+
+        <ul>
+            <li><strong>Password Encryption:</strong> All passwords are hashed using BCrypt, a strong one-way encryption algorithm. Even administrators cannot see your password.</li>
+            <li><strong>Secure Database:</strong> Your data is stored in a protected database with restricted access</li>
+            <li><strong>Session Security:</strong> We use secure session management to prevent unauthorized access to your account</li>
+            <li><strong>Access Controls:</strong> Role-based permissions ensure users only access data appropriate to their role</li>
+        </ul>
+
+        <p>However, please note that no method of transmission over the internet or electronic storage is 100% secure. While we strive to protect your data, we cannot guarantee absolute security.</p>
+    </div>
+
+    <div class="section">
+        <h2>5. Your Rights</h2>
+
+        <p>You have the following rights regarding your personal information:</p>
+
+        <ul>
+            <li><strong>Access:</strong> You can view your account information at any time by logging into your account</li>
+            <li><strong>Correction:</strong> Students can update their profile information. Organizers can update their contact details. Contact an administrator for other changes.</li>
+            <li><strong>Deletion:</strong> You may request deletion of your account by contacting an administrator. Note that event attendance records may be retained for organizer analytics.</li>
+            <li><strong>Data Export:</strong> You can request a copy of your personal data by contacting an administrator</li>
+            <li><strong>Opt-Out:</strong> You can opt out of non-essential communications, though we may still send critical account-related notifications</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>6. Cookies and Tracking</h2>
+
+        <p>Campus Events uses the following types of cookies:</p>
+
+        <h3>Essential Cookies</h3>
+        <p>We use session cookies to keep you logged in and maintain your session as you navigate the platform. These cookies are necessary for the website to function and cannot be disabled.</p>
+
+        <h3>What We Don't Do</h3>
+        <ul>
+            <li>We do not use third-party advertising cookies</li>
+            <li>We do not track you across other websites</li>
+            <li>We do not sell cookie data to third parties</li>
+            <li>We do not use cookies for behavioral profiling</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>7. Student Privacy (FERPA Compliance)</h2>
+
+        <p>As an educational platform, we are committed to protecting student privacy in accordance with the Family Educational Rights and Privacy Act (FERPA) principles:</p>
+
+        <ul>
+            <li>Student educational records are kept confidential</li>
+            <li>Information is only shared with authorized university personnel and event organizers for legitimate purposes</li>
+            <li>Students have the right to review and correct their information</li>
+            <li>We maintain detailed logs of who accesses student information</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>8. Data Retention</h2>
+
+        <p>We retain your personal information for as long as your account is active or as needed to provide services:</p>
+
+        <ul>
+            <li><strong>Active Accounts:</strong> Information is retained while your account exists</li>
+            <li><strong>Closed Accounts:</strong> Data may be retained for up to 90 days after account closure for backup and recovery purposes</li>
+            <li><strong>Event Records:</strong> Attendance records for completed events may be retained indefinitely for historical analytics</li>
+            <li><strong>Legal Requirements:</strong> Some data may be retained longer if required by law</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>9. Children's Privacy</h2>
+
+        <p>Campus Events is intended for use by university students and staff who are 18 years of age or older. We do not knowingly collect information from individuals under 18. If we discover that we have inadvertently collected information from someone under 18, we will delete it promptly.</p>
+    </div>
+
+    <div class="section">
+        <h2>10. Changes to This Policy</h2>
+
+        <p>We may update this Privacy Policy from time to time to reflect changes in our practices, technology, legal requirements, or other factors. When we make significant changes, we will:</p>
+
+        <ul>
+            <li>Update the "Last Updated" date at the bottom of this page</li>
+            <li>Notify you via email or platform announcement</li>
+            <li>Give you the opportunity to review the changes before they take effect</li>
+        </ul>
+
+        <p>Your continued use of Campus Events after policy changes indicates your acceptance of the updated policy.</p>
+    </div>
+
+    <div class="section">
+        <h2>11. Contact Us</h2>
+
+        <p>If you have questions, concerns, or requests regarding this Privacy Policy or how we handle your personal information, please contact us:</p>
+
+        <div class="highlight-box">
+            <p><strong>Email:</strong> privacy@campusevents.com</p>
+            <p><strong>Response Time:</strong> We aim to respond to all privacy inquiries within 5 business days</p>
+        </div>
+
+        <p>For urgent security concerns, please contact: security@campusevents.com</p>
+    </div>
+
+    <div class="last-updated">
+        <p><strong>Last Updated:</strong> October 25, 2025</p>
+        <p>This policy is effective as of the date listed above.</p>
+    </div>
 </div>

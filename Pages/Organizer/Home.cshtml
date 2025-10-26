@@ -2,6 +2,7 @@
 @model OrganizerHomeModel
 @{
     ViewData["Title"] = "Organizer Home";
+    Layout = "_OrganizerLayout";
 }
 
 <div class="container mt-4">
@@ -30,9 +31,9 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Analytics</h5>
-                    <p class="card-text">View event statistics</p>
-                    <a href="/Organizer/Analytics" class="btn btn-primary">View Analytics</a>
+                    <h5 class="card-title">QR Scanner</h5>
+                    <p class="card-text">Validate event tickets</p>
+                    <p class="text-muted small">Select an event from My Events first</p>
                 </div>
             </div>
         </div>

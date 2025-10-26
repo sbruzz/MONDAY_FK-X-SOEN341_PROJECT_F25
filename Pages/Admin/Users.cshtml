@@ -1,0 +1,171 @@
+@page
+@model UsersModel
+@{
+    ViewData["Title"] = "User Management";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-people"></i> User Management</h1>
+        <a href="/Admin/Home" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert @(Model.IsSuccess ? "alert-success" : "alert-danger") alert-dismissible fade show" role="alert">
+            @Model.Message
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filter Users</h5>
+        </div>
+        <div class="card-body">
+            <form method="get">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="roleFilter" class="form-label">Role</label>
+                        <select class="form-select" id="roleFilter" name="roleFilter">
+                            <option value="All" selected="@(string.IsNullOrEmpty(Model.RoleFilter) || Model.RoleFilter == "All")">All Roles</option>
+                            <option value="Student" selected="@(Model.RoleFilter == "Student")">Students</option>
+                            <option value="Organizer" selected="@(Model.RoleFilter == "Organizer")">Organizers</option>
+                            <option value="Admin" selected="@(Model.RoleFilter == "Admin")">Admins</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="statusFilter" class="form-label">Status</label>
+                        <select class="form-select" id="statusFilter" name="statusFilter">
+                            <option value="All" selected="@(string.IsNullOrEmpty(Model.StatusFilter) || Model.StatusFilter == "All")">All Statuses</option>
+                            <option value="Pending" selected="@(Model.StatusFilter == "Pending")">Pending</option>
+                            <option value="Approved" selected="@(Model.StatusFilter == "Approved")">Approved</option>
+                            <option value="Rejected" selected="@(Model.StatusFilter == "Rejected")">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="bi bi-search"></i> Apply Filters
+                        </button>
+                        <a href="/Admin/Users" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Clear
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    @if (Model.Users.Any())
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Registered</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.Users)
+                            {
+                                <tr class="@(user.ApprovalStatus == CampusEvents.Models.ApprovalStatus.Pending ? "table-warning" :
+                                            user.ApprovalStatus == CampusEvents.Models.ApprovalStatus.Rejected ? "table-danger" : "")">
+                                    <td>@user.Id</td>
+                                    <td>
+                                        <strong>@user.Name</strong>
+                                    </td>
+                                    <td>@user.Email</td>
+                                    <td>
+                                        @if (user.Role == CampusEvents.Models.UserRole.Student)
+                                        {
+                                            <span class="badge bg-info">Student</span>
+                                        }
+                                        else if (user.Role == CampusEvents.Models.UserRole.Organizer)
+                                        {
+                                            <span class="badge bg-success">Organizer</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Admin</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (user.ApprovalStatus == CampusEvents.Models.ApprovalStatus.Pending)
+                                        {
+                                            <span class="badge bg-warning">Pending</span>
+                                        }
+                                        else if (user.ApprovalStatus == CampusEvents.Models.ApprovalStatus.Approved)
+                                        {
+                                            <span class="badge bg-success">Approved</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Rejected</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small>@user.CreatedAt.ToString("MMM dd, yyyy")</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="/Admin/EditUser?id=@user.Id" class="btn btn-primary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            @if (user.ApprovalStatus != CampusEvents.Models.ApprovalStatus.Approved)
+                                            {
+                                                <form method="post" asp-page-handler="Approve" class="d-inline">
+                                                    <input type="hidden" name="id" value="@user.Id" />
+                                                    <button type="submit" class="btn btn-success" title="Approve">
+                                                        <i class="bi bi-check-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            @if (user.ApprovalStatus != CampusEvents.Models.ApprovalStatus.Rejected)
+                                            {
+                                                <form method="post" asp-page-handler="Reject" class="d-inline">
+                                                    <input type="hidden" name="id" value="@user.Id" />
+                                                    <button type="submit" class="btn btn-warning" title="Reject">
+                                                        <i class="bi bi-x-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            <form method="post" asp-page-handler="Delete" class="d-inline"
+                                                  onsubmit="return confirm('Are you sure you want to delete @user.Name?');">
+                                                <input type="hidden" name="id" value="@user.Id" />
+                                                <button type="submit" class="btn btn-danger" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <p class="text-muted">Total: <strong>@Model.Users.Count</strong> user(s)</p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h5><i class="bi bi-info-circle"></i> No users found</h5>
+            <p class="mb-0">No users match your current filters.</p>
+        </div>
+    }
+</div>

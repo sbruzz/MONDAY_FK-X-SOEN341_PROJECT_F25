@@ -13,7 +13,8 @@ public class DbCSVCommunicator
         _context = context;
     }
 
-    static String DatabaseLocation = $"Data Source=C:/Users/Aeon/Documents/GitHub/MONDAY_FK-X-SOEN341_PROJECT_F25/campusevents.db";
+    // Use relative path that works on all platforms (Windows, Mac, Linux)
+    static String DatabaseLocation = $"Data Source=campusevents.db";
     static String dbPath = DatabaseLocation.Replace("Data Source=", "").Trim();
 
     public void Test()
@@ -28,17 +29,27 @@ public class DbCSVCommunicator
         }
         **/
 
-        _context.Users.AddRange(new User { Id = 501, Email = "user1@example.com", PasswordHash = "hash1", Name = "Alice Smith", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, DateTimeKind.Utc) },
-            new User { Id = 502, Email = "user2@example.com", PasswordHash = "hash2", Name = "Bob Johnson", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 2, 11, 0, 0, DateTimeKind.Utc) },
-            new User { Id = 503, Email = "user3@example.com", PasswordHash = "hash3", Name = "Carol Williams", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 3, 12, 0, 0, DateTimeKind.Utc) },
-            new User { Id = 504, Email = "user4@example.com", PasswordHash = "hash4", Name = "David Brown", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 4, 13, 0, 0, DateTimeKind.Utc) },
-            new User { Id = 505, Email = "user5@example.com", PasswordHash = "hash5", Name = "Eve Davis", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 5, 14, 0, 0, DateTimeKind.Utc) },
-            new User { Id = 506, Email = "user6@example.com", PasswordHash = "hash6", Name = "Frank Miller", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 6, 15, 0, 0, DateTimeKind.Utc) },
-            new User { Id = 507, Email = "user7@example.com", PasswordHash = "hash7", Name = "Grace Wilson", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 7, 16, 0, 0, DateTimeKind.Utc) },
-            new User { Id = 508, Email = "user8@example.com", PasswordHash = "hash8", Name = "Hank Moore", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 8, 17, 0, 0, DateTimeKind.Utc) },
-            new User { Id = 509, Email = "user9@example.com", PasswordHash = "hash9", Name = "Ivy Taylor", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 9, 18, 0, 0, DateTimeKind.Utc) },
-            new User { Id = 510, Email = "user10@example.com", PasswordHash = "hash10", Name = "Jack Anderson", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 10, 19, 0, 0, DateTimeKind.Utc) });
-        _context.SaveChanges();
+        // Only add test users if they don't already exist (prevents duplicate key error)
+        if (!_context.Users.Any(u => u.Id >= 501 && u.Id <= 510))
+        {
+            _context.Users.AddRange(new User { Id = 501, Email = "user1@example.com", PasswordHash = "hash1", Name = "Alice Smith", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, DateTimeKind.Utc) },
+                new User { Id = 502, Email = "user2@example.com", PasswordHash = "hash2", Name = "Bob Johnson", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 2, 11, 0, 0, DateTimeKind.Utc) },
+                new User { Id = 503, Email = "user3@example.com", PasswordHash = "hash3", Name = "Carol Williams", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 3, 12, 0, 0, DateTimeKind.Utc) },
+                new User { Id = 504, Email = "user4@example.com", PasswordHash = "hash4", Name = "David Brown", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 4, 13, 0, 0, DateTimeKind.Utc) },
+                new User { Id = 505, Email = "user5@example.com", PasswordHash = "hash5", Name = "Eve Davis", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 5, 14, 0, 0, DateTimeKind.Utc) },
+                new User { Id = 506, Email = "user6@example.com", PasswordHash = "hash6", Name = "Frank Miller", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 6, 15, 0, 0, DateTimeKind.Utc) },
+                new User { Id = 507, Email = "user7@example.com", PasswordHash = "hash7", Name = "Grace Wilson", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 7, 16, 0, 0, DateTimeKind.Utc) },
+                new User { Id = 508, Email = "user8@example.com", PasswordHash = "hash8", Name = "Hank Moore", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 8, 17, 0, 0, DateTimeKind.Utc) },
+                new User { Id = 509, Email = "user9@example.com", PasswordHash = "hash9", Name = "Ivy Taylor", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 9, 18, 0, 0, DateTimeKind.Utc) },
+                new User { Id = 510, Email = "user10@example.com", PasswordHash = "hash10", Name = "Jack Anderson", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 10, 19, 0, 0, DateTimeKind.Utc) });
+            _context.SaveChanges();
+            Console.WriteLine("Test users added to database.");
+        }
+        else
+        {
+            Console.WriteLine("Test users already exist in database, skipping seed.");
+        }
+
         extractToCSV(533);
         Console.WriteLine("DbMainTest Finished");
     }

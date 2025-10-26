@@ -1,0 +1,175 @@
+@page
+@model CampusEvents.Pages.Student.SavedModel
+@{
+    ViewData["Title"] = "Saved Events";
+    Layout = "_StudentLayout";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4"><i class="bi bi-bookmark-fill"></i> My Saved Events</h1>
+            <p class="lead">Your personal calendar of bookmarked events</p>
+        </div>
+    </div>
+
+    @if (!Model.SavedEvents.Any())
+    {
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card text-center py-5">
+                    <div class="card-body">
+                        <i class="bi bi-bookmark display-1 text-muted"></i>
+                        <h3 class="mt-3">No Saved Events</h3>
+                        <p class="text-muted">Save events to keep track of what interests you.</p>
+                        <a href="/Student/Events" class="btn btn-primary mt-3">
+                            <i class="bi bi-search"></i> Browse Events
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Calendar View Toggle -->
+        <div class="row mb-3">
+            <div class="col">
+                <div class="btn-group" role="group">
+                    <a href="?view=upcoming" class="btn @(Model.View == "upcoming" ? "btn-primary" : "btn-outline-primary")">
+                        <i class="bi bi-calendar-event"></i> Upcoming (@Model.UpcomingCount)
+                    </a>
+                    <a href="?view=all" class="btn @(Model.View == "all" ? "btn-primary" : "btn-outline-primary")">
+                        <i class="bi bi-calendar3"></i> All (@Model.SavedEvents.Count)
+                    </a>
+                </div>
+            </div>
+            <div class="col-auto">
+                <span class="text-muted">@Model.SavedEvents.Count saved event(s)</span>
+            </div>
+        </div>
+
+        <!-- Events List -->
+        <div class="row">
+            @foreach (var savedEvent in Model.SavedEvents)
+            {
+                var evt = savedEvent.Event;
+                var isPastEvent = evt.EventDate < DateTime.UtcNow;
+                var hasTicket = Model.TicketEventIds.Contains(evt.Id);
+
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 shadow-sm @(isPastEvent ? "border-secondary" : "")">
+                        <div class="card-header @(isPastEvent ? "bg-light" : "bg-white")">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <span class="badge @(isPastEvent ? "bg-secondary" : "bg-info")">@evt.Category</span>
+                                    @if (hasTicket)
+                                    {
+                                        <span class="badge bg-success ms-1">
+                                            <i class="bi bi-ticket-fill"></i> Ticket Claimed
+                                        </span>
+                                    }
+                                    @if (isPastEvent)
+                                    {
+                                        <span class="badge bg-secondary ms-1">Past Event</span>
+                                    }
+                                </div>
+                                <div class="col-auto">
+                                    <small class="text-muted">
+                                        Saved @savedEvent.SavedAt.ToString("MMM dd")
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@evt.Title</h5>
+
+                            <!-- Event Date/Time -->
+                            <p class="text-primary mb-2">
+                                <i class="bi bi-calendar-event"></i>
+                                <strong>@evt.EventDate.ToString("dddd, MMMM dd, yyyy")</strong><br>
+                                <span class="ms-4">@evt.EventDate.ToString("h:mm tt")</span>
+                            </p>
+
+                            <!-- Location -->
+                            <p class="mb-2">
+                                <i class="bi bi-geo-alt"></i> @evt.Location
+                            </p>
+
+                            <!-- Organization -->
+                            @if (evt.Organization != null)
+                            {
+                                <p class="mb-2">
+                                    <i class="bi bi-building"></i> @evt.Organization.Name
+                                </p>
+                            }
+
+                            <!-- Description Preview -->
+                            <p class="card-text text-muted small text-truncate-3">
+                                @evt.Description
+                            </p>
+
+                            <!-- Capacity -->
+                            <div class="mt-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small class="text-muted">Tickets Available</small>
+                                    <small>
+                                        <strong>@(evt.Capacity - evt.TicketsIssued)</strong> / @evt.Capacity
+                                    </small>
+                                </div>
+                                <div class="progress" style="height: 5px;">
+                                    @{
+                                        var percentFull = evt.Capacity > 0 ? (evt.TicketsIssued * 100.0 / evt.Capacity) : 0;
+                                    }
+                                    <div class="progress-bar @(percentFull >= 90 ? "bg-danger" : percentFull >= 70 ? "bg-warning" : "bg-success")"
+                                         style="width: @percentFull%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Price -->
+                            <p class="mt-3 mb-0">
+                                @if (evt.Price == 0)
+                                {
+                                    <span class="badge bg-success">FREE</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary">$@evt.Price.ToString("F2")</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <a href="/Student/EventDetails?id=@evt.Id" class="btn btn-primary btn-sm w-100">
+                                        <i class="bi bi-info-circle"></i> View Details
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <form method="post" asp-page-handler="UnsaveEvent" class="d-inline w-100">
+                                        <input type="hidden" name="eventId" value="@evt.Id" />
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm w-100">
+                                            <i class="bi bi-bookmark-x"></i> Remove
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .text-truncate-3 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+    </style>
+}
