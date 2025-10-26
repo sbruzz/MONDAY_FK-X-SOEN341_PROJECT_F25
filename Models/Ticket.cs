@@ -6,7 +6,7 @@ public class Ticket
     public int EventId { get; set; }
     public int UserId { get; set; }
     public required string UniqueCode { get; set; }
-    public byte[]? QrCodeImage { get; set; }
+    public string? QrCodeImage { get; set; } // Base64 encoded QR code image
     public DateTime ClaimedAt { get; set; } = DateTime.UtcNow;
     public DateTime? RedeemedAt { get; set; }
     public bool IsRedeemed { get; set; } = false;

@@ -1,0 +1,180 @@
+@page
+@model CampusEvents.Pages.Student.TicketsModel
+@{
+    ViewData["Title"] = "My Tickets";
+    Layout = "_StudentLayout";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4"><i class="bi bi-ticket-perforated"></i> My Tickets</h1>
+            <p class="lead">View and manage your event tickets</p>
+        </div>
+    </div>
+
+    @if (!Model.Tickets.Any())
+    {
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card text-center py-5">
+                    <div class="card-body">
+                        <i class="bi bi-ticket display-1 text-muted"></i>
+                        <h3 class="mt-3">No Tickets Yet</h3>
+                        <p class="text-muted">You haven't claimed any event tickets.</p>
+                        <a href="/Student/Events" class="btn btn-primary mt-3">
+                            <i class="bi bi-search"></i> Browse Events
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Filter Tabs -->
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link @(Model.Filter == "upcoming" ? "active" : "")" href="?filter=upcoming">
+                    Upcoming (@Model.UpcomingCount)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(Model.Filter == "past" ? "active" : "")" href="?filter=past">
+                    Past Events (@Model.PastCount)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(Model.Filter == "all" ? "active" : "")" href="?filter=all">
+                    All (@Model.Tickets.Count)
+                </a>
+            </li>
+        </ul>
+
+        <div class="row">
+            @foreach (var ticket in Model.Tickets)
+            {
+                var isPastEvent = ticket.Event.EventDate < DateTime.UtcNow;
+
+                <div class="col-lg-6 mb-4">
+                    <div class="card @(isPastEvent ? "border-secondary" : "shadow-sm")">
+                        <div class="card-header @(isPastEvent ? "bg-secondary text-white" : "bg-primary text-white")">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h5 class="mb-0">@ticket.Event.Title</h5>
+                                </div>
+                                <div class="col-auto">
+                                    @if (ticket.IsRedeemed)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle-fill"></i> Checked In
+                                        </span>
+                                    }
+                                    else if (isPastEvent)
+                                    {
+                                        <span class="badge bg-light text-dark">Past Event</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light text-dark">Not Redeemed</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Event Details -->
+                                <div class="col-md-7">
+                                    <div class="mb-3">
+                                        <h6 class="text-muted mb-2">Event Details</h6>
+
+                                        <p class="mb-2">
+                                            <i class="bi bi-calendar-event text-primary"></i>
+                                            <strong>@ticket.Event.EventDate.ToString("MMMM dd, yyyy")</strong><br>
+                                            <span class="ms-4">@ticket.Event.EventDate.ToString("h:mm tt")</span>
+                                        </p>
+
+                                        <p class="mb-2">
+                                            <i class="bi bi-geo-alt text-primary"></i>
+                                            @ticket.Event.Location
+                                        </p>
+
+                                        @if (ticket.Event.Organization != null)
+                                        {
+                                            <p class="mb-2">
+                                                <i class="bi bi-building text-primary"></i>
+                                                @ticket.Event.Organization.Name
+                                            </p>
+                                        }
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <h6 class="text-muted mb-2">Ticket Info</h6>
+                                        <p class="small mb-1">
+                                            <strong>Ticket ID:</strong> #@ticket.Id
+                                        </p>
+                                        <p class="small mb-1">
+                                            <strong>Claimed:</strong> @ticket.ClaimedAt.ToString("MMM dd, yyyy h:mm tt")
+                                        </p>
+                                        @if (ticket.IsRedeemed && ticket.RedeemedAt.HasValue)
+                                        {
+                                            <p class="small mb-1 text-success">
+                                                <strong>Checked In:</strong> @ticket.RedeemedAt.Value.ToString("MMM dd, yyyy h:mm tt")
+                                            </p>
+                                        }
+                                    </div>
+                                </div>
+
+                                <!-- QR Code -->
+                                <div class="col-md-5 text-center">
+                                    <div class="bg-light p-3 rounded">
+                                        <p class="small text-muted mb-2">Scan to Check In</p>
+                                        <img src="data:image/png;base64,@ticket.QrCodeImage"
+                                             alt="Ticket QR Code"
+                                             class="img-fluid"
+                                             style="max-width: 200px; border: 2px solid #dee2e6; border-radius: 8px;">
+                                        <p class="small text-muted mt-2 mb-0">
+                                            Code: <code>@ticket.UniqueCode.Substring(0, 8)...</code>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <a href="/Student/EventDetails?id=@ticket.Event.Id" class="btn btn-outline-primary btn-sm w-100">
+                                        <i class="bi bi-info-circle"></i> Event Details
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm w-100"
+                                            onclick="downloadTicket(@ticket.Id)">
+                                        <i class="bi bi-download"></i> Download QR
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function downloadTicket(ticketId) {
+            // Find the ticket card
+            const ticketCard = event.target.closest('.card');
+            const qrImage = ticketCard.querySelector('img[alt="Ticket QR Code"]');
+            const eventTitle = ticketCard.querySelector('.card-header h5').textContent;
+
+            // Create download link
+            const link = document.createElement('a');
+            link.href = qrImage.src;
+            link.download = `ticket-${ticketId}-${eventTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`;
+            link.click();
+        }
+    </script>
+}

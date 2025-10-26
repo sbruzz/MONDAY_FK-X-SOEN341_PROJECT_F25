@@ -1,0 +1,194 @@
+@page
+@model EventsModel
+@{
+    ViewData["Title"] = "Event Moderation";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-calendar-check"></i> Event Moderation</h1>
+        <a href="/Admin/Home" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+    </div>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert @(Model.IsSuccess ? "alert-success" : "alert-danger") alert-dismissible fade show">
+            @Model.Message
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="status" class="form-label">Filter by Status</label>
+                    <select id="status" name="StatusFilter" class="form-select">
+                        <option value="All" selected="@(string.IsNullOrEmpty(Model.StatusFilter) || Model.StatusFilter == "All")">All Statuses</option>
+                        <option value="Pending" selected="@(Model.StatusFilter == "Pending")">Pending</option>
+                        <option value="Approved" selected="@(Model.StatusFilter == "Approved")">Approved</option>
+                        <option value="Rejected" selected="@(Model.StatusFilter == "Rejected")">Rejected</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="category" class="form-label">Filter by Category</label>
+                    <select id="category" name="CategoryFilter" class="form-select">
+                        <option value="All" selected="@(string.IsNullOrEmpty(Model.CategoryFilter) || Model.CategoryFilter == "All")">All Categories</option>
+                        <option value="Academic" selected="@(Model.CategoryFilter == "Academic")">Academic</option>
+                        <option value="Social" selected="@(Model.CategoryFilter == "Social")">Social</option>
+                        <option value="Sports" selected="@(Model.CategoryFilter == "Sports")">Sports</option>
+                        <option value="Cultural" selected="@(Model.CategoryFilter == "Cultural")">Cultural</option>
+                        <option value="Career" selected="@(Model.CategoryFilter == "Career")">Career</option>
+                        <option value="Workshop" selected="@(Model.CategoryFilter == "Workshop")">Workshop</option>
+                        <option value="Other" selected="@(Model.CategoryFilter == "Other")">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Apply Filters</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Events List -->
+    @if (Model.Events.Any())
+    {
+        <div class="row g-4">
+            @foreach (var evt in Model.Events)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card event-card h-100 @(evt.ApprovalStatus == ApprovalStatus.Pending ? "border-warning" : "")">
+                        <div class="card-header @(evt.ApprovalStatus == ApprovalStatus.Pending ? "bg-warning" : evt.ApprovalStatus == ApprovalStatus.Approved ? "bg-success text-white" : "bg-danger text-white")">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge @(evt.ApprovalStatus == ApprovalStatus.Pending ? "bg-dark" : "bg-light text-dark")">
+                                    @evt.Category
+                                </span>
+                                <span class="badge @(evt.ApprovalStatus == ApprovalStatus.Pending ? "bg-dark" : "bg-light text-dark")">
+                                    @evt.ApprovalStatus
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@evt.Title</h5>
+                            <p class="card-text text-muted small">
+                                @(evt.Description.Length > 100 ? evt.Description.Substring(0, 100) + "..." : evt.Description)
+                            </p>
+
+                            <div class="event-details mb-3">
+                                <div class="detail-item">
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span>@evt.EventDate.ToString("MMM dd, yyyy h:mm tt")</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span>@evt.Location</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="bi bi-person"></i>
+                                    <span>@evt.Organizer.Name</span>
+                                </div>
+                                @if (evt.Organization != null)
+                                {
+                                    <div class="detail-item">
+                                        <i class="bi bi-building"></i>
+                                        <span>@evt.Organization.Name</span>
+                                    </div>
+                                }
+                                <div class="detail-item">
+                                    <i class="bi bi-people"></i>
+                                    <span>@evt.TicketsIssued / @evt.Capacity capacity</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="bi bi-tag"></i>
+                                    <span>@(evt.Price == 0 ? "FREE" : $"${evt.Price:F2}")</span>
+                                </div>
+                            </div>
+
+                            <small class="text-muted">Created: @evt.CreatedAt.ToString("MMM dd, yyyy")</small>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            @if (evt.ApprovalStatus == ApprovalStatus.Pending)
+                            {
+                                <div class="d-flex gap-2">
+                                    <form method="post" asp-page-handler="Approve" asp-route-id="@evt.Id" class="flex-fill">
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="bi bi-check-circle"></i> Approve
+                                        </button>
+                                    </form>
+                                    <form method="post" asp-page-handler="Reject" asp-route-id="@evt.Id" class="flex-fill">
+                                        <button type="submit" class="btn btn-warning w-100">
+                                            <i class="bi bi-x-circle"></i> Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                            else if (evt.ApprovalStatus == ApprovalStatus.Rejected)
+                            {
+                                <div class="d-flex gap-2">
+                                    <form method="post" asp-page-handler="Approve" asp-route-id="@evt.Id" class="flex-fill">
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="bi bi-check-circle"></i> Approve
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@evt.Id" class="mt-2"
+                                  onsubmit="return confirm('Are you sure you want to delete @evt.Title? This action cannot be undone.');">
+                                <button type="submit" class="btn btn-outline-danger btn-sm w-100" @(evt.TicketsIssued > 0 ? "disabled" : "")>
+                                    <i class="bi bi-trash"></i> Delete
+                                    @if (evt.TicketsIssued > 0)
+                                    {
+                                        <span>(Has Tickets)</span>
+                                    }
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body text-center p-5">
+                <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                <h4 class="mt-3 text-muted">No events found</h4>
+                <p class="text-muted">Try adjusting your filters</p>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .event-card {
+        transition: all 0.3s ease;
+    }
+
+    .event-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-card.border-warning {
+        border-width: 2px;
+    }
+
+    .event-details {
+        font-size: 0.9rem;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .detail-item i {
+        color: #6c757d;
+        width: 16px;
+    }
+</style>

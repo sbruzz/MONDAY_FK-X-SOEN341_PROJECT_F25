@@ -23,6 +23,9 @@ namespace CampusEvents.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("ApprovalStatus")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Capacity")
                         .HasColumnType("INTEGER");
 
@@ -39,9 +42,6 @@ namespace CampusEvents.Migrations
 
                     b.Property<DateTime>("EventDate")
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -94,29 +94,6 @@ namespace CampusEvents.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Organizations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Official student union organization",
-                            Name = "Student Union"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "CS student group",
-                            Name = "Computer Science Association"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Campus athletics and sports",
-                            Name = "Athletics Department"
-                        });
                 });
 
             modelBuilder.Entity("CampusEvents.Models.SavedEvent", b =>
@@ -152,8 +129,8 @@ namespace CampusEvents.Migrations
                     b.Property<bool>("IsRedeemed")
                         .HasColumnType("INTEGER");
 
-                    b.Property<byte[]>("QrCodeImage")
-                        .HasColumnType("BLOB");
+                    b.Property<string>("QrCodeImage")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("RedeemedAt")
                         .HasColumnType("TEXT");
@@ -189,6 +166,9 @@ namespace CampusEvents.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Department")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -197,17 +177,37 @@ namespace CampusEvents.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Program")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Role")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("StudentId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("YearOfStudy")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
+
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Users");
                 });
@@ -266,6 +266,15 @@ namespace CampusEvents.Migrations
                     b.Navigation("Event");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CampusEvents.Models.User", b =>
+                {
+                    b.HasOne("CampusEvents.Models.Organization", "Organization")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId");
+
+                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Event", b =>
