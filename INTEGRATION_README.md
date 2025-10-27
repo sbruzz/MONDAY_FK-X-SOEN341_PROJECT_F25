@@ -1,4 +1,4 @@
-# Campus Events & Ticketing System - Full Stack Integration
+`# Campus Events & Ticketing System - Full Stack Integration
 
 This repository now contains both the **ASP.NET Core backend** and **Next.js frontend** for the Campus Events platform, integrated to work together seamlessly.
 
@@ -53,7 +53,7 @@ chmod +x dev-start.sh
 ```
 
 This will:
-1. ✅ Check prerequisites
+1. ✅ Check prerequisites`
 2. 📦 Install frontend dependencies (if needed)
 3. 🔧 Start ASP.NET Core backend on `http://localhost:5000`
 4. ⚛️ Start Next.js frontend on `http://localhost:3000`

@@ -1,13 +1,13 @@
-
 # Campus Events & Ticketing System
 
-## Overview
-A comprehensive campus events management platform with integrated ticketing system, built with ASP.NET Core API backend and Next.js frontend.
+## 🎓 Overview
+A **simplified, beginner-friendly** campus events management platform built for SOEN 341. This project uses a straightforward architecture designed for 2nd year students to easily understand and contribute to.
 
-## Architecture
-- **Backend**: ASP.NET Core 9.0 Web API with Entity Framework Core and SQLite
-- **Frontend**: Next.js 15 with React 19, TypeScript, and Tailwind CSS
-- **Database**: SQLite with comprehensive schema for events, users, tickets, and analytics
+## 🏗️ Simplified Architecture
+- **Backend**: ASP.NET Core 9.0 Web API - Direct controller-based approach (no complex services)
+- **Frontend**: Next.js 15 + React 19 + TypeScript - Modern UI with Tailwind CSS
+- **Database**: SQLite - Simple, file-based database
+- **Authentication**: Session-based (simple, no JWT complexity)
 
 ## Features
 
@@ -138,7 +138,24 @@ The application uses a comprehensive database schema with 10 entities:
 - **AuditLog**: Administrative action tracking
 - **QrScanLog**: Ticket validation history
 
-## Team Members
+## 📚 Project Documentation
+
+### 📖 READ ME FIRST!
+- **[PROJECT_MAP.md](PROJECT_MAP.md)** - **Complete guide to every file and what it does**
+- **[SIMPLE_ARCHITECTURE.md](SIMPLE_ARCHITECTURE.md)** - How the simplified architecture works
+- **[INTEGRATION_README.md](INTEGRATION_README.md)** - Integration and running guide
+
+### 🎯 Quick Start
+```bash
+# 1. Run both backend and frontend
+./dev-start.sh
+
+# 2. Access the app
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:5000/api
+```
+
+## 👥 Team Members
 - **Salvatore Bruzzese** (40112201) - Backend Lead
 - **Souleymane Camara** (40183807) - Frontend
 - **Dmitrii Cazacu** (40314501) - Backend
