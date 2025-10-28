@@ -8,7 +8,12 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-people"></i> User Management</h1>
-        <a href="/Admin/Home" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#createAdminModal">
+                <i class="bi bi-shield-fill-plus"></i> Create New Admin
+            </button>
+            <a href="/Admin/Home" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+        </div>
     </div>
 
     @if (!string.IsNullOrEmpty(Model.Message))
@@ -169,3 +174,78 @@
         </div>
     }
 </div>
+
+<!-- Create Admin Modal -->
+<div class="modal fade" id="createAdminModal" tabindex="-1" aria-labelledby="createAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="createAdminModalLabel">
+                    <i class="bi bi-shield-fill-plus"></i> Create New Admin Account
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="CreateAdmin">
+                <div class="modal-body">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill"></i> <strong>Warning:</strong> This will create a new administrator account with full system access.
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="adminName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="adminName" name="name" required
+                               placeholder="e.g., John Smith">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="adminEmail" class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="adminEmail" name="email" required
+                               placeholder="e.g., admin@campusevents.com">
+                        <div class="form-text">This will be used for login</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="adminPassword" class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="adminPassword" name="password" required
+                               minlength="8" placeholder="Minimum 8 characters">
+                        <div class="form-text">Minimum 8 characters. The admin should change this after first login.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="adminPasswordConfirm" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="adminPasswordConfirm" name="passwordConfirm" required
+                               minlength="8" placeholder="Re-enter password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger" id="createAdminBtn">
+                        <i class="bi bi-shield-fill-plus"></i> Create Admin Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Password validation
+        document.getElementById('createAdminBtn').addEventListener('click', function(e) {
+            const password = document.getElementById('adminPassword').value;
+            const passwordConfirm = document.getElementById('adminPasswordConfirm').value;
+
+            if (password !== passwordConfirm) {
+                e.preventDefault();
+                alert('Passwords do not match. Please try again.');
+                return false;
+            }
+
+            if (password.length < 8) {
+                e.preventDefault();
+                alert('Password must be at least 8 characters long.');
+                return false;
+            }
+        });
+    </script>
+}

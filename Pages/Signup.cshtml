@@ -1,0 +1,244 @@
+@page
+@model SignupModel
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<div class="page-wrapper">
+    <div class="signup-container">
+        <div class="text-center mb-5">
+            <h1 class="display-4 mb-3">Join CampusEvents</h1>
+            <p class="lead text-muted">Choose your account type to get started</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Student Signup -->
+            <div class="col-md-6">
+                <a href="/SignupStudent" class="role-card">
+                    <div class="role-icon student">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    <h3 class="role-title">Student</h3>
+                    <p class="role-description">
+                        Browse and discover campus events, claim tickets, and manage your event calendar.
+                    </p>
+                    <ul class="role-features">
+                        <li><i class="bi bi-check-circle-fill"></i> Browse all campus events</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Claim free & paid tickets</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Get QR codes for check-in</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Save events to calendar</li>
+                    </ul>
+                    <div class="role-cta">
+                        <span class="btn-text">Sign Up as Student</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                    <div class="instant-badge">
+                        <i class="bi bi-lightning-charge-fill"></i> Instant Access
+                    </div>
+                </a>
+            </div>
+
+            <!-- Organizer Signup -->
+            <div class="col-md-6">
+                <a href="/SignupOrganizer" class="role-card organizer">
+                    <div class="role-icon organizer">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <h3 class="role-title">Organizer</h3>
+                    <p class="role-description">
+                        Create and manage events, track attendance, and engage with your audience.
+                    </p>
+                    <ul class="role-features">
+                        <li><i class="bi bi-check-circle-fill"></i> Create & manage events</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Track ticket sales</li>
+                        <li><i class="bi bi-check-circle-fill"></i> QR code scanner</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Export attendee lists</li>
+                    </ul>
+                    <div class="role-cta">
+                        <span class="btn-text">Sign Up as Organizer</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                    <div class="approval-badge">
+                        <i class="bi bi-shield-check"></i> Requires Admin Approval
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <p class="text-muted">
+                Already have an account?
+                <a href="/Login" class="text-decoration-none" style="color: #d5bdaf; font-weight: 600;">
+                    Log in here
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        :root {
+            --primary: #d5bdaf;
+            --primary-dark: #c9a999;
+            --bg: #f5ebe0;
+            --text: #3d3d3d;
+        }
+
+        .page-wrapper {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5ebe0 0%, #e3d5ca 100%);
+            padding: 4rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .signup-container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .role-card {
+            display: block;
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            height: 100%;
+            position: relative;
+            border: 3px solid transparent;
+            overflow: hidden;
+        }
+
+        .role-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+
+        .role-card.organizer:hover {
+            border-color: #90b494;
+        }
+
+        .role-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 1.5rem;
+        }
+
+        .role-icon.student {
+            background: linear-gradient(135deg, rgba(213, 189, 175, 0.2) 0%, rgba(201, 169, 153, 0.2) 100%);
+            color: var(--primary);
+        }
+
+        .role-icon.organizer {
+            background: linear-gradient(135deg, rgba(144, 180, 148, 0.2) 0%, rgba(122, 157, 126, 0.2) 100%);
+            color: #90b494;
+        }
+
+        .role-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .role-description {
+            color: #6b6b6b;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .role-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+
+        .role-features li {
+            padding: 0.5rem 0;
+            color: #6b6b6b;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .role-features li i {
+            color: #90b494;
+            font-size: 1.1rem;
+        }
+
+        .role-cta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .role-card.organizer .role-cta {
+            background: linear-gradient(135deg, #90b494 0%, #7a9d7e 100%);
+        }
+
+        .role-card:hover .role-cta {
+            transform: translateX(4px);
+        }
+
+        .role-cta i {
+            font-size: 1.25rem;
+        }
+
+        .instant-badge,
+        .approval-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .instant-badge {
+            background: linear-gradient(135deg, #90c695 0%, #7ab57f 100%);
+            color: white;
+        }
+
+        .approval-badge {
+            background: linear-gradient(135deg, #ffc107 0%, #e6b422 100%);
+            color: white;
+        }
+
+        @@media (max-width: 768px) {
+            .role-card {
+                padding: 2rem;
+            }
+
+            .role-icon {
+                width: 64px;
+                height: 64px;
+                font-size: 28px;
+            }
+
+            .role-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+}

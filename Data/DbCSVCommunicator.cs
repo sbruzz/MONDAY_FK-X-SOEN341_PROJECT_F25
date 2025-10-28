@@ -29,6 +29,26 @@ public class DbCSVCommunicator
         }
         **/
 
+        // Seed initial admin account if it doesn't exist
+        if (!_context.Users.Any(u => u.Email == "admin@campusevents.com"))
+        {
+            var adminPasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123");
+            _context.Users.Add(new User
+            {
+                Email = "admin@campusevents.com",
+                PasswordHash = adminPasswordHash,
+                Name = "System Administrator",
+                Role = UserRole.Admin,
+                ApprovalStatus = ApprovalStatus.Approved,
+                CreatedAt = DateTime.UtcNow
+            });
+            _context.SaveChanges();
+            Console.WriteLine("✅ Initial admin account created:");
+            Console.WriteLine("   Email: admin@campusevents.com");
+            Console.WriteLine("   Password: Admin@123");
+            Console.WriteLine("   ⚠️  IMPORTANT: Change this password after first login!");
+        }
+
         // Only add test users if they don't already exist (prevents duplicate key error)
         if (!_context.Users.Any(u => u.Id >= 501 && u.Id <= 510))
         {

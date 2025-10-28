@@ -144,6 +144,7 @@ else
                             @if (Model.IsSaved)
                             {
                                 <form method="post" asp-page-handler="UnsaveEvent">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
                                     <button type="submit" class="btn btn-outline-secondary w-100">
                                         <i class="bi bi-bookmark-fill"></i> Saved - Remove
                                     </button>
@@ -152,6 +153,7 @@ else
                             else
                             {
                                 <form method="post" asp-page-handler="SaveEvent">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
                                     <button type="submit" class="btn btn-outline-primary w-100">
                                         <i class="bi bi-bookmark"></i> Save for Later
                                     </button>
@@ -163,6 +165,7 @@ else
                             @if (Model.Event.Price == 0)
                             {
                                 <form method="post" asp-page-handler="ClaimTicket">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
                                     <button type="submit" class="btn btn-primary w-100 mb-2">
                                         <i class="bi bi-ticket"></i> Claim Free Ticket
                                     </button>
@@ -171,6 +174,7 @@ else
                             else
                             {
                                 <form method="post" asp-page-handler="ClaimTicket">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
                                     <button type="submit" class="btn btn-primary w-100 mb-2">
                                         <i class="bi bi-credit-card"></i> Buy Ticket ($@Model.Event.Price.ToString("F2"))
                                     </button>
@@ -182,6 +186,7 @@ else
                             @if (Model.IsSaved)
                             {
                                 <form method="post" asp-page-handler="UnsaveEvent">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
                                     <button type="submit" class="btn btn-outline-secondary w-100">
                                         <i class="bi bi-bookmark-fill"></i> Saved
                                     </button>
@@ -190,6 +195,7 @@ else
                             else
                             {
                                 <form method="post" asp-page-handler="SaveEvent">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
                                     <button type="submit" class="btn btn-outline-primary w-100">
                                         <i class="bi bi-bookmark"></i> Save Event
                                     </button>

@@ -129,4 +129,62 @@ public class UsersModel : PageModel
         IsSuccess = true;
         return RedirectToPage();
     }
+
+    public async Task<IActionResult> OnPostCreateAdminAsync(string name, string email, string password, string passwordConfirm)
+    {
+        // Validate inputs
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) ||
+            string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(passwordConfirm))
+        {
+            Message = "All fields are required.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        if (password != passwordConfirm)
+        {
+            Message = "Passwords do not match.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        if (password.Length < 8)
+        {
+            Message = "Password must be at least 8 characters long.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        // Check if email already exists
+        var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (existingUser != null)
+        {
+            Message = $"An account with email '{email}' already exists.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        // Create new admin user
+        var newAdmin = new User
+        {
+            Name = name,
+            Email = email,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+            Role = UserRole.Admin,
+            ApprovalStatus = ApprovalStatus.Approved,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.Users.Add(newAdmin);
+        await _context.SaveChangesAsync();
+
+        Console.WriteLine($"✅ New admin account created by admin panel:");
+        Console.WriteLine($"   Email: {email}");
+        Console.WriteLine($"   Name: {name}");
+        Console.WriteLine($"   Created at: {DateTime.UtcNow}");
+
+        Message = $"✅ Admin account for {name} has been created successfully!";
+        IsSuccess = true;
+        return RedirectToPage();
+    }
 }
