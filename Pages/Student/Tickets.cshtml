@@ -149,7 +149,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <button type="button" class="btn btn-outline-secondary btn-sm w-100"
-                                            onclick="downloadTicket(@ticket.Id)">
+                                            onclick="downloadTicket(event, @ticket.Id)">
                                         <i class="bi bi-download"></i> Download QR
                                     </button>
                                 </div>
@@ -164,17 +164,193 @@
 
 @section Scripts {
     <script>
-        function downloadTicket(ticketId) {
-            // Find the ticket card
-            const ticketCard = event.target.closest('.card');
-            const qrImage = ticketCard.querySelector('img[alt="Ticket QR Code"]');
-            const eventTitle = ticketCard.querySelector('.card-header h5').textContent;
+        function downloadTicket(event, ticketId) {
+            console.log('Download ticket clicked for ticket ID:', ticketId);
 
-            // Create download link
-            const link = document.createElement('a');
-            link.href = qrImage.src;
-            link.download = `ticket-${ticketId}-${eventTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`;
-            link.click();
+            try {
+                // Find the ticket card and extract details
+                const ticketCard = event.target.closest('.card');
+                console.log('Found ticket card:', ticketCard);
+
+                const qrImage = ticketCard.querySelector('img[alt="Ticket QR Code"]');
+                const eventTitle = ticketCard.querySelector('.card-header h5').textContent.trim();
+
+                // Extract event details from the card
+                const cardBody = ticketCard.querySelector('.card-body');
+                const eventDateText = cardBody.querySelector('strong').textContent;
+                const eventTimeText = cardBody.querySelector('.ms-4').textContent;
+                const eventLocation = cardBody.querySelectorAll('.mb-2')[1].textContent.trim();
+                const ticketIdText = cardBody.querySelector('p.small strong').parentElement.textContent.replace('Ticket ID:', '').trim();
+                const claimedText = cardBody.querySelectorAll('p.small')[1].textContent.replace('Claimed:', '').trim();
+
+                console.log('Event details extracted');
+
+                // Create canvas for the ticket
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                // Set canvas dimensions (width x height)
+                canvas.width = 800;
+                canvas.height = 1000;
+
+                // Background gradient
+                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                gradient.addColorStop(0, '#f5ebe0');
+                gradient.addColorStop(1, '#ffffff');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Header section with color
+                ctx.fillStyle = '#d5bdaf';
+                ctx.fillRect(0, 0, canvas.width, 120);
+
+                // Event title
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 32px Arial, sans-serif';
+                ctx.textAlign = 'center';
+                const titleLines = wrapText(ctx, eventTitle, canvas.width - 40, 40);
+                titleLines.forEach((line, index) => {
+                    ctx.fillText(line, canvas.width / 2, 50 + (index * 40));
+                });
+
+                // "EVENT TICKET" label
+                ctx.fillStyle = '#3d3d3d';
+                ctx.font = 'bold 24px Arial, sans-serif';
+                ctx.fillText('EVENT TICKET', canvas.width / 2, 170);
+
+                // Draw QR Code
+                const qrSize = 300;
+                const qrX = (canvas.width - qrSize) / 2;
+                const qrY = 210;
+
+                // Load and draw QR image
+                const img = new Image();
+                img.onload = function() {
+                    // Draw white background for QR
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+
+                    // Draw border
+                    ctx.strokeStyle = '#d5bdaf';
+                    ctx.lineWidth = 4;
+                    ctx.strokeRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+
+                    // Draw QR code
+                    ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
+
+                    // Event Details Section
+                    let yPos = qrY + qrSize + 40;
+                    ctx.textAlign = 'left';
+
+                    // Date & Time
+                    ctx.fillStyle = '#d5bdaf';
+                    ctx.font = 'bold 20px Arial, sans-serif';
+                    ctx.fillText('📅 DATE & TIME', 60, yPos);
+
+                    ctx.fillStyle = '#3d3d3d';
+                    ctx.font = '18px Arial, sans-serif';
+                    ctx.fillText(eventDateText, 60, yPos + 30);
+                    ctx.fillText(eventTimeText, 60, yPos + 55);
+
+                    // Location
+                    yPos += 100;
+                    ctx.fillStyle = '#d5bdaf';
+                    ctx.font = 'bold 20px Arial, sans-serif';
+                    ctx.fillText('📍 LOCATION', 60, yPos);
+
+                    ctx.fillStyle = '#3d3d3d';
+                    ctx.font = '18px Arial, sans-serif';
+                    const locationLines = wrapText(ctx, eventLocation, canvas.width - 120, 18);
+                    locationLines.forEach((line, index) => {
+                        ctx.fillText(line, 60, yPos + 30 + (index * 25));
+                    });
+
+                    // Ticket Information
+                    yPos += 80;
+                    ctx.fillStyle = '#d5bdaf';
+                    ctx.font = 'bold 20px Arial, sans-serif';
+                    ctx.fillText('🎫 TICKET INFORMATION', 60, yPos);
+
+                    ctx.fillStyle = '#3d3d3d';
+                    ctx.font = '16px Arial, sans-serif';
+                    ctx.fillText(`Ticket ID: ${ticketIdText}`, 60, yPos + 30);
+                    ctx.fillText(`Claimed: ${claimedText}`, 60, yPos + 55);
+
+                    // Important Information Box
+                    yPos += 100;
+
+                    // Draw box background
+                    ctx.fillStyle = '#fff3cd';
+                    ctx.fillRect(40, yPos - 15, canvas.width - 80, 150);
+                    ctx.strokeStyle = '#ffc107';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(40, yPos - 15, canvas.width - 80, 150);
+
+                    ctx.fillStyle = '#856404';
+                    ctx.font = 'bold 18px Arial, sans-serif';
+                    ctx.fillText('⚠️ IMPORTANT INFORMATION', 60, yPos + 10);
+
+                    ctx.font = '14px Arial, sans-serif';
+                    ctx.fillText('• Please arrive 15 minutes before the event start time', 60, yPos + 40);
+                    ctx.fillText('• Present this QR code at the entrance for check-in', 60, yPos + 60);
+                    ctx.fillText('• Tickets are non-refundable but exchangeable', 60, yPos + 80);
+                    ctx.fillText('• Contact the organizer for any changes or issues', 60, yPos + 100);
+
+                    // Footer
+                    yPos += 165;
+                    ctx.fillStyle = '#6b6b6b';
+                    ctx.font = '12px Arial, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Generated by CampusEvents Platform', canvas.width / 2, yPos);
+                    ctx.fillText(`Downloaded: ${new Date().toLocaleString()}`, canvas.width / 2, yPos + 20);
+
+                    // Convert canvas to blob and download
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `ticket-${ticketId}-${eventTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`;
+
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+
+                        URL.revokeObjectURL(url);
+                        console.log('Download triggered successfully!');
+                    });
+                };
+
+                img.onerror = function() {
+                    console.error('Failed to load QR code image');
+                    alert('Failed to load QR code image. Please try again.');
+                };
+
+                img.src = qrImage.src;
+
+            } catch (error) {
+                console.error('Error downloading ticket:', error);
+                alert('Error downloading QR code: ' + error.message);
+            }
+        }
+
+        // Helper function to wrap text
+        function wrapText(ctx, text, maxWidth, fontSize) {
+            const words = text.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                const word = words[i];
+                const width = ctx.measureText(currentLine + ' ' + word).width;
+                if (width < maxWidth) {
+                    currentLine += ' ' + word;
+                } else {
+                    lines.push(currentLine);
+                    currentLine = word;
+                }
+            }
+            lines.push(currentLine);
+            return lines;
         }
     </script>
 }

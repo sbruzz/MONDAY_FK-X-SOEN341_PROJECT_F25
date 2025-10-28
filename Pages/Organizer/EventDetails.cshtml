@@ -163,11 +163,15 @@ else
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
-                            <form method="post" asp-page-handler="ExportCSV">
-                                <button type="submit" class="btn btn-success w-100">
-                                    <i class="bi bi-download"></i> Export Attendee List (CSV)
+                            <form method="post" asp-page-handler="ExportCSV" id="exportForm">
+                                <input type="hidden" name="id" value="@Model.Event.Id" />
+                                <button type="submit" class="btn btn-success w-100" id="exportBtn">
+                                    <i class="bi bi-download"></i> <span id="exportText">Export Attendee List (CSV)</span>
                                 </button>
                             </form>
+                            <div id="exportNotification" class="alert alert-success mt-2" style="display: none;">
+                                <i class="bi bi-check-circle-fill"></i> CSV file is downloading! Check your browser's download bar or Downloads folder.
+                            </div>
 
                             @if (Model.Event.ApprovalStatus == ApprovalStatus.Approved)
                             {
@@ -176,7 +180,7 @@ else
                                 </a>
                             }
 
-                            <a href="/Student/EventDetails?id=@Model.Event.Id" class="btn btn-outline-secondary" target="_blank">
+                            <a href="/EventDetails?id=@Model.Event.Id" class="btn btn-outline-secondary" target="_blank">
                                 <i class="bi bi-eye"></i> View Public Page
                             </a>
                         </div>
@@ -272,4 +276,44 @@ else
             </div>
         </div>
     </div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const exportForm = document.getElementById('exportForm');
+            const exportBtn = document.getElementById('exportBtn');
+            const exportText = document.getElementById('exportText');
+            const notification = document.getElementById('exportNotification');
+
+            if (exportForm) {
+                exportForm.addEventListener('submit', function(e) {
+                    console.log('Export CSV form submitted');
+
+                    // Show loading state
+                    exportBtn.disabled = true;
+                    exportText.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Generating CSV...';
+
+                    // Show notification after a short delay (to allow file download to start)
+                    setTimeout(function() {
+                        notification.style.display = 'block';
+
+                        // Scroll to notification
+                        notification.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                        // Reset button after 2 seconds
+                        setTimeout(function() {
+                            exportBtn.disabled = false;
+                            exportText.textContent = 'Export Attendee List (CSV)';
+
+                            // Hide notification after 5 seconds
+                            setTimeout(function() {
+                                notification.style.display = 'none';
+                            }, 5000);
+                        }, 2000);
+                    }, 500);
+                });
+            }
+        });
+    </script>
 }

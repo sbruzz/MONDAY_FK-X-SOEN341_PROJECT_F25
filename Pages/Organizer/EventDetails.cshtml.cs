@@ -89,11 +89,11 @@ namespace CampusEvents.Pages.Organizer
                 .OrderBy(t => t.ClaimedAt)
                 .ToListAsync();
 
-            // Generate CSV content
+            // Generate CSV content with UTF-8 BOM for better Excel compatibility
             var csv = new StringBuilder();
 
-            // CSV Header
-            csv.AppendLine("Ticket ID,User Name,Email,Claimed At,Redeemed,Redeemed At,Unique Code");
+            // CSV Header - using shorter date format to prevent ##### in Excel
+            csv.AppendLine("Ticket ID,User Name,Email,Claimed Date,Claimed Time,Redeemed,Redeemed Date,Redeemed Time,Unique Code");
 
             // CSV Rows
             foreach (var ticket in tickets)
@@ -101,17 +101,24 @@ namespace CampusEvents.Pages.Organizer
                 csv.AppendLine($"{ticket.Id}," +
                               $"\"{ticket.User.Name}\"," +
                               $"\"{ticket.User.Email}\"," +
-                              $"\"{ticket.ClaimedAt.ToString("yyyy-MM-dd HH:mm:ss")}\"," +
+                              $"{ticket.ClaimedAt.ToString("yyyy-MM-dd")}," +
+                              $"{ticket.ClaimedAt.ToString("HH:mm")}," +
                               $"{(ticket.IsRedeemed ? "Yes" : "No")}," +
-                              $"\"{(ticket.RedeemedAt.HasValue ? ticket.RedeemedAt.Value.ToString("yyyy-MM-dd HH:mm:ss") : "N/A")}\"," +
+                              $"{(ticket.RedeemedAt.HasValue ? ticket.RedeemedAt.Value.ToString("yyyy-MM-dd") : "")}," +
+                              $"{(ticket.RedeemedAt.HasValue ? ticket.RedeemedAt.Value.ToString("HH:mm") : "")}," +
                               $"\"{ticket.UniqueCode}\"");
             }
 
-            // Return CSV file
-            var bytes = Encoding.UTF8.GetBytes(csv.ToString());
-            var fileName = $"{eventData.Title.Replace(" ", "_")}_Attendees_{DateTime.Now:yyyyMMdd}.csv";
+            // Add UTF-8 BOM for Excel compatibility
+            var preamble = Encoding.UTF8.GetPreamble();
+            var csvBytes = Encoding.UTF8.GetBytes(csv.ToString());
+            var bytesWithBOM = new byte[preamble.Length + csvBytes.Length];
+            Buffer.BlockCopy(preamble, 0, bytesWithBOM, 0, preamble.Length);
+            Buffer.BlockCopy(csvBytes, 0, bytesWithBOM, preamble.Length, csvBytes.Length);
 
-            return File(bytes, "text/csv", fileName);
+            var fileName = $"{eventData.Title.Replace(" ", "_")}_Attendees_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+
+            return File(bytesWithBOM, "text/csv", fileName);
         }
     }
 }
