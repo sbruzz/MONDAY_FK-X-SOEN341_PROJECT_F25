@@ -20,14 +20,6 @@ public class DbCSVCommunicator
     public void Test()
     {
         Console.WriteLine("DbMainTest Launched");
-        /**
-        Ticket[] tickets = GenerateTickets();
-
-        for (int i = 0; i < tickets.Length; i++)
-        {
-            addTicketIntoDb(tickets[i]);
-        }
-        **/
 
         // Seed initial admin account if it doesn't exist
         if (!_context.Users.Any(u => u.Email == "admin@campusevents.com"))
@@ -70,14 +62,25 @@ public class DbCSVCommunicator
             Console.WriteLine("Test users already exist in database, skipping seed.");
         }
 
-        extractToCSV(533);
+        extractToCSV(1);
         Console.WriteLine("DbMainTest Finished");
     }
 
-    private void addTicketIntoDb(Ticket ticket)
+    public static void clearDatabase()
     {
-        _context.Tickets.Add(ticket);
-        _context.SaveChanges();
+        using var Connection = new SqliteConnection(DatabaseLocation);
+        Connection.Open();
+        using var command = Connection.CreateCommand();
+        command.CommandText = "DELETE FROM Tickets";
+        command.ExecuteNonQuery();
+        command.CommandText = "DELETE FROM Events";
+        command.ExecuteNonQuery();
+        command.CommandText = "DELETE FROM Organizations";
+        command.ExecuteNonQuery();
+        command.CommandText = "DELETE FROM Users";
+        command.ExecuteNonQuery();
+        command.CommandText = "DELETE FROM SavedEvents";
+        command.ExecuteNonQuery();
     }
 
     public static void extractToCSV(int EventId)
@@ -106,13 +109,9 @@ public class DbCSVCommunicator
             {
                 while (Reader.Read())
                 {
-                    DataForCSV = DataForCSV + ",";
-                }
-            }
 
-            if (DataForCSV.Length > 0)
-            {
-                DataForCSV = DataForCSV.Remove(DataForCSV.Length - 1);
+                    DataForCSV = DataForCSV + "," + Reader.GetInt64(0);
+                }
             }
         }
         catch (SqliteException e)
@@ -120,37 +119,18 @@ public class DbCSVCommunicator
             Console.WriteLine(e.Message);
         }
 
+        if (DataForCSV.Length > 0)
+        {
+            DataForCSV = DataForCSV.Remove(0, 1);
+        }
+        ;
+
         string CSVFilePath = EventId + ".csv";
 
         using (StreamWriter writer = new StreamWriter(CSVFilePath))
         {
             writer.Write(DataForCSV);
         }
-
-    }
-
-
-    public static Ticket[] GenerateTickets()
-    {
-
-        Ticket[] ticketList = new Ticket[10];
-
-        for (int i = 1; i <= 10; i++)
-        {
-            var ticket = new Ticket
-            {
-                Id = i,
-                EventId = i % 2 == 0 ? 32452 : 533, 
-                UserId = i, 
-                UniqueCode = Guid.NewGuid().ToString(), 
-                QrCodeImage = null,
-                ClaimedAt = DateTime.UtcNow,
-                RedeemedAt = null,
-                IsRedeemed = false,
-            };
-            ticketList[i-1] = ticket;
-        }
-        return ticketList;
 
     }
     
