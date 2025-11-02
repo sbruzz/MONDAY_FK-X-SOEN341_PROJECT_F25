@@ -4,22 +4,242 @@
     ViewData["Title"] = "About Us";
 }
 
-<div style="padding: 100px 5%; max-width: 1400px; margin: 0 auto;">
-    <h1 style="font-size: 3rem; font-weight: 800; color: #3d3d3d; margin-bottom: 2rem;">About Us</h1>
+<style>
+    :root {
+        --primary: #d5bdaf;
+        --primary-dark: #c9a999;
+        --bg: #f5ebe0;
+        --card-bg: #ffffff;
+        --text: #3d3d3d;
+        --text-light: #6b6b6b;
+        --border: #e3d5ca;
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">Our Mission</h2>
-    </section>
+    body {
+        background: linear-gradient(135deg, #f5ebe0 0%, #e3d5ca 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">Our Story</h2>
-    </section>
+    .about-container {
+        padding: 100px 5%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">Our Team</h2>
-    </section>
+    .hero-section {
+        text-align: center;
+        margin-bottom: 5rem;
+    }
 
-    <section style="margin-bottom: 4rem;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #3d3d3d; margin-bottom: 1rem;">Our Values</h2>
-    </section>
+    .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-section p {
+        font-size: 1.25rem;
+        color: var(--text-light);
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.8;
+    }
+
+    .section {
+        background: var(--card-bg);
+        border-radius: 24px;
+        padding: 3rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    .section h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 1.5rem;
+    }
+
+    .section p {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        line-height: 1.8;
+        margin-bottom: 1rem;
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .team-member {
+        background: var(--bg);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border);
+    }
+
+    .team-member:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .team-member h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+    }
+
+    .team-member p {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .tech-badge {
+        background: var(--primary);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        box-shadow: 0 4px 12px rgba(213, 189, 175, 0.3);
+    }
+
+    .cta-box {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: 24px;
+        padding: 3rem;
+        text-align: center;
+        color: white;
+        margin-top: 4rem;
+    }
+
+    .cta-box h2 {
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .cta-box p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+
+    .btn-light {
+        background: white;
+        color: var(--primary);
+        border: none;
+        padding: 1rem 2.5rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-light:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        color: var(--primary-dark);
+    }
+</style>
+
+<div class="about-container">
+    <div class="hero-section">
+        <h1>About Campus Events</h1>
+        <p>Connecting students with amazing campus experiences through seamless event discovery and ticketing.</p>
+    </div>
+
+    <div class="section">
+        <h2>Our Mission</h2>
+        <p>Campus Events was created to solve a fundamental challenge at Concordia University: students often miss out on incredible campus events simply because they don't know they exist. Our mission is to create a centralized, user-friendly platform that brings together all campus events in one place.</p>
+        <p>We believe that campus life should be vibrant, accessible, and inclusive. By streamlining event discovery and ticket management, we help students make the most of their university experience while supporting organizers in reaching their target audiences effectively.</p>
+    </div>
+
+    <div class="section">
+        <h2>What We Do</h2>
+        <p><strong>For Students:</strong> Browse upcoming events, filter by interests, claim tickets instantly, and receive QR codes for seamless check-in. Build your personal event calendar and never miss what matters to you.</p>
+        <p><strong>For Organizers:</strong> Create and manage events with ease, track attendance in real-time, export attendee lists, and gain insights through comprehensive analytics dashboards.</p>
+        <p><strong>For Administrators:</strong> Oversee the entire platform, approve new organizers, moderate events, manage organizations, and access system-wide analytics.</p>
+    </div>
+
+    <div class="section">
+        <h2>Our Story</h2>
+        <p>This project was born in the Fall 2025 semester as part of the SOEN 341 Software Process course. A team of passionate computer science students came together with a shared vision: to transform how the Concordia community discovers and engages with campus events.</p>
+        <p>Using Agile Scrum methodology across four sprints, we built this middle-fidelity prototype from the ground up. Every feature, every line of code, represents our commitment to creating technology that genuinely improves student life.</p>
+    </div>
+
+    <div class="section">
+        <h2>Our Team</h2>
+        <div class="team-grid">
+            <div class="team-member">
+                <h3>Sana Asgharpour</h3>
+                <p>Student ID: 40244364</p>
+            </div>
+            <div class="team-member">
+                <h3>Salvatore Bruzzese</h3>
+                <p>Student ID: 40112201</p>
+            </div>
+            <div class="team-member">
+                <h3>Souleymane Camara</h3>
+                <p>Student ID: 40183807</p>
+            </div>
+            <div class="team-member">
+                <h3>Dmitrii Cazacu</h3>
+                <p>Student ID: 40314501</p>
+            </div>
+            <div class="team-member">
+                <h3>Abed-Elmouhsen Cherkawi</h3>
+                <p>Student ID: 40323359</p>
+            </div>
+            <div class="team-member">
+                <h3>Jack Di Spirito</h3>
+                <p>Student ID: 40287812</p>
+            </div>
+            <div class="team-member">
+                <h3>Kevin Ung</h3>
+                <p>Student ID: 40259218</p>
+            </div>
+            <div class="team-member">
+                <h3>Nand Patel</h3>
+                <p>Student ID: 40294756</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Built With Modern Technology</h2>
+        <p>Our platform leverages industry-standard technologies to deliver a fast, secure, and reliable experience.</p>
+        <div class="tech-stack">
+            <span class="tech-badge">ASP.NET Core 9.0</span>
+            <span class="tech-badge">Razor Pages</span>
+            <span class="tech-badge">Entity Framework Core</span>
+            <span class="tech-badge">SQLite</span>
+            <span class="tech-badge">QRCoder Library</span>
+            <span class="tech-badge">BCrypt.Net</span>
+            <span class="tech-badge">Bootstrap 5</span>
+        </div>
+    </div>
+
+    <div class="cta-box">
+        <h2>Join the Campus Events Community</h2>
+        <p>Whether you're a student looking for your next adventure or an organizer ready to make an impact, we're here for you.</p>
+        <a href="/Index" class="btn-light">Get Started</a>
+    </div>
 </div>

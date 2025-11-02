@@ -56,12 +56,6 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Ticket>()
             .HasIndex(t => t.UniqueCode)
             .IsUnique();
-
-        // Seed some initial data
-        modelBuilder.Entity<Organization>().HasData(
-            new Organization { Id = 1, Name = "Student Union", Description = "Official student union organization", CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-            new Organization { Id = 2, Name = "Computer Science Association", Description = "CS student group", CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-            new Organization { Id = 3, Name = "Athletics Department", Description = "Campus athletics and sports", CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
-        );
     }
+    
 }

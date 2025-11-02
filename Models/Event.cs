@@ -20,7 +20,7 @@ public class Event
     public required string Category { get; set; }
     public int OrganizerId { get; set; }
     public int? OrganizationId { get; set; }
-    public bool IsApproved { get; set; } = false;
+    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation properties

@@ -1,0 +1,262 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using CampusEvents.Data;
+using CampusEvents.Models;
+using QRCoder;
+
+namespace CampusEvents.Pages.Student
+{
+    public class EventDetailsModel : PageModel
+    {
+        private readonly AppDbContext _context;
+        private readonly ILogger<EventDetailsModel> _logger;
+
+        public EventDetailsModel(AppDbContext context, ILogger<EventDetailsModel> logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
+
+        public Event? Event { get; set; }
+        public bool HasTicket { get; set; }
+        public bool IsSaved { get; set; }
+
+        [TempData]
+        public string? Message { get; set; }
+
+        [TempData]
+        public bool IsSuccess { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToPage("/Login");
+            }
+
+            // Load event with related data
+            Event = await _context.Events
+                .Include(e => e.Organization)
+                .Include(e => e.Organizer)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (Event == null)
+            {
+                return Page();
+            }
+
+            // Check if user has ticket
+            HasTicket = await _context.Tickets
+                .AnyAsync(t => t.EventId == id && t.UserId == userId.Value);
+
+            // Check if event is saved
+            IsSaved = await _context.SavedEvents
+                .AnyAsync(se => se.EventId == id && se.UserId == userId.Value);
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostClaimTicketAsync(int id)
+        {
+            _logger.LogInformation("========== CLAIM TICKET STARTED ==========");
+            _logger.LogInformation("Event ID parameter received: {EventId}", id);
+            Console.WriteLine($"========== CLAIM TICKET STARTED ==========");
+            Console.WriteLine($"Event ID parameter received: {id}");
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+            _logger.LogInformation("User ID from session: {UserId}", userId);
+            Console.WriteLine($"User ID from session: {userId}");
+
+            if (userId == null)
+            {
+                _logger.LogWarning("User not logged in, redirecting to login");
+                Console.WriteLine("User not logged in, redirecting to login");
+                return RedirectToPage("/Login");
+            }
+
+            // Reload event
+            _logger.LogInformation("Loading event with ID: {EventId}", id);
+            Console.WriteLine($"Loading event with ID: {id}");
+
+            Event = await _context.Events
+                .Include(e => e.Organization)
+                .Include(e => e.Organizer)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (Event == null)
+            {
+                _logger.LogError("Event not found with ID: {EventId}", id);
+                Console.WriteLine($"ERROR: Event not found with ID: {id}");
+                Message = "Event not found.";
+                IsSuccess = false;
+                return RedirectToPage(new { id });
+            }
+
+            _logger.LogInformation("Event found: {EventTitle}, Capacity: {Capacity}, Tickets Issued: {TicketsIssued}, Price: {Price}",
+                Event.Title, Event.Capacity, Event.TicketsIssued, Event.Price);
+            Console.WriteLine($"Event found: {Event.Title}, Capacity: {Event.Capacity}, Tickets Issued: {Event.TicketsIssued}, Price: {Event.Price}");
+
+            // Check if user already has a ticket
+            _logger.LogInformation("Checking if user {UserId} already has ticket for event {EventId}", userId.Value, id);
+            Console.WriteLine($"Checking if user {userId.Value} already has ticket for event {id}");
+
+            var existingTicket = await _context.Tickets
+                .FirstOrDefaultAsync(t => t.EventId == id && t.UserId == userId.Value);
+
+            if (existingTicket != null)
+            {
+                _logger.LogWarning("User {UserId} already has ticket for event {EventId}", userId.Value, id);
+                Console.WriteLine($"WARNING: User {userId.Value} already has ticket for event {id}");
+                Message = "You already have a ticket for this event!";
+                IsSuccess = false;
+                return RedirectToPage(new { id });
+            }
+
+            _logger.LogInformation("User does not have existing ticket");
+            Console.WriteLine("User does not have existing ticket");
+
+            // Check capacity
+            _logger.LogInformation("Checking capacity: {TicketsIssued}/{Capacity}", Event.TicketsIssued, Event.Capacity);
+            Console.WriteLine($"Checking capacity: {Event.TicketsIssued}/{Event.Capacity}");
+
+            if (Event.TicketsIssued >= Event.Capacity)
+            {
+                _logger.LogWarning("Event {EventId} is full", id);
+                Console.WriteLine($"WARNING: Event {id} is full");
+                Message = "Sorry, this event is full.";
+                IsSuccess = false;
+                return RedirectToPage(new { id });
+            }
+
+            // Generate unique code for ticket
+            var uniqueCode = Guid.NewGuid().ToString();
+            _logger.LogInformation("Generated unique ticket code: {UniqueCode}", uniqueCode);
+            Console.WriteLine($"Generated unique ticket code: {uniqueCode}");
+
+            // Generate QR Code
+            _logger.LogInformation("Generating QR code...");
+            Console.WriteLine("Generating QR code...");
+            string qrCodeBase64 = GenerateQRCode(uniqueCode);
+            _logger.LogInformation("QR code generated, length: {Length} characters", qrCodeBase64.Length);
+            Console.WriteLine($"QR code generated, length: {qrCodeBase64.Length} characters");
+
+            // Create ticket
+            _logger.LogInformation("Creating ticket object...");
+            Console.WriteLine("Creating ticket object...");
+            var ticket = new Ticket
+            {
+                EventId = id,
+                UserId = userId.Value,
+                UniqueCode = uniqueCode,
+                QrCodeImage = qrCodeBase64,
+                ClaimedAt = DateTime.UtcNow,
+                IsRedeemed = false
+            };
+
+            _logger.LogInformation("Adding ticket to database context...");
+            Console.WriteLine("Adding ticket to database context...");
+            _context.Tickets.Add(ticket);
+
+            // Update event tickets issued count
+            Event.TicketsIssued++;
+            _logger.LogInformation("Incremented tickets issued count to: {TicketsIssued}", Event.TicketsIssued);
+            Console.WriteLine($"Incremented tickets issued count to: {Event.TicketsIssued}");
+
+            try
+            {
+                _logger.LogInformation("Saving changes to database...");
+                Console.WriteLine("Saving changes to database...");
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Database save successful!");
+                Console.WriteLine("Database save successful!");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ERROR saving to database: {Message}", ex.Message);
+                Console.WriteLine($"ERROR saving to database: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                throw;
+            }
+
+            Message = Event.Price == 0
+                ? "Ticket claimed successfully!"
+                : $"Ticket purchased successfully! (Mock payment of ${Event.Price:F2} processed)";
+            IsSuccess = true;
+
+            _logger.LogInformation("Ticket claim SUCCESS! Message: {Message}", Message);
+            Console.WriteLine($"Ticket claim SUCCESS! Message: {Message}");
+            _logger.LogInformation("========== CLAIM TICKET COMPLETED ==========");
+            Console.WriteLine("========== CLAIM TICKET COMPLETED ==========");
+
+            return RedirectToPage(new { id });
+        }
+
+        public async Task<IActionResult> OnPostSaveEventAsync(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToPage("/Login");
+            }
+
+            var existingSave = await _context.SavedEvents
+                .FirstOrDefaultAsync(se => se.UserId == userId.Value && se.EventId == id);
+
+            if (existingSave == null)
+            {
+                var savedEvent = new SavedEvent
+                {
+                    UserId = userId.Value,
+                    EventId = id,
+                    SavedAt = DateTime.UtcNow
+                };
+
+                _context.SavedEvents.Add(savedEvent);
+                await _context.SaveChangesAsync();
+
+                Message = "Event saved to your calendar!";
+                IsSuccess = true;
+            }
+
+            return RedirectToPage(new { id });
+        }
+
+        public async Task<IActionResult> OnPostUnsaveEventAsync(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToPage("/Login");
+            }
+
+            var savedEvent = await _context.SavedEvents
+                .FirstOrDefaultAsync(se => se.UserId == userId.Value && se.EventId == id);
+
+            if (savedEvent != null)
+            {
+                _context.SavedEvents.Remove(savedEvent);
+                await _context.SaveChangesAsync();
+
+                Message = "Event removed from your calendar.";
+                IsSuccess = true;
+            }
+
+            return RedirectToPage(new { id });
+        }
+
+        private string GenerateQRCode(string text)
+        {
+            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            {
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(text, QRCodeGenerator.ECCLevel.Q);
+                using (BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData))
+                {
+                    byte[] qrCodeBytes = qrCode.GetGraphic(20);
+                    return Convert.ToBase64String(qrCodeBytes);
+                }
+            }
+        }
+    }
+}

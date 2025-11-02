@@ -1,0 +1,200 @@
+@page
+@model CampusEvents.Pages.Student.EventsModel
+@{
+    ViewData["Title"] = "Browse Events";
+    Layout = "_StudentLayout";
+}
+
+<div class="container mt-4 content-container">
+    <div class="row mb-4">
+        <div class="col page-header">
+            <h1 class="display-4">Discover Campus Events</h1>
+            <p class="lead">Find and attend amazing events happening on campus</p>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="card mb-4 filter-card">
+        <div class="card-header filter-card-header">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filter Events</h5>
+        </div>
+        <div class="card-body filter-card-body">
+            <form method="get" id="filterForm">
+                <div class="row g-3">
+                    <!-- Search -->
+                    <div class="col-md-4">
+                        <label for="searchTerm" class="form-label">Search</label>
+                        <input type="text" class="custom-input" id="searchTerm" name="searchTerm"
+                               value="@Model.SearchTerm" placeholder="Search events...">
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="col-md-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="custom-select" id="category" name="category">
+                            <option value="">All Categories</option>
+                            <option value="Academic" selected="@(Model.Category == "Academic")">Academic</option>
+                            <option value="Social" selected="@(Model.Category == "Social")">Social</option>
+                            <option value="Sports" selected="@(Model.Category == "Sports")">Sports</option>
+                            <option value="Cultural" selected="@(Model.Category == "Cultural")">Cultural</option>
+                            <option value="Career" selected="@(Model.Category == "Career")">Career</option>
+                            <option value="Workshop" selected="@(Model.Category == "Workshop")">Workshop</option>
+                            <option value="Other" selected="@(Model.Category == "Other")">Other</option>
+                        </select>
+                    </div>
+
+                    <!-- Organization Filter -->
+                    <div class="col-md-3">
+                        <label for="organization" class="form-label">Organization</label>
+                        <select class="custom-select" id="organization" name="organization">
+                            <option value="">All Organizations</option>
+                            @foreach (var org in Model.Organizations)
+                            {
+                                <option value="@org.Id" selected="@(Model.OrganizationId == org.Id)">@org.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Date Filter -->
+                    <div class="col-md-2">
+                        <label for="dateFilter" class="form-label">Date</label>
+                        <select class="custom-select" id="dateFilter" name="dateFilter">
+                            <option value="all" selected="@(Model.DateFilter == "all")">All Dates</option>
+                            <option value="today" selected="@(Model.DateFilter == "today")">Today</option>
+                            <option value="week" selected="@(Model.DateFilter == "week")">This Week</option>
+                            <option value="month" selected="@(Model.DateFilter == "month")">This Month</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="bi bi-search"></i> Apply Filters
+                        </button>
+                        <a href="/Student/Events" class="btn btn-outline-custom">
+                            <i class="bi bi-x-circle"></i> Clear Filters
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Summary -->
+    <div class="row mb-3">
+        <div class="col">
+            <p class="results-summary">
+                Found <strong>@Model.Events.Count</strong> event(s)
+                @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.Category) || Model.OrganizationId.HasValue || Model.DateFilter != "all")
+                {
+                    <span>matching your filters</span>
+                }
+            </p>
+        </div>
+    </div>
+
+    <!-- Events List -->
+    @if (Model.Events.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var evt in Model.Events)
+            {
+                <div class="col">
+                    <div class="card h-100 event-card">
+                        <div class="card-header">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar-event"></i> @evt.EventDate.ToString("MMM dd, yyyy")
+                                <span class="float-end">
+                                    <i class="bi bi-clock"></i> @evt.EventDate.ToString("h:mm tt")
+                                </span>
+                            </small>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@evt.Title</h5>
+
+                            <!-- Event Category Badge -->
+                            <span class="badge-category mb-2">@evt.Category</span>
+
+                            <!-- Organization -->
+                            @if (evt.Organization != null)
+                            {
+                                <p class="text-muted small mb-2">
+                                    <i class="bi bi-building"></i> @evt.Organization.Name
+                                </p>
+                            }
+
+                            <!-- Description Preview -->
+                            <p class="card-text text-truncate-3">@evt.Description</p>
+
+                            <!-- Location -->
+                            <p class="small text-muted mb-2">
+                                <i class="bi bi-geo-alt"></i> @evt.Location
+                            </p>
+
+                            <!-- Capacity Info -->
+                            <div class="progress mb-2" style="height: 5px;">
+                                @{
+                                    var percentFull = evt.Capacity > 0 ? (evt.TicketsIssued * 100.0 / evt.Capacity) : 0;
+                                }
+                                <div class="progress-bar @(percentFull >= 90 ? "bg-danger" : percentFull >= 70 ? "bg-warning" : "bg-success")"
+                                     style="width: @percentFull%"></div>
+                            </div>
+                            <small class="text-muted">
+                                @evt.TicketsIssued / @evt.Capacity tickets claimed
+                            </small>
+
+                            <!-- Price -->
+                            <p class="mt-2 mb-0">
+                                @if (evt.Price == 0)
+                                {
+                                    <span class="badge-free">FREE</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-price">$@evt.Price.ToString("F2")</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-grid gap-2">
+                                <a href="/Student/EventDetails?id=@evt.Id" class="btn btn-card-primary">
+                                    <i class="bi bi-info-circle"></i> View Details
+                                </a>
+                                @if (Model.SavedEventIds.Contains(evt.Id))
+                                {
+                                    <form method="post" asp-page-handler="UnsaveEvent" class="d-inline">
+                                        <input type="hidden" name="eventId" value="@evt.Id" />
+                                        <button type="submit" class="btn btn-card-outline saved w-100">
+                                            <i class="bi bi-bookmark-fill"></i> Saved
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" asp-page-handler="SaveEvent" class="d-inline">
+                                        <input type="hidden" name="eventId" value="@evt.Id" />
+                                        <button type="submit" class="btn btn-card-outline w-100">
+                                            <i class="bi bi-bookmark"></i> Save Event
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="no-results-alert">
+            <h5><i class="bi bi-info-circle"></i> No events found</h5>
+            <p class="mb-0">Try adjusting your filters or check back later for new events.</p>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/student-events.css" asp-append-version="true" />
+}

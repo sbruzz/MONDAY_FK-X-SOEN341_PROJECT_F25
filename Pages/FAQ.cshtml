@@ -1,0 +1,407 @@
+@page
+@model FAQModel
+@{
+    ViewData["Title"] = "FAQ";
+}
+
+<style>
+    :root {
+        --primary: #d5bdaf;
+        --primary-dark: #c9a999;
+        --bg: #f5ebe0;
+        --card-bg: #ffffff;
+        --text: #3d3d3d;
+        --text-light: #6b6b6b;
+        --border: #e3d5ca;
+    }
+
+    body {
+        background: linear-gradient(135deg, #f5ebe0 0%, #e3d5ca 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .faq-container {
+        padding: 100px 5%;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .hero-section {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 1rem;
+    }
+
+    .hero-section p {
+        font-size: 1.25rem;
+        color: var(--text-light);
+    }
+
+    .faq-category {
+        margin-bottom: 3rem;
+    }
+
+    .category-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 1.5rem;
+        padding-left: 1rem;
+        border-left: 4px solid var(--primary);
+    }
+
+    .faq-item {
+        background: var(--card-bg);
+        border-radius: 20px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .faq-item:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .faq-question {
+        padding: 1.5rem 2rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        user-select: none;
+    }
+
+    .faq-question h3 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0;
+        flex: 1;
+    }
+
+    .faq-icon {
+        width: 24px;
+        height: 24px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        transition: transform 0.3s ease;
+        flex-shrink: 0;
+        margin-left: 1rem;
+    }
+
+    .faq-item.active .faq-icon {
+        transform: rotate(45deg);
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .faq-answer-content {
+        padding: 0 2rem 1.5rem 2rem;
+        color: var(--text-light);
+        line-height: 1.8;
+        font-size: 1rem;
+    }
+
+    .faq-item.active .faq-answer {
+        max-height: 500px;
+    }
+
+    .contact-box {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: 24px;
+        padding: 3rem;
+        text-align: center;
+        color: white;
+        margin-top: 4rem;
+    }
+
+    .contact-box h2 {
+        color: white;
+        margin-bottom: 1rem;
+        font-size: 2rem;
+    }
+
+    .contact-box p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+
+    .contact-box a {
+        color: white;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    .contact-box a:hover {
+        opacity: 0.8;
+    }
+</style>
+
+<div class="faq-container">
+    <div class="hero-section">
+        <h1>Frequently Asked Questions</h1>
+        <p>Find answers to common questions about Campus Events</p>
+    </div>
+
+    <div class="faq-category">
+        <h2 class="category-title">For Students</h2>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>How do I create an account?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Click "Sign Up" on the homepage and select "Student Account". Fill in your basic information (name, email, password) and student details (ID, program, year of study). Student accounts are approved instantly, and you'll be logged in automatically!
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>How do I claim tickets for an event?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Browse events on your student dashboard, click on an event you're interested in, and click the "Claim Ticket" button. You'll receive a unique QR code that serves as your ticket. Save it to your device or take a screenshot!
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>Can I save events to attend later?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Yes! Click the bookmark icon on any event card to save it to your "Saved Events" list. You can access your saved events anytime from your student dashboard and claim tickets when you're ready.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>How do I use my QR code ticket?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    When you arrive at the event, simply show your QR code to the event organizer. They'll scan it with their device to validate your ticket and mark you as attended. Make sure your screen brightness is high enough for easy scanning!
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>Can I cancel my ticket?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Currently, tickets cannot be cancelled once claimed. However, if you don't attend the event, your ticket simply won't be scanned. Please only claim tickets for events you plan to attend to help organizers plan accordingly.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="faq-category">
+        <h2 class="category-title">For Organizers</h2>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>How do I become an event organizer?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Click "Sign Up" and select "Organizer Account". You'll need to provide your contact information, select or create an organization, and enter your position and department. Organizer accounts require admin approval for security, so please allow 1-2 business days for review.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>How do I create a new event?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Once your organizer account is approved, log in and navigate to your dashboard. Click "Create Event" and fill in the event details including title, description, date, time, location, capacity, and category. Your event will appear on the student discovery page immediately.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>How do I track attendance at my event?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Use the built-in QR scanner on your organizer dashboard. When students arrive, scan their QR code tickets to mark them as attended. You can view real-time attendance numbers and export the full attendee list as a CSV file for your records.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>Can I see analytics for my events?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Absolutely! Each event has its own analytics dashboard showing tickets issued, actual attendance, capacity utilization, and participation trends over time. These insights help you understand your audience and plan better future events.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>Can I edit or cancel an event after creating it?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Yes, you can edit event details from your organizer dashboard at any time. If you need to cancel an event, please contact an administrator who can help you remove it and notify students who have claimed tickets.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="faq-category">
+        <h2 class="category-title">For Administrators</h2>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>How do I approve new organizers?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Log in to your admin account and navigate to the Users page. You'll see all pending organizer accounts. Review their information, verify their organization affiliation, and click "Approve" or "Reject". Approved organizers can log in immediately.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>Can I edit user information?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Yes, administrators have full access to edit any user's information including name, email, role, approval status, and role-specific details (student ID, organization, etc.). Click the "Edit" button next to any user on the Users page.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>How do I manage organizations?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Navigate to the Organizations page in your admin dashboard. You can view all campus organizations, create new ones, edit existing organization details, or remove organizations that are no longer active. Be careful when deleting organizations that have associated organizers or events.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>Can I see system-wide analytics?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Yes! The admin dashboard shows comprehensive analytics including total users, events, tickets issued, overall attendance rates, and trends across all organizations. Use these insights to monitor platform health and identify popular event types.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="faq-category">
+        <h2 class="category-title">Technical & Security</h2>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>Is my personal information secure?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Yes! We use industry-standard BCrypt encryption for password storage, meaning even administrators cannot see your password. Your personal information is stored securely in our database and is only accessible to authorized administrators for support purposes.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>What browsers are supported?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Campus Events works best on modern browsers including Chrome, Firefox, Safari, and Edge. We recommend keeping your browser up to date for the best experience and security. The platform is also mobile-friendly and works on smartphones and tablets.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>Do you use cookies?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    We use session cookies to keep you logged in and ensure a smooth experience as you navigate the platform. These cookies are essential for the platform to function and do not track you across other websites. See our Privacy Policy for more details.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <h3>I forgot my password. What do I do?</h3>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    Please contact a system administrator who can help reset your password. For security reasons, we currently don't have a self-service password reset feature, but this may be added in future updates.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-box">
+        <h2>Still Have Questions?</h2>
+        <p>Can't find what you're looking for? Contact our support team at <a href="mailto:support@campusevents.com">support@campusevents.com</a></p>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function toggleFaq(element) {
+        element.classList.toggle('active');
+    }
+</script>
+}

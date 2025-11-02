@@ -1,0 +1,142 @@
+@page
+@model EventsModel
+@{
+    ViewData["Title"] = "Browse Events";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/events.css" asp-append-version="true" />
+}
+
+<!-- Main Content -->
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Discover Campus Events</h1>
+        <p class="hero-subtitle">Explore amazing events happening at Concordia University</p>
+    </div>
+</div>
+
+<form method="get" class="filters-section">
+    <div class="filters-grid">
+        <div class="filter-group">
+            <label class="filter-label">Search Events</label>
+            <input type="text" name="SearchTerm" value="@Model.SearchTerm"
+                   class="filter-input" placeholder="Search by title, description, or location...">
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Category</label>
+            <select name="Category" class="filter-input">
+                <option value="All" selected="@(string.IsNullOrEmpty(Model.Category) || Model.Category == "All")">All Categories</option>
+                <option value="Academic" selected="@(Model.Category == "Academic")">Academic</option>
+                <option value="Social" selected="@(Model.Category == "Social")">Social</option>
+                <option value="Sports" selected="@(Model.Category == "Sports")">Sports</option>
+                <option value="Cultural" selected="@(Model.Category == "Cultural")">Cultural</option>
+                <option value="Career" selected="@(Model.Category == "Career")">Career</option>
+                <option value="Workshop" selected="@(Model.Category == "Workshop")">Workshop</option>
+                <option value="Other" selected="@(Model.Category == "Other")">Other</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Organization</label>
+            <select name="OrganizationId" class="filter-input">
+                <option value="">All Organizations</option>
+                @foreach (var org in Model.Organizations)
+                {
+                    <option value="@org.Id" selected="@(Model.OrganizationId == org.Id)">@org.Name</option>
+                }
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Date</label>
+            <select name="DateFilter" class="filter-input">
+                <option value="all" selected="@(Model.DateFilter == "all")">All Upcoming</option>
+                <option value="today" selected="@(Model.DateFilter == "today")">Today</option>
+                <option value="week" selected="@(Model.DateFilter == "week")">This Week</option>
+                <option value="month" selected="@(Model.DateFilter == "month")">This Month</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i>
+            Search
+        </button>
+    </div>
+</form>
+
+<div class="events-container">
+    <div class="events-header">
+        <h2>
+            @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) || !string.IsNullOrWhiteSpace(Model.Category))
+            {
+                <span>Search Results</span>
+            }
+            else
+            {
+                <span>All Events</span>
+            }
+        </h2>
+        <p class="events-count">@Model.Events.Count event(s) found</p>
+    </div>
+
+    @if (Model.Events.Any())
+    {
+        <div class="events-grid">
+            @foreach (var evt in Model.Events)
+            {
+                <a href="/EventDetails?id=@evt.Id" class="event-card">
+                    <div class="event-image">
+                        <span class="event-category-badge">@evt.Category</span>
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">@evt.Title</h3>
+                        <div class="event-meta">
+                            <div class="meta-item">
+                                <i class="bi bi-calendar3"></i>
+                                @evt.EventDate.ToString("MMMM dd, yyyy")
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-clock"></i>
+                                @evt.EventDate.ToString("h:mm tt")
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-geo-alt"></i>
+                                @evt.Location
+                            </div>
+                            @if (evt.Organization != null)
+                            {
+                                <div class="meta-item">
+                                    <i class="bi bi-building"></i>
+                                    @evt.Organization.Name
+                                </div>
+                            }
+                        </div>
+                        <div class="event-footer">
+                            <div class="event-capacity">
+                                <i class="bi bi-people"></i>
+                                @evt.TicketsIssued / @evt.Capacity
+                            </div>
+                            <div class="event-price @(evt.Price > 0 ? "paid" : "")">
+                                @if (evt.Price == 0)
+                                {
+                                    <span>FREE</span>
+                                }
+                                else
+                                {
+                                    <span>$@evt.Price.ToString("F2")</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="no-events">
+            <i class="bi bi-calendar-x"></i>
+            <h3>No Events Found</h3>
+            <p>Try adjusting your filters to see more events</p>
+        </div>
+    }
+</div>

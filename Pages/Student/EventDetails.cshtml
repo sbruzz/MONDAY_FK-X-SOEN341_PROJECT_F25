@@ -1,0 +1,243 @@
+@page
+@model CampusEvents.Pages.Student.EventDetailsModel
+@{
+    ViewData["Title"] = Model.Event?.Title ?? "Event Details";
+    Layout = "_StudentLayout";
+}
+
+@if (Model.Event == null)
+{
+    <div class="container mt-4">
+        <div class="alert alert-danger">
+            <h4>Event Not Found</h4>
+            <p>The event you're looking for doesn't exist or has been removed.</p>
+            <a href="/Student/Events" class="btn btn-primary">Back to Events</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container mt-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Student/Home">Home</a></li>
+                <li class="breadcrumb-item"><a href="/Student/Events">Events</a></li>
+                <li class="breadcrumb-item active">@Model.Event.Title</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h1 class="display-5 mb-3">@Model.Event.Title</h1>
+
+                        <!-- Category Badge -->
+                        <span class="badge bg-info fs-6 mb-3">@Model.Event.Category</span>
+
+                        <!-- Event Description -->
+                        <div class="mb-4">
+                            <h5>About This Event</h5>
+                            <p class="text-muted">@Model.Event.Description</p>
+                        </div>
+
+                        <!-- Event Details -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6><i class="bi bi-calendar-event text-primary"></i> Date & Time</h6>
+                                <p class="ms-4">
+                                    @Model.Event.EventDate.ToString("dddd, MMMM dd, yyyy")<br>
+                                    @Model.Event.EventDate.ToString("h:mm tt")
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="bi bi-geo-alt text-primary"></i> Location</h6>
+                                <p class="ms-4">@Model.Event.Location</p>
+                            </div>
+                        </div>
+
+                        <!-- Organization -->
+                        @if (Model.Event.Organization != null)
+                        {
+                            <div class="mb-4">
+                                <h6><i class="bi bi-building text-primary"></i> Organized By</h6>
+                                <p class="ms-4">@Model.Event.Organization.Name</p>
+                            </div>
+                        }
+
+                        <!-- Organizer -->
+                        @if (Model.Event.Organizer != null)
+                        {
+                            <div class="mb-4">
+                                <h6><i class="bi bi-person text-primary"></i> Contact</h6>
+                                <p class="ms-4">
+                                    @Model.Event.Organizer.Name<br>
+                                    <small class="text-muted">@Model.Event.Organizer.Email</small>
+                                </p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ticket Card -->
+                <div class="card shadow-sm mb-4 sticky-top" style="top: 20px;">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-ticket-perforated"></i> Get Your Ticket</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Price -->
+                        <div class="text-center mb-3">
+                            @if (Model.Event.Price == 0)
+                            {
+                                <h2 class="text-success mb-0">FREE</h2>
+                            }
+                            else
+                            {
+                                <h2 class="text-primary mb-0">$@Model.Event.Price.ToString("F2")</h2>
+                                <small class="text-muted">per ticket</small>
+                            }
+                        </div>
+
+                        <!-- Capacity Info -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>Tickets Available</small>
+                                <small><strong>@(Model.Event.Capacity - Model.Event.TicketsIssued)</strong> / @Model.Event.Capacity</small>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                @{
+                                    var percentFull = Model.Event.Capacity > 0 ? (Model.Event.TicketsIssued * 100.0 / Model.Event.Capacity) : 0;
+                                }
+                                <div class="progress-bar @(percentFull >= 90 ? "bg-danger" : percentFull >= 70 ? "bg-warning" : "bg-success")"
+                                     style="width: @percentFull%"></div>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.Message))
+                        {
+                            <div class="alert @(Model.IsSuccess ? "alert-success" : "alert-danger") alert-dismissible fade show">
+                                @Model.Message
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        <!-- Actions -->
+                        @if (Model.HasTicket)
+                        {
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle-fill"></i> You have a ticket!
+                            </div>
+                            <a href="/Student/Tickets" class="btn btn-success w-100 mb-2">
+                                <i class="bi bi-qr-code"></i> View My Ticket
+                            </a>
+                        }
+                        else if (Model.Event.TicketsIssued >= Model.Event.Capacity)
+                        {
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i> Event is full
+                            </div>
+                            @if (Model.IsSaved)
+                            {
+                                <form method="post" asp-page-handler="UnsaveEvent">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
+                                    <button type="submit" class="btn btn-outline-secondary w-100">
+                                        <i class="bi bi-bookmark-fill"></i> Saved - Remove
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="SaveEvent">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
+                                    <button type="submit" class="btn btn-outline-primary w-100">
+                                        <i class="bi bi-bookmark"></i> Save for Later
+                                    </button>
+                                </form>
+                            }
+                        }
+                        else
+                        {
+                            @if (Model.Event.Price == 0)
+                            {
+                                <form method="post" asp-page-handler="ClaimTicket">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
+                                    <button type="submit" class="btn btn-primary w-100 mb-2">
+                                        <i class="bi bi-ticket"></i> Claim Free Ticket
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="ClaimTicket">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
+                                    <button type="submit" class="btn btn-primary w-100 mb-2">
+                                        <i class="bi bi-credit-card"></i> Buy Ticket ($@Model.Event.Price.ToString("F2"))
+                                    </button>
+                                    <small class="text-muted d-block text-center">(Mock Payment - No Charge)</small>
+                                </form>
+                            }
+
+                            <!-- Save/Unsave Button -->
+                            @if (Model.IsSaved)
+                            {
+                                <form method="post" asp-page-handler="UnsaveEvent">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
+                                    <button type="submit" class="btn btn-outline-secondary w-100">
+                                        <i class="bi bi-bookmark-fill"></i> Saved
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="SaveEvent">
+                                    <input type="hidden" name="id" value="@Model.Event.Id" />
+                                    <button type="submit" class="btn btn-outline-primary w-100">
+                                        <i class="bi bi-bookmark"></i> Save Event
+                                    </button>
+                                </form>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <!-- Share Card -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title">Share This Event</h6>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="copyEventLink()">
+                                <i class="bi bi-link-45deg"></i> Copy Link
+                            </button>
+                        </div>
+                        <input type="hidden" id="eventLink" value="@Url.PageLink("/Student/EventDetails", values: new { id = Model.Event.Id })">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="row mt-4">
+            <div class="col">
+                <a href="/Student/Events" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Events
+                </a>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function copyEventLink() {
+            const linkInput = document.getElementById('eventLink');
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('Event link copied to clipboard!');
+            });
+        }
+    </script>
+}
