@@ -1,40 +1,453 @@
 @page
 @model OrganizerHomeModel
 @{
-    ViewData["Title"] = "Organizer Home";
+    ViewData["Title"] = "Dashboard";
+    Layout = "_OrganizerLayout";
 }
 
-<div class="container mt-4">
-    <h1>Welcome, @Model.UserName!</h1>
-    <p class="lead">Manage your events and track engagement</p>
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">Welcome back, @Model.UserName! 👋</h1>
+            <p class="lead text-muted">Here's what's happening with your events</p>
+        </div>
+        <div class="col-auto">
+            <a href="/Organizer/CreateEvent" class="btn btn-lg" style="background: linear-gradient(135deg, #d5bdaf 0%, #c9a999 100%); color: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(213, 189, 175, 0.3);">
+                <i class="bi bi-plus-circle"></i> Create Event
+            </a>
+        </div>
+    </div>
 
-    <div class="row mt-4">
-        <div class="col-md-4">
-            <div class="card">
+    <!-- Key Metrics Cards -->
+    <div class="row mb-4 g-3">
+        <!-- Total Events -->
+        <div class="col-md-3">
+            <div class="card metric-card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Create Event</h5>
-                    <p class="card-text">Organize a new campus event</p>
-                    <a href="/Organizer/CreateEvent" class="btn btn-primary">Create Event</a>
+                    <div class="d-flex align-items-center">
+                        <div class="metric-icon bg-primary-soft">
+                            <i class="bi bi-calendar-event text-primary"></i>
+                        </div>
+                        <div class="ms-3 flex-grow-1">
+                            <p class="metric-label mb-1">Total Events</p>
+                            <h3 class="metric-value mb-0">@Model.TotalEvents</h3>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge" style="background: rgba(213, 189, 175, 0.2); color: #d5bdaf;">
+                            @Model.UpcomingEventsCount upcoming
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
+
+        <!-- Total Tickets Sold -->
+        <div class="col-md-3">
+            <div class="card metric-card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <h5 class="card-title">My Events</h5>
-                    <p class="card-text">View and manage your events</p>
-                    <a href="/Organizer/Events" class="btn btn-primary">My Events</a>
+                    <div class="d-flex align-items-center">
+                        <div class="metric-icon bg-success-soft">
+                            <i class="bi bi-ticket-perforated text-success"></i>
+                        </div>
+                        <div class="ms-3 flex-grow-1">
+                            <p class="metric-label mb-1">Tickets Sold</p>
+                            <h3 class="metric-value mb-0">@Model.TotalTicketsSold</h3>
+                        </div>
+                    </div>
+                    @if (Model.TotalRevenue > 0)
+                    {
+                        <div class="mt-3">
+                            <span class="badge bg-success-soft text-success">
+                                $@Model.TotalRevenue.ToString("F2") revenue
+                            </span>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
+
+        <!-- Total Check-ins -->
+        <div class="col-md-3">
+            <div class="card metric-card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Analytics</h5>
-                    <p class="card-text">View event statistics</p>
-                    <a href="/Organizer/Analytics" class="btn btn-primary">View Analytics</a>
+                    <div class="d-flex align-items-center">
+                        <div class="metric-icon bg-info-soft">
+                            <i class="bi bi-check-circle text-info"></i>
+                        </div>
+                        <div class="ms-3 flex-grow-1">
+                            <p class="metric-label mb-1">Check-ins</p>
+                            <h3 class="metric-value mb-0">@Model.TotalCheckIns</h3>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-info" style="width: @Model.AverageAttendanceRate%"></div>
+                        </div>
+                        <small class="text-muted">@Model.AverageAttendanceRate.ToString("F1")% attendance rate</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Status -->
+        <div class="col-md-3">
+            <div class="card metric-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="metric-icon bg-warning-soft">
+                            <i class="bi bi-flag text-warning"></i>
+                        </div>
+                        <div class="ms-3 flex-grow-1">
+                            <p class="metric-label mb-1">Status</p>
+                            <h3 class="metric-value mb-0">@Model.ApprovedEventsCount</h3>
+                        </div>
+                    </div>
+                    <div class="mt-3 d-flex gap-2">
+                        <span class="badge bg-success">@Model.ApprovedEventsCount approved</span>
+                        @if (Model.PendingEventsCount > 0)
+                        {
+                            <span class="badge bg-warning">@Model.PendingEventsCount pending</span>
+                        }
+                        @if (Model.RejectedEventsCount > 0)
+                        {
+                            <span class="badge bg-danger">@Model.RejectedEventsCount rejected</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <!-- Upcoming Events -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0"><i class="bi bi-calendar3"></i> Upcoming Events</h5>
+                        <a href="/Organizer/Events" class="btn btn-sm btn-outline-secondary">View All</a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.UpcomingEvents.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var evt in Model.UpcomingEvents)
+                            {
+                                var percentFull = evt.Capacity > 0 ? (evt.TicketsIssued * 100.0 / evt.Capacity) : 0;
+                                var daysUntil = (evt.EventDate - DateTime.UtcNow).Days;
+
+                                <a href="/Organizer/EventDetails?id=@evt.Id" class="list-group-item list-group-item-action p-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="date-badge me-3">
+                                            <div class="month">@evt.EventDate.ToString("MMM")</div>
+                                            <div class="day">@evt.EventDate.Day</div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <h6 class="mb-0">@evt.Title</h6>
+                                                <span class="badge" style="background: rgba(213, 189, 175, 0.2); color: #d5bdaf;">
+                                                    @evt.Category
+                                                </span>
+                                            </div>
+                                            <div class="d-flex align-items-center text-muted small mb-2">
+                                                <i class="bi bi-clock me-1"></i>
+                                                @evt.EventDate.ToString("h:mm tt")
+                                                <span class="mx-2">•</span>
+                                                <i class="bi bi-geo-alt me-1"></i>
+                                                @evt.Location
+                                                <span class="mx-2">•</span>
+                                                @if (daysUntil == 0)
+                                                {
+                                                    <span class="text-danger fw-bold">Today!</span>
+                                                }
+                                                else if (daysUntil == 1)
+                                                {
+                                                    <span class="text-warning fw-bold">Tomorrow</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>In @daysUntil days</span>
+                                                }
+                                            </div>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="flex-grow-1">
+                                                    <div class="progress" style="height: 8px;">
+                                                        <div class="progress-bar"
+                                                             style="width: @percentFull%; background: linear-gradient(90deg, #d5bdaf 0%, #c9a999 100%);">
+                                                        </div>
+                                                    </div>
+                                                    <small class="text-muted">@evt.TicketsIssued / @evt.Capacity tickets</small>
+                                                </div>
+                                                <div>
+                                                    <span class="badge @(evt.ApprovalStatus == ApprovalStatus.Approved ? "bg-success" : evt.ApprovalStatus == ApprovalStatus.Pending ? "bg-warning" : "bg-danger")">
+                                                        @evt.ApprovalStatus
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-calendar-x display-4 text-muted"></i>
+                            <p class="text-muted mt-3">No upcoming events</p>
+                            <a href="/Organizer/CreateEvent" class="btn btn-primary">Create Your First Event</a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0"><i class="bi bi-activity"></i> Recent Ticket Activity</h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.RecentTickets.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var ticket in Model.RecentTickets.Take(5))
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            @if (ticket.IsRedeemed)
+                                            {
+                                                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-ticket-perforated text-primary fs-4"></i>
+                                            }
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h6 class="mb-1">@ticket.User.Name</h6>
+                                                    <p class="mb-0 text-muted small">
+                                                        @(ticket.IsRedeemed ? "Checked in to" : "Claimed ticket for")
+                                                        <strong>@ticket.Event.Title</strong>
+                                                    </p>
+                                                </div>
+                                                <small class="text-muted">@ticket.ClaimedAt.ToString("MMM dd, h:mm tt")</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-inbox display-4 text-muted"></i>
+                            <p class="text-muted mt-3">No recent activity</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- Quick Actions -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/Organizer/CreateEvent" class="btn btn-lg" style="background: linear-gradient(135deg, #d5bdaf 0%, #c9a999 100%); color: white; border-radius: 12px;">
+                            <i class="bi bi-plus-circle"></i> Create Event
+                        </a>
+                        <a href="/Organizer/Events" class="btn btn-outline-primary btn-lg" style="border-radius: 12px;">
+                            <i class="bi bi-list-ul"></i> My Events
+                        </a>
+                        <a href="/Organizer/Events?filter=pending" class="btn btn-outline-warning btn-lg" style="border-radius: 12px;">
+                            <i class="bi bi-hourglass-split"></i> Pending Approval
+                            @if (Model.PendingEventsCount > 0)
+                            {
+                                <span class="badge bg-warning">@Model.PendingEventsCount</span>
+                            }
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Insights -->
+            @if (Model.MostPopularEvent != null)
+            {
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="mb-0"><i class="bi bi-trophy"></i> Top Performer</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <i class="bi bi-star-fill text-warning display-1"></i>
+                            <h6 class="mt-3 mb-2">@Model.MostPopularEvent.Title</h6>
+                            <p class="text-muted small mb-3">@Model.MostPopularEvent.Category</p>
+                            <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+                                <div class="text-center">
+                                    <h4 class="mb-0" style="color: #d5bdaf;">@Model.MostPopularEventTickets</h4>
+                                    <small class="text-muted">Tickets</small>
+                                </div>
+                                <div class="vr"></div>
+                                <div class="text-center">
+                                    <h4 class="mb-0" style="color: #d5bdaf;">@((Model.MostPopularEvent.TicketsIssued * 100.0 / Model.MostPopularEvent.Capacity).ToString("F0"))%</h4>
+                                    <small class="text-muted">Full</small>
+                                </div>
+                            </div>
+                            <a href="/Organizer/EventDetails?id=@Model.MostPopularEvent.Id" class="btn btn-sm btn-outline-secondary">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Tips & Guides -->
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(213, 189, 175, 0.1) 0%, rgba(201, 169, 153, 0.1) 100%);">
+                <div class="card-body">
+                    <h6 class="mb-3"><i class="bi bi-lightbulb"></i> Tips for Success</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <small>Create events 2-3 weeks in advance</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <small>Add detailed descriptions and images</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <small>Export attendee lists before events</small>
+                        </li>
+                        <li>
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <small>Check in attendees with QR scanner</small>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Styles {
+    <style>
+        /* Metric Cards */
+        .metric-card {
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .metric-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .bg-primary-soft {
+            background: rgba(13, 110, 253, 0.1);
+        }
+
+        .bg-success-soft {
+            background: rgba(25, 135, 84, 0.1);
+        }
+
+        .bg-info-soft {
+            background: rgba(13, 202, 240, 0.1);
+        }
+
+        .bg-warning-soft {
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #212529;
+        }
+
+        /* Date Badge */
+        .date-badge {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #d5bdaf 0%, #c9a999 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .date-badge .month {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .date-badge .day {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        /* List Items */
+        .list-group-item-action {
+            transition: all 0.2s ease;
+        }
+
+        .list-group-item-action:hover {
+            background-color: rgba(213, 189, 175, 0.05);
+            transform: translateX(4px);
+        }
+
+        /* Card Headers */
+        .card-header {
+            border-radius: 16px 16px 0 0 !important;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .metric-value {
+                font-size: 1.5rem;
+            }
+
+            .metric-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+        }
+    </style>
+}

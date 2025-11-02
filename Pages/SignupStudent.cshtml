@@ -1,0 +1,129 @@
+@page
+@model SignupStudentModel
+@{
+    ViewData["Title"] = "Student Signup";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/signup-student.css" asp-append-version="true" />
+}
+
+<div class="page-wrapper">
+<div class="signup-container">
+    <div class="signup-card">
+        <div class="text-center mb-4">
+            <h2>Create Student Account</h2>
+            <p class="text-muted">Join Campus Events to discover and attend amazing events</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger mb-4">@Model.ErrorMessage</div>
+        }
+
+        <!-- Progress Steps -->
+        <div class="progress-steps">
+            <div class="progress-bar-fill" id="progressBar"></div>
+            <div class="step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Account</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Details</div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Complete</div>
+            </div>
+        </div>
+
+        <form method="post" id="signupForm">
+            <!-- Step 1: Account Info -->
+            <div class="form-step active" data-step="1">
+                <h4 class="mb-4">Account Information</h4>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="name" asp-for="Name" required placeholder="e.g., John Doe">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                    <input type="email" class="form-control" id="email" asp-for="Email" required placeholder="your.email@concordia.ca">
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                    <input type="password" class="form-control" id="password" asp-for="Password" required minlength="6" placeholder="At least 6 characters">
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="bi bi-arrow-right"></i></button>
+                    <a href="/Login" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </div>
+
+            <!-- Step 2: Student Details -->
+            <div class="form-step" data-step="2">
+                <h4 class="mb-4">Student Information</h4>
+                <div class="mb-3">
+                    <label for="studentId" class="form-label">Student ID <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="studentId" asp-for="StudentId" required placeholder="e.g., 40123456">
+                </div>
+                <div class="mb-3">
+                    <label for="program" class="form-label">Program <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="program" asp-for="Program" required placeholder="e.g., Computer Science">
+                </div>
+                <div class="mb-3">
+                    <label for="year" class="form-label">Year of Study <span class="text-danger">*</span></label>
+                    <select class="form-control" id="year" asp-for="YearOfStudy" required>
+                        <option value="">Select your year...</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                        <option value="Graduate">Graduate</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" asp-for="PhoneNumber" placeholder="e.g., (514) 123-4567">
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary" onclick="prevStep()"><i class="bi bi-arrow-left"></i> Back</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Next <i class="bi bi-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Step 3: Review & Submit -->
+            <div class="form-step" data-step="3">
+                <h4 class="mb-4">Review Your Information</h4>
+                <div class="card mb-3" style="border-radius: 16px; border: 1px solid var(--border);">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-3">Account Details</h6>
+                        <p class="mb-2"><strong>Name:</strong> <span id="review-name"></span></p>
+                        <p class="mb-2"><strong>Email:</strong> <span id="review-email"></span></p>
+                        <h6 class="text-muted mt-4 mb-3">Student Information</h6>
+                        <p class="mb-2"><strong>Student ID:</strong> <span id="review-studentId"></span></p>
+                        <p class="mb-2"><strong>Program:</strong> <span id="review-program"></span></p>
+                        <p class="mb-2"><strong>Year:</strong> <span id="review-year"></span></p>
+                        <p class="mb-0"><strong>Phone:</strong> <span id="review-phone"></span></p>
+                    </div>
+                </div>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Your account will be created and you'll be logged in automatically!
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary" onclick="prevStep()"><i class="bi bi-arrow-left"></i> Back</button>
+                    <button type="submit" class="btn btn-primary">Create Account <i class="bi bi-check-circle"></i></button>
+                </div>
+            </div>
+        </form>
+
+        <p class="text-center mt-4 mb-0">
+            Already have an account? <a href="/Login" style="color: var(--primary); font-weight: 600;">Log in</a>
+        </p>
+    </div>
+</div>
+</div>
+
+@section Scripts {
+    <script src="~/js/signup.js" asp-append-version="true"></script>
+}

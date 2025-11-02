@@ -1,0 +1,319 @@
+@page
+@model CampusEvents.Pages.Organizer.EventDetailsModel
+@{
+    ViewData["Title"] = Model.Event?.Title ?? "Event Details";
+    Layout = "_OrganizerLayout";
+}
+
+@if (Model.Event == null)
+{
+    <div class="container mt-4">
+        <div class="alert alert-danger">
+            <h4>Event Not Found</h4>
+            <p>The event you're looking for doesn't exist.</p>
+            <a href="/Organizer/Events" class="btn btn-primary">Back to My Events</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container mt-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Organizer/Home">Home</a></li>
+                <li class="breadcrumb-item"><a href="/Organizer/Events">My Events</a></li>
+                <li class="breadcrumb-item active">@Model.Event.Title</li>
+            </ol>
+        </nav>
+
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="display-5">@Model.Event.Title</h1>
+                <p class="lead text-muted">Event Analytics & Management</p>
+            </div>
+            <div class="col-auto">
+                @if (Model.Event.ApprovalStatus == ApprovalStatus.Approved)
+                {
+                    <span class="badge bg-success fs-6">Approved</span>
+                }
+                else if (Model.Event.ApprovalStatus == ApprovalStatus.Pending)
+                {
+                    <span class="badge bg-warning fs-6">Pending Approval</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger fs-6">Rejected</span>
+                }
+            </div>
+        </div>
+
+        <!-- Analytics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-ticket-perforated display-4 text-primary"></i>
+                        <h3 class="mt-2">@Model.Event.TicketsIssued</h3>
+                        <p class="text-muted mb-0">Tickets Issued</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-check-circle display-4 text-success"></i>
+                        <h3 class="mt-2">@Model.RedeemedTickets</h3>
+                        <p class="text-muted mb-0">Checked In</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-people display-4 text-info"></i>
+                        <h3 class="mt-2">@Model.RemainingCapacity</h3>
+                        <p class="text-muted mb-0">Spots Left</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-percent display-4 text-warning"></i>
+                        <h3 class="mt-2">@Model.AttendanceRate.ToString("F1")%</h3>
+                        <p class="text-muted mb-0">Attendance Rate</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column - Event Details -->
+            <div class="col-lg-7">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Event Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-sm-4 text-muted">Category:</div>
+                            <div class="col-sm-8"><span class="badge bg-info">@Model.Event.Category</span></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4 text-muted">Date & Time:</div>
+                            <div class="col-sm-8">
+                                <strong>@Model.Event.EventDate.ToString("dddd, MMMM dd, yyyy")</strong><br>
+                                @Model.Event.EventDate.ToString("h:mm tt")
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4 text-muted">Location:</div>
+                            <div class="col-sm-8">@Model.Event.Location</div>
+                        </div>
+                        @if (Model.Event.Organization != null)
+                        {
+                            <div class="row mb-3">
+                                <div class="col-sm-4 text-muted">Organization:</div>
+                                <div class="col-sm-8">@Model.Event.Organization.Name</div>
+                            </div>
+                        }
+                        <div class="row mb-3">
+                            <div class="col-sm-4 text-muted">Ticket Type:</div>
+                            <div class="col-sm-8">
+                                @if (Model.Event.Price == 0)
+                                {
+                                    <span class="badge bg-success">FREE</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary">PAID - $@Model.Event.Price.ToString("F2")</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4 text-muted">Capacity:</div>
+                            <div class="col-sm-8">@Model.Event.Capacity attendees</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 text-muted">Created:</div>
+                            <div class="col-sm-8">@Model.Event.CreatedAt.ToString("MMMM dd, yyyy")</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Description</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">@Model.Event.Description</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Actions & Charts -->
+            <div class="col-lg-5">
+                <!-- Actions Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-tools"></i> Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <form method="post" asp-page-handler="ExportCSV" id="exportForm">
+                                <input type="hidden" name="id" value="@Model.Event.Id" />
+                                <button type="submit" class="btn btn-success w-100" id="exportBtn">
+                                    <i class="bi bi-download"></i> <span id="exportText">Export Attendee List (CSV)</span>
+                                </button>
+                            </form>
+                            <div id="exportNotification" class="alert alert-success mt-2" style="display: none;">
+                                <i class="bi bi-check-circle-fill"></i> CSV file is downloading! Check your browser's download bar or Downloads folder.
+                            </div>
+
+                            @if (Model.Event.ApprovalStatus == ApprovalStatus.Approved)
+                            {
+                                <a href="/Organizer/QRScanner?eventId=@Model.Event.Id" class="btn btn-primary">
+                                    <i class="bi bi-qr-code-scan"></i> Scan Tickets (QR)
+                                </a>
+                            }
+
+                            <a href="/EventDetails?id=@Model.Event.Id" class="btn btn-outline-secondary" target="_blank">
+                                <i class="bi bi-eye"></i> View Public Page
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Capacity Visual -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Capacity Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tickets Issued</span>
+                                <strong>@Model.Event.TicketsIssued / @Model.Event.Capacity</strong>
+                            </div>
+                            <div class="progress" style="height: 25px;">
+                                @{
+                                    var percentFull = Model.Event.Capacity > 0 ? (Model.Event.TicketsIssued * 100.0 / Model.Event.Capacity) : 0;
+                                }
+                                <div class="progress-bar @(percentFull >= 90 ? "bg-danger" : percentFull >= 70 ? "bg-warning" : "bg-success")"
+                                     style="width: @percentFull%">
+                                    @percentFull.ToString("F1")%
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.Event.TicketsIssued > 0)
+                        {
+                            <div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Check-in Rate</span>
+                                    <strong>@Model.RedeemedTickets / @Model.Event.TicketsIssued</strong>
+                                </div>
+                                <div class="progress" style="height: 25px;">
+                                    <div class="progress-bar bg-success" style="width: @Model.AttendanceRate%">
+                                        @Model.AttendanceRate.ToString("F1")%
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Recent Attendees -->
+                @if (Model.RecentAttendees.Any())
+                {
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-people"></i> Recent Ticket Claims</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                @foreach (var ticket in Model.RecentAttendees.Take(5))
+                                {
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>@ticket.User.Name</strong><br>
+                                                <small class="text-muted">@ticket.ClaimedAt.ToString("MMM dd, h:mm tt")</small>
+                                            </div>
+                                            @if (ticket.IsRedeemed)
+                                            {
+                                                <span class="badge bg-success">Checked In</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Not Redeemed</span>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            @if (Model.RecentAttendees.Count > 5)
+                            {
+                                <div class="card-footer text-center">
+                                    <small class="text-muted">Showing 5 of @Model.RecentAttendees.Count total</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="row mt-4">
+            <div class="col">
+                <a href="/Organizer/Events" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to My Events
+                </a>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const exportForm = document.getElementById('exportForm');
+            const exportBtn = document.getElementById('exportBtn');
+            const exportText = document.getElementById('exportText');
+            const notification = document.getElementById('exportNotification');
+
+            if (exportForm) {
+                exportForm.addEventListener('submit', function(e) {
+                    console.log('Export CSV form submitted');
+
+                    // Show loading state
+                    exportBtn.disabled = true;
+                    exportText.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Generating CSV...';
+
+                    // Show notification after a short delay (to allow file download to start)
+                    setTimeout(function() {
+                        notification.style.display = 'block';
+
+                        // Scroll to notification
+                        notification.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                        // Reset button after 2 seconds
+                        setTimeout(function() {
+                            exportBtn.disabled = false;
+                            exportText.textContent = 'Export Attendee List (CSV)';
+
+                            // Hide notification after 5 seconds
+                            setTimeout(function() {
+                                notification.style.display = 'none';
+                            }, 5000);
+                        }, 2000);
+                    }, 500);
+                });
+            }
+        });
+    </script>
+}

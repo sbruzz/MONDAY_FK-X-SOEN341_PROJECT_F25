@@ -1,0 +1,206 @@
+/* Header Styles */
+.site-header {
+    background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%);
+    border-bottom: 1px solid rgba(213, 189, 175, 0.2);
+    padding: 0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.header-nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo Styling */
+.site-logo {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #3d3d3d;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+    letter-spacing: -0.02em;
+}
+
+.site-logo i {
+    font-size: 2rem;
+    background: linear-gradient(135deg, #d5bdaf 0%, #c9a999 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.site-logo:hover {
+    transform: translateY(-1px);
+    color: #d5bdaf;
+}
+
+/* Navigation Links Container */
+.nav-center {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Navigation Links */
+.nav-link-custom {
+    color: #3d3d3d;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+}
+
+.nav-link-custom:hover {
+    color: #d5bdaf;
+    background: rgba(213, 189, 175, 0.08);
+}
+
+.nav-link-custom.active {
+    color: #d5bdaf;
+    background: rgba(213, 189, 175, 0.12);
+}
+
+.nav-link-custom.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #d5bdaf;
+    border-radius: 50%;
+}
+
+/* Action Buttons Container */
+.nav-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* Login Button (Outline) */
+.btn-login {
+    background: transparent;
+    color: #3d3d3d;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 0.625rem 1.5rem;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(213, 189, 175, 0.4);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.btn-login:hover {
+    border-color: #d5bdaf;
+    color: #d5bdaf;
+    background: rgba(213, 189, 175, 0.05);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(213, 189, 175, 0.15);
+}
+
+/* Sign Up Button (Primary) */
+.btn-signup {
+    background: linear-gradient(135deg, #d5bdaf 0%, #c9a999 100%);
+    color: white;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 0.625rem 1.75rem;
+    transition: all 0.3s ease;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(213, 189, 175, 0.25);
+}
+
+.btn-signup:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(213, 189, 175, 0.35);
+    background: linear-gradient(135deg, #c9a999 0%, #b89988 100%);
+    color: white;
+}
+
+/* Mobile Toggle Button */
+.navbar-toggler {
+    border: 2px solid rgba(213, 189, 175, 0.3);
+    border-radius: 8px;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.navbar-toggler:hover {
+    border-color: #d5bdaf;
+    background: rgba(213, 189, 175, 0.05);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(213, 189, 175, 0.25);
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .header-nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .nav-center {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .nav-link-custom {
+        text-align: center;
+        padding: 0.875rem 1.25rem;
+    }
+
+    .nav-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-login,
+    .btn-signup {
+        width: 100%;
+        justify-content: center;
+        padding: 0.875rem 1.5rem;
+    }
+
+    .site-logo {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .site-logo {
+        font-size: 1.5rem;
+    }
+
+    .site-logo i {
+        font-size: 1.75rem;
+    }
+}

@@ -1,0 +1,245 @@
+@page
+@model CampusEvents.Pages.Organizer.QRScannerModel
+@{
+    ViewData["Title"] = "QR Code Scanner";
+    Layout = "_OrganizerLayout";
+}
+
+<div class="container mt-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Organizer/Home">Home</a></li>
+            <li class="breadcrumb-item"><a href="/Organizer/Events">My Events</a></li>
+            @if (Model.Event != null)
+            {
+                <li class="breadcrumb-item"><a href="/Organizer/EventDetails?id=@Model.Event.Id">@Model.Event.Title</a></li>
+            }
+            <li class="breadcrumb-item active">QR Scanner</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4"><i class="bi bi-qr-code-scan"></i> Ticket Validation</h1>
+            @if (Model.Event != null)
+            {
+                <p class="lead">Scanning for: <strong>@Model.Event.Title</strong></p>
+            }
+        </div>
+    </div>
+
+    @if (Model.Event == null)
+    {
+        <div class="alert alert-danger">
+            <h4>Event Not Found</h4>
+            <p>Please select an event to scan tickets for.</p>
+            <a href="/Organizer/Events" class="btn btn-primary">Back to My Events</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <!-- Left Column - Scanner -->
+            <div class="col-lg-7">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-upload"></i> Upload QR Code</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">
+                            Upload a QR code image from a ticket to validate and check-in attendees.
+                            For this prototype, you can upload a saved QR code image file.
+                        </p>
+
+                        <form method="post" enctype="multipart/form-data" asp-page-handler="ScanQR">
+                            <div class="mb-3">
+                                <label for="qrImage" class="form-label">Select QR Code Image</label>
+                                <input type="file" class="form-control" id="qrImage" name="qrImage"
+                                       accept="image/*" required onchange="previewImage(event)" />
+                                <small class="text-muted">Supported formats: PNG, JPG, JPEG</small>
+                            </div>
+
+                            <!-- Image Preview -->
+                            <div id="imagePreview" class="mb-3" style="display: none;">
+                                <label class="form-label">Preview:</label>
+                                <div class="border rounded p-2 text-center bg-light">
+                                    <img id="preview" src="" alt="QR Code Preview" style="max-width: 300px; max-height: 300px;">
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-check-circle"></i> Validate QR Code
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Alternative: Manual Code Entry -->
+                        <hr class="my-4">
+                        <p class="text-muted small">
+                            <strong>Alternative:</strong> Enter ticket code manually
+                        </p>
+
+                        <form method="post" asp-page-handler="ValidateCode">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="ticketCode"
+                                       placeholder="Enter ticket unique code" required />
+                                <button type="submit" class="btn btn-outline-secondary">
+                                    <i class="bi bi-key"></i> Validate
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Scan Result -->
+                @if (!string.IsNullOrEmpty(Model.ResultMessage))
+                {
+                    <div class="card shadow-sm border-@(Model.IsSuccess ? "success" : "danger")">
+                        <div class="card-header bg-@(Model.IsSuccess ? "success" : "danger") text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-@(Model.IsSuccess ? "check-circle-fill" : "x-circle-fill")"></i>
+                                Validation Result
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <h4>@Model.ResultMessage</h4>
+
+                            @if (Model.ValidatedTicket != null)
+                            {
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-4 text-muted">Ticket ID:</div>
+                                    <div class="col-sm-8"><strong>#@Model.ValidatedTicket.Id</strong></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-4 text-muted">Attendee:</div>
+                                    <div class="col-sm-8"><strong>@Model.ValidatedTicket.User.Name</strong></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-4 text-muted">Email:</div>
+                                    <div class="col-sm-8">@Model.ValidatedTicket.User.Email</div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-4 text-muted">Claimed:</div>
+                                    <div class="col-sm-8">@Model.ValidatedTicket.ClaimedAt.ToString("MMM dd, yyyy h:mm tt")</div>
+                                </div>
+                                @if (Model.ValidatedTicket.IsRedeemed && Model.ValidatedTicket.RedeemedAt.HasValue)
+                                {
+                                    <div class="row mt-2">
+                                        <div class="col-sm-4 text-muted">Checked In:</div>
+                                        <div class="col-sm-8 text-success">
+                                            <strong>@Model.ValidatedTicket.RedeemedAt.Value.ToString("MMM dd, yyyy h:mm tt")</strong>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Right Column - Stats -->
+            <div class="col-lg-5">
+                <!-- Event Stats -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Event Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Total Tickets:</span>
+                                <strong>@Model.Event.TicketsIssued</strong>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Checked In:</span>
+                                <strong class="text-success">@Model.CheckedInCount</strong>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Not Checked In:</span>
+                                <strong class="text-warning">@(Model.Event.TicketsIssued - Model.CheckedInCount)</strong>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="progress" style="height: 25px;">
+                            @{
+                                var checkInRate = Model.Event.TicketsIssued > 0
+                                    ? (Model.CheckedInCount * 100.0 / Model.Event.TicketsIssued)
+                                    : 0;
+                            }
+                            <div class="progress-bar bg-success" style="width: @checkInRate%">
+                                @checkInRate.ToString("F1")% Checked In
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Check-ins -->
+                @if (Model.RecentCheckIns.Any())
+                {
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Check-ins</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                @foreach (var ticket in Model.RecentCheckIns.Take(10))
+                                {
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>@ticket.User.Name</strong><br>
+                                                <small class="text-muted">
+                                                    @ticket.RedeemedAt?.ToString("MMM dd, h:mm tt")
+                                                </small>
+                                            </div>
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="row mt-4">
+            <div class="col">
+                <a href="/Organizer/EventDetails?id=@Model.Event.Id" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Event Details
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function previewImage(event) {
+            const preview = document.getElementById('preview');
+            const previewContainer = document.getElementById('imagePreview');
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+    </script>
+}
