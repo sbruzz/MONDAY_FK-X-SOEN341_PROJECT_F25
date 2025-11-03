@@ -61,8 +61,6 @@ public class DbCSVCommunicator
         {
             Console.WriteLine("Test users already exist in database, skipping seed.");
         }
-
-        extractToCSV(1);
         Console.WriteLine("DbMainTest Finished");
     }
 
