@@ -130,4 +130,9 @@ public class EventsModel : PageModel
         IsSuccess = true;
         return RedirectToPage();
     }
+
+    public void OnPostDownloadStudentsWithTicketsCSV(int id)
+    {
+        DbCSVCommunicator.extractToCSV(id);
+    }
 }
