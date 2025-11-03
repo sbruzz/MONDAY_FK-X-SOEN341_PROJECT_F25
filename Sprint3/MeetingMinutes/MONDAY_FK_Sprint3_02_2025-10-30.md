@@ -51,6 +51,14 @@
   - Demo: File upload interface working
   - Validation feedback displaying correctly
 
+- **Task.21** - Admin approval backend - Kevin ✅
+  - Demo: User approval workflow implemented
+  - Approval status changes working correctly
+
+- **Task.22** - Organizer approval frontend - Souleymane ✅
+  - Demo: Admin can approve/reject organizers
+  - Interface working smoothly
+
 - **Task.23** - Event moderation backend - Kevin ✅
   - Demo: Event approval/rejection workflow
   - Status updates working
@@ -63,33 +71,26 @@
   - Demo: Analytics queries optimized
   - Statistics calculating correctly
 
-- **Task.40** - Admin dashboard - Souleymane ✅
-  - Demo: Admin home page with analytics cards
+- **Task.26** - Display global stats frontend - Souleymane ✅
+  - Demo: Admin dashboard with analytics cards
   - Metrics displaying properly
 
-- **Task.41** - Admin user management - Souleymane ✅
-  - Demo: User list with approval actions
-  - User approval interface complete
+- **Task.28** - Admin management page - Souleymane ✅
+  - Demo: Admin management interface complete
 
 ### 3. In-Progress Tasks (Week 3)
-
-- **Task.26** - Global stats display - Souleymane (80% complete)
-  - Analytics cards done, working on charts
 
 - **Task.27** - Organizer management backend - Dmitrii (70% complete)
   - CRUD operations implemented, testing
 
-- **Task.28** - Admin management page - Souleymane (60% complete)
-  - Organization list done, working on management actions
+- **Task.34** - Backend architecture documentation - Kevin (60% complete)
+  - Architecture document in progress
 
-- **Task.42** - Admin event moderation interface - Nand (75% complete)
-  - Event list done, polishing moderation actions
+- **Task.35** - Frontend architecture documentation - Souleymane (60% complete)
+  - Frontend architecture document in progress
 
-- **Task.45** - QR scanner interface - Nand (80% complete)
-  - Scanner page done, testing file upload edge cases
-
-- **Task.44** - UI polish and consistency - Souleymane, Nand (50% complete)
-  - Auditing all pages, making consistent styling updates
+- **Task.29** - Home page improvements - Souleymane (80% complete)
+  - UI enhancements and polish ongoing
 
 ### 4. Blockers/Issues Discussed
 

@@ -83,7 +83,8 @@
 - Optimized QR code processing for performance
 
 ### Tasks Completed
-- Task.39 - [Backend] QR Scanner validation and redemption tracking
+- Task.18 - [Backend] QR scanner integration
+- Task.19 - [Backend] QR implementation
 
 ### Challenges Faced
 - **Challenge:** QR code image decoding from file uploads

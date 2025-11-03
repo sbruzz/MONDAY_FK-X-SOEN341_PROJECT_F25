@@ -49,24 +49,25 @@ Discussed and prioritized user stories:
 - **High Priority:**
   - Task.21: Admin user approval (Foundation for admin features)
   - Task.23: Event moderation backend
-  - Task.19/18/20: QR scanner implementation
+  - Task.18/19/20: QR scanner implementation
 - **Medium Priority:**
+  - Task.22: Organizer approval frontend
   - Task.24: Event moderation frontend
   - Task.25/26: Global analytics dashboard
   - Task.27/28: Organization management
 - **Lower Priority:**
-  - Task.44: UI polish and consistency (ongoing)
+  - Task.34/35: Architecture documentation
 
 ### 4. Task Assignments
 
 **Backend Team:**
-- **Salvatore:** Task.19 (QR backend), Task.18 (QR scanner integration), Task.20 (QR validation)
+- **Salvatore:** Task.18 (QR scanner integration), Task.19 (QR backend implementation)
 - **Dmitrii:** Task.25 (Global stats query), Task.27 (Organizer management backend)
-- **Kevin:** Task.21 (Admin approval), Task.23 (Event moderation backend), Task.35 (User approval system)
+- **Kevin:** Task.21 (Admin approval), Task.23 (Event moderation backend), Task.34 (Backend architecture)
 
 **Frontend Team:**
-- **Souleymane:** Task.28 (Admin management page), Task.40 (Admin dashboard), Task.41 (User management), Task.44 (UI polish)
-- **Nand:** Task.24 (Event moderation frontend), Task.42 (Admin event moderation), Task.45 (QR scanner interface), Task.44 (UI consistency)
+- **Souleymane:** Task.22 (Organizer approval frontend), Task.26 (Display global stats), Task.28 (Admin management page), Task.35 (Frontend architecture)
+- **Nand:** Task.20 (QR upload frontend), Task.24 (Event moderation frontend)
 
 ### 5. Technical Decisions
 

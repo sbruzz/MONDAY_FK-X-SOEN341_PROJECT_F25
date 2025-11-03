@@ -86,9 +86,8 @@
 - Added loading states and animations to enhance user experience
 
 ### Tasks Completed
-- Task.42 - [Frontend] Admin event moderation interface
-- Task.44 - [Frontend] UI polish and consistency
-- Task.45 - [Frontend] QR scanner interface
+- Task.20 - [Frontend] QR upload
+- Task.24 - [Frontend] Event moderation
 
 ### Challenges Faced
 - **Challenge:** File upload UI not working in older browsers

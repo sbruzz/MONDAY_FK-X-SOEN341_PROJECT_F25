@@ -84,9 +84,8 @@
 - Performance optimization for all admin features
 
 ### Tasks Completed
-- Task.36 - [Backend] Event moderation backend
-- Task.37 - [Backend] Global analytics queries
-- Task.38 - [Backend] Organization management backend
+- Task.25 - [Backend] Query for global stats
+- Task.27 - [Backend] Organizer management
 
 ### Challenges Faced
 - **Challenge:** Analytics queries too slow with large datasets

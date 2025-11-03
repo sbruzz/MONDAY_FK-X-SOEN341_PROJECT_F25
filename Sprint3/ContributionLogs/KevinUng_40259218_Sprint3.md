@@ -84,11 +84,12 @@
 - Coordinated Sprint 3 activities and ensured team progress
 
 ### Tasks Completed
-- Task.35 - [Backend] User account approval system
-- Task.36 - [Backend] Event moderation logic
-- Task.37 - [Backend] Global analytics queries
-- Task.38 - [Backend] Organization management
-- Task.40 - [Frontend] Admin dashboard and management pages
+- Task.21 - [Backend] Admin approval
+- Task.23 - [Backend] Event moderation
+- Task.25 - [Backend] Query for global stats
+- Task.27 - [Backend] Organizer management
+- Task.34 - [Backend] Architecture documentation
+- Task.35 - [Frontend] Architecture documentation
 - Scrum Master duties: Sprint planning, stand-ups, retrospective
 
 ### Challenges Faced

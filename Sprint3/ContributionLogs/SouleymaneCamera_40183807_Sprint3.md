@@ -86,12 +86,10 @@
 - Added loading states and animations throughout the application
 
 ### Tasks Completed
-- Task.40 - [Frontend] Admin dashboard
-- Task.41 - [Frontend] Admin user management
-- Task.42 - [Frontend] Admin event moderation
-- Task.43 - [Frontend] Organization management
-- Task.44 - [Frontend] UI polish and consistency
-- Task.45 - [Frontend] QR scanner interface
+- Task.22 - [Frontend] Organizer approval
+- Task.26 - [Frontend] Display global stats
+- Task.28 - [Frontend] Admin management page
+- Task.29 - [Frontend] Home page improvements
 
 ### Challenges Faced
 - **Challenge:** Admin dashboard too complex with too many metrics
