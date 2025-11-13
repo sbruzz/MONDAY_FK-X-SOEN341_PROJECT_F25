@@ -25,7 +25,9 @@ public class Event
 
     // Navigation properties
     public User Organizer { get; set; } = null!;
+    public Rental? Rental { get; set; }  
     public Organization? Organization { get; set; }
     public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
     public ICollection<SavedEvent> SavedByUsers { get; set; } = new List<SavedEvent>();
+    public ICollection<Drivers> Drivers { get; set; } = new List<Drivers>();
 }
