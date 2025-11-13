@@ -1,3 +1,5 @@
+using CampusEvents.Pages;
+
 namespace CampusEvents.Models;
 
 public enum UserRole
@@ -23,6 +25,7 @@ public class User
     public UserRole Role { get; set; }
     public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public string history { get; set; } = "No History yet";
 
     // Extended Student Information
     public string? StudentId { get; set; }
@@ -37,7 +40,9 @@ public class User
 
     // Navigation properties
     public Organization? Organization { get; set; }
+    public Drivers? Car { get; set; }
     public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
     public ICollection<Event> OrganizedEvents { get; set; } = new List<Event>();
     public ICollection<SavedEvent> SavedEvents { get; set; } = new List<SavedEvent>();
+    public ICollection<Rental> Rentedrooms { get; set; } = new List<Rental>();
 }

@@ -14,7 +14,8 @@ public class AppDbContext : DbContext
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<Organization> Organizations { get; set; }
     public DbSet<SavedEvent> SavedEvents { get; set; }
-
+    public DbSet<Rental> Rentals { get; set; }
+    public DbSet<Drivers> Drivers{ get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -56,6 +57,33 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Ticket>()
             .HasIndex(t => t.UniqueCode)
             .IsUnique();
+        
+        //configure rental 
+        modelBuilder.Entity<Rental>()
+            .HasKey(r => new { r.UserId, r.EventId });
+
+        modelBuilder.Entity<Rental>()
+            .HasMany(r => r.users)
+            .WithMany(u => u.Rentedrooms)
+            .HasForeignKey(r => r.UserId);
+
+        modelBuilder.Entity<Rental>()
+            .HasOne(r => r.Event)
+            .WithOne(e => e.Rental)
+            .HasForeignKey(r => r.EventId); 
+        //configure driver
+        modelBuilder.Entity<Drivers>()
+            .HasKey(d => new { d.UserId, d.EventId });
+
+        modelBuilder.Entity<Rental>()
+            .HasMany(d => d.users)
+            .WithOne(u => u.Car)
+            .HasForeignKey(r => r.UserId);
+
+        modelBuilder.Entity<Rental>()
+            .HasOne(d => d.Event)
+            .WithOne(e => e.Rental)
+            .HasForeignKey(d => d.EventId); 
     }
     
 }
