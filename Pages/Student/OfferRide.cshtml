@@ -1,0 +1,107 @@
+@page
+@model CampusEvents.Pages.Student.OfferRideModel
+@{
+    ViewData["Title"] = "Offer a Ride";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Student/Events">Events</a></li>
+                    @if (Model.Event != null)
+                    {
+                        <li class="breadcrumb-item"><a href="/Student/EventDetails?id=@Model.Event.Id">@Model.Event.Title</a></li>
+                    }
+                    <li class="breadcrumb-item active">Offer Ride</li>
+                </ol>
+            </nav>
+
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Offer a Ride</h4>
+                </div>
+                <div class="card-body">
+                    @if (Model.Event != null)
+                    {
+                        <div class="alert alert-info mb-4">
+                            <h6>Event Details:</h6>
+                            <p class="mb-1"><strong>@Model.Event.Title</strong></p>
+                            <p class="mb-1"><i class="bi bi-calendar"></i> @Model.Event.EventDate.ToString("MMMM dd, yyyy HH:mm")</p>
+                            <p class="mb-0"><i class="bi bi-geo-alt"></i> @Model.Event.Location</p>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger">@Model.ErrorMessage</div>
+                    }
+
+                    <form method="post">
+                        <input type="hidden" asp-for="EventId" />
+
+                        <div class="mb-3">
+                            <label asp-for="DepartureTime" class="form-label">Departure Time</label>
+                            <input asp-for="DepartureTime" class="form-control" type="time" required />
+                            <div class="form-text">What time will you depart?</div>
+                            <span asp-validation-for="DepartureTime" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DepartureInfo" class="form-label">Departure Information</label>
+                            <textarea asp-for="DepartureInfo" class="form-control" rows="3" required
+                                      placeholder="e.g., Leaving from campus parking lot B, near the library"></textarea>
+                            <div class="form-text">Provide clear details about where and when you'll depart</div>
+                            <span asp-validation-for="DepartureInfo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DepartureAddress" class="form-label">Departure Address (Optional)</label>
+                            <input asp-for="DepartureAddress" class="form-control"
+                                   placeholder="123 Main Street, Montreal, QC" />
+                            <div class="form-text">Helps passengers find nearby carpools</div>
+                            <span asp-validation-for="DepartureAddress" class="text-danger"></span>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <h6>Your Vehicle Information:</h6>
+                            @if (Model.DriverProfile != null)
+                            {
+                                <p class="mb-1"><strong>Type:</strong> @Model.DriverProfile.VehicleType</p>
+                                <p class="mb-1"><strong>Capacity:</strong> @Model.DriverProfile.Capacity passengers</p>
+                                @if (!string.IsNullOrEmpty(Model.DriverProfile.AccessibilityFeatures))
+                                {
+                                    <p class="mb-0"><strong>Accessibility:</strong> @Model.DriverProfile.AccessibilityFeatures.Replace(",", ", ")</p>
+                                }
+                            }
+                            <hr />
+                            <small>All @Model.DriverProfile!.Capacity seats will be available for passengers.</small>
+                        </div>
+
+                        <div class="alert alert-light">
+                            <h6>Guidelines:</h6>
+                            <ul class="mb-0">
+                                <li>Be punctual and communicate with your passengers</li>
+                                <li>Passengers can join or leave the carpool</li>
+                                <li>You can cancel the offer if needed (but avoid this close to event time)</li>
+                                <li>Drive safely and follow all traffic regulations</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="/Student/CarpoolOffers/@Model.EventId" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-car-front"></i> Create Ride Offer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

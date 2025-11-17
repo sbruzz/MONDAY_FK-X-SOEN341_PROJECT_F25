@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using CampusEvents.Data;
+using CampusEvents.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -18,6 +20,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddTransient<DbCSVCommunicator>();
+
+// Register US.04 services (Carpool and Room Rental)
+builder.Services.AddScoped<CarpoolService>();
+builder.Services.AddScoped<RoomRentalService>();
+builder.Services.AddScoped<ProximityService>();
 
 var app = builder.Build();
 

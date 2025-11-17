@@ -1,0 +1,220 @@
+@page
+@model CampusEvents.Pages.Student.RoomsModel
+@{
+    ViewData["Title"] = "Available Rooms";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Available Rooms for Rent</h2>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- My Rentals Section -->
+    @if (Model.MyRentals.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">My Room Rentals (@Model.MyRentals.Count)</h5>
+            </div>
+            <div class="card-body">
+                @foreach (var rental in Model.MyRentals.Take(3))
+                {
+                    <div class="border rounded p-3 mb-3">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6>@rental.Room.Name</h6>
+                                <p class="mb-1"><i class="bi bi-geo-alt"></i> @rental.Room.Address</p>
+                                <p class="mb-1">
+                                    <strong>Time:</strong> @rental.StartTime.ToString("MMM dd, yyyy HH:mm") - @rental.EndTime.ToString("HH:mm")
+                                </p>
+                                @if (!string.IsNullOrEmpty(rental.Purpose))
+                                {
+                                    <p class="mb-1"><strong>Purpose:</strong> @rental.Purpose</p>
+                                }
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <span class="badge bg-@(rental.Status == CampusEvents.Models.RentalStatus.Approved ? "success" : rental.Status == CampusEvents.Models.RentalStatus.Pending ? "warning" : "secondary")">
+                                    @rental.Status
+                                </span>
+                                @if (rental.TotalCost.HasValue)
+                                {
+                                    <p class="mt-2"><strong>Cost:</strong> $@rental.TotalCost.Value.ToString("F2")</p>
+                                }
+                                @if (rental.Status == CampusEvents.Models.RentalStatus.Pending || rental.Status == CampusEvents.Models.RentalStatus.Approved)
+                                {
+                                    <form method="post" asp-page-handler="CancelRental" class="mt-2">
+                                        <input type="hidden" name="rentalId" value="@rental.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to cancel this rental?')">
+                                            <i class="bi bi-x-circle"></i> Cancel
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.MyRentals.Count > 3)
+                {
+                    <a href="/Student/MyRentals" class="btn btn-sm btn-outline-primary">View All (@Model.MyRentals.Count)</a>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Start Date/Time</label>
+                    <input type="datetime-local" name="startTime" class="form-control" value="@Model.StartTimeFilter?.ToString("yyyy-MM-ddTHH:mm")" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">End Date/Time</label>
+                    <input type="datetime-local" name="endTime" class="form-control" value="@Model.EndTimeFilter?.ToString("yyyy-MM-ddTHH:mm")" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Min Capacity</label>
+                    <input type="number" name="minCapacity" class="form-control" value="@Model.MinCapacityFilter" min="1" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Available Rooms -->
+    @if (Model.AvailableRooms.Any())
+    {
+        <div class="row">
+            @foreach (var room in Model.AvailableRooms)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title mb-1">@room.Name</h5>
+                                    <p class="text-muted mb-0"><i class="bi bi-geo-alt"></i> @room.Address</p>
+                                </div>
+                                <div class="text-end">
+                                    <h5 class="text-primary mb-0">@room.Capacity</h5>
+                                    <small class="text-muted">capacity</small>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(room.RoomInfo))
+                            {
+                                <p class="mb-2">@room.RoomInfo</p>
+                            }
+
+                            @if (!string.IsNullOrEmpty(room.Amenities))
+                            {
+                                <p class="mb-2">
+                                    <strong>Amenities:</strong>
+                                    <small class="text-muted">@room.Amenities.Replace(",", ", ")</small>
+                                </p>
+                            }
+
+                            @if (room.HourlyRate.HasValue)
+                            {
+                                <p class="mb-2">
+                                    <strong>Rate:</strong> <span class="text-success">$@room.HourlyRate.Value.ToString("F2")/hour</span>
+                                </p>
+                            }
+
+                            <p class="mb-2">
+                                <strong>Managed by:</strong> @room.Organizer.Name
+                            </p>
+
+                            @if (room.AvailabilityStart.HasValue && room.AvailabilityEnd.HasValue)
+                            {
+                                <p class="mb-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock"></i>
+                                        Available: @room.AvailabilityStart.Value.ToString("MMM dd") - @room.AvailabilityEnd.Value.ToString("MMM dd, yyyy")
+                                    </small>
+                                </p>
+                            }
+
+                            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#requestModal-@room.Id">
+                                Request Rental
+                            </button>
+
+                            <!-- Request Rental Modal -->
+                            <div class="modal fade" id="requestModal-@room.Id" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="post" asp-page-handler="RequestRental">
+                                            <input type="hidden" name="roomId" value="@room.Id" />
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Request Room Rental</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h6>@room.Name</h6>
+                                                <p class="text-muted">@room.Address</p>
+                                                <hr />
+                                                <div class="mb-3">
+                                                    <label class="form-label">Start Time</label>
+                                                    <input type="datetime-local" name="startTime" class="form-control" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">End Time</label>
+                                                    <input type="datetime-local" name="endTime" class="form-control" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Purpose</label>
+                                                    <textarea name="purpose" class="form-control" rows="2" placeholder="e.g., Club meeting, study session"></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Expected Attendees</label>
+                                                    <input type="number" name="expectedAttendees" class="form-control" min="1" max="@room.Capacity" placeholder="Number of people" />
+                                                    <div class="form-text">Room capacity: @room.Capacity</div>
+                                                </div>
+                                                @if (room.HourlyRate.HasValue)
+                                                {
+                                                    <div class="alert alert-info">
+                                                        <small>Rate: $@room.HourlyRate.Value.ToString("F2") per hour</small>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Submit Request</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-secondary text-center">
+            <h5>No Rooms Available</h5>
+            <p>Check back later or adjust your filters</p>
+        </div>
+    }
+</div>
