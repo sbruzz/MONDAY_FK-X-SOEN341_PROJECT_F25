@@ -16,7 +16,7 @@
 |------|----------|-------------|------------|-------------------|
 | Sept 9 | Team meeting | Sprint 1 kickoff and planning | 2 hours | - |
 | Sept 10 | Environment setup | Installed .NET 9.0 SDK and Visual Studio Code | 2 hours | - |
-| Sept 11 | Repository setup | Cloned repository and reviewed Razor Pages structure | 1.5 hours | Task.03 |
+| Sept 11 | Repository setup | Cloned repository and reviewed Razor Pages structure | 1.5 hours | - |
 | Sept 12 | Frontend development | Created Index.cshtml home page | 3 hours | Task.24 |
 | Sept 13 | Frontend development | Created Login.cshtml page | 3.5 hours | Task.18 |
 | Sept 14 | CSS styling | Applied initial styling to home and login pages | 2.5 hours | Task.24, Task.18 |

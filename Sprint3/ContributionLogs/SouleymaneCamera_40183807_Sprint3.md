@@ -15,11 +15,11 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Oct 21 | Team meeting | Sprint 3 planning and task assignment | 2.5 hours | - |
-| Oct 22 | UI design | Designed admin dashboard layout | 3.5 hours | Task.40 |
-| Oct 23 | Frontend development | Created Admin/Home.cshtml with analytics cards | 4.5 hours | Task.40 |
-| Oct 24 | CSS styling | Styled admin dashboard with consistent theme | 4 hours | Task.40 |
-| Oct 25 | Frontend development | Implemented admin user management page | 4 hours | Task.41 |
-| Oct 26 | UI components | Built user approval/rejection UI components | 3 hours | Task.41 |
+| Oct 22 | UI design | Designed admin dashboard layout | 3.5 hours | Task.26 |
+| Oct 23 | Frontend development | Created Admin/Home.cshtml with analytics cards | 4.5 hours | Task.26 |
+| Oct 24 | CSS styling | Styled admin dashboard with consistent theme | 4 hours | Task.26 |
+| Oct 25 | Frontend development | Implemented admin user management page | 4 hours | Task.22 |
+| Oct 26 | UI components | Built user approval/rejection UI components | 3 hours | Task.22 |
 
 **Total Time This Week:** 21.5 hours
 
@@ -32,43 +32,43 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Oct 30 | Team meeting | Mid-sprint check-in | 1.5 hours | - |
-| Oct 31 | Frontend development | Created admin event moderation page | 4.5 hours | Task.42 |
-| Nov 1 | Frontend development | Built organization management page | 4 hours | Task.43 |
-| Nov 2 | UI polish | Improved mobile responsiveness across admin pages | 3.5 hours | Task.44 |
-| Nov 3 | CSS enhancement | Added loading states and animations | 3 hours | Task.44 |
-| Nov 3 | Testing | Cross-browser testing of admin pages | 2 hours | Task.40 |
+| Oct 31 | Frontend development | Created admin event moderation page | 4.5 hours | Task.24 |
+| Nov 1 | Frontend development | Built organization management page | 4 hours | Task.28 |
+| Nov 2 | UI polish | Improved mobile responsiveness across admin pages | 3.5 hours | - |
+| Nov 3 | CSS enhancement | Added loading states and animations | 3 hours | - |
+| Nov 3 | Testing | Cross-browser testing of admin pages | 2 hours | Task.26 |
 
 **Total Time This Week:** 18.5 hours
 
 ---
 
-## Week 3 (Nov 4 - Nov 10, 2025)
+## Week 3 (Nov 4 - Nov 8, 2025)
 
 ### Activities
 
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
-| Nov 4 | Frontend development | Implemented QR scanner frontend interface | 4 hours | Task.45 |
-| Nov 5 | UI polish | Enhanced QR scanner UI with file upload | 3.5 hours | Task.45 |
-| Nov 6 | UI consistency | Ensured consistent styling across all pages | 4 hours | Task.44 |
-| Nov 7 | Responsive design | Improved mobile responsiveness for all pages | 3.5 hours | Task.44 |
-| Nov 8 | Testing | Comprehensive UI testing across all user roles | 2.5 hours | Task.44 |
+| Nov 4 | Frontend development | Implemented QR scanner frontend interface | 4 hours | Task.20 |
+| Nov 5 | UI polish | Enhanced QR scanner UI with file upload | 3.5 hours | Task.20 |
+| Nov 6 | UI consistency | Ensured consistent styling across all pages | 4 hours | - |
+| Nov 7 | Responsive design | Improved mobile responsiveness for all pages | 3.5 hours | - |
+| Nov 8 | Testing | Comprehensive UI testing across all user roles | 2.5 hours | - |
 
 **Total Time This Week:** 17.5 hours
 
 ---
 
-## Week 4 (Nov 11 - Nov 17, 2025)
+## Week 3 Continued (Nov 9 - Nov 10, 2025)
 
 ### Activities
 
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
-| Nov 14 | Team meeting | Sprint 3 review and retrospective | 2.5 hours | - |
-| Nov 15 | UI polish | Final styling refinements across all pages | 3 hours | Task.44 |
-| Nov 16 | Documentation | Created frontend architecture documentation | 2.5 hours | - |
-| Nov 17 | Final testing | Comprehensive UI/UX testing | 2 hours | - |
-| Nov 17 | Code review | Reviewed all frontend implementations | 1.5 hours | - |
+| Nov 9 | Team meeting | Sprint 3 review and retrospective | 2.5 hours | - |
+| Nov 9 | UI polish | Final styling refinements across all pages | 3 hours | - |
+| Nov 10 | Documentation | Created frontend architecture documentation | 2.5 hours | Task.35 |
+| Nov 10 | Final testing | Comprehensive UI/UX testing | 2 hours | - |
+| Nov 10 | Code review | Reviewed all frontend implementations | 1.5 hours | - |
 
 **Total Time This Week:** 11.5 hours
 
@@ -89,7 +89,6 @@
 - Task.22 - [Frontend] Organizer approval
 - Task.26 - [Frontend] Display global stats
 - Task.28 - [Frontend] Admin management page
-- Task.29 - [Frontend] Home page improvements
 
 ### Challenges Faced
 - **Challenge:** Admin dashboard too complex with too many metrics

@@ -11,9 +11,9 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Sept 9 | Team meeting | Sprint 1 kickoff and planning | 2 hours | - |
-| Sept 10 | Repository setup | Created GitHub repository with proper structure | 2 hours | Task.01 |
+| Sept 10 | Repository setup | Created GitHub repository with proper structure | 2 hours | - |
 | Sept 11 | Database design | Designed ERD with all entities and relationships | 4 hours | Task.08 |
-| Sept 12 | Project initialization | Set up ASP.NET Core 9.0 Razor Pages project | 3 hours | Task.02 |
+| Sept 12 | Backend development | Set up database schema for Event | 3 hours | Task.01 |
 | Sept 13 | Database setup | Configured EF Core and SQLite connection | 2.5 hours | Task.15 |
 | Sept 14 | Team coordination | Sprint board setup, assigned tasks to members | 1.5 hours | - |
 
@@ -46,9 +46,9 @@
 |------|----------|-------------|------------|-------------------|
 | Sept 24 | Team meeting | Sprint 1 review and retrospective | 2 hours | - |
 | Sept 25 | Backend development | Implemented logout handler | 1.5 hours | Task.23 |
-| Sept 26 | GitHub Actions | Configured CI/CD workflow | 2 hours | Task.06 |
-| Sept 27 | Testing | End-to-end testing of authentication flow | 3 hours | Task.25 |
-| Sept 28 | Documentation | Updated README with setup instructions | 2 hours | Task.05 |
+| Sept 26 | Backend development | Created Admin table | 2 hours | Task.06 |
+| Sept 27 | Testing | End-to-end testing of authentication flow | 3 hours | Task.20, Task.21 |
+| Sept 28 | Backend development | Created Organizer class/table | 2 hours | Task.05 |
 | Sept 29 | Sprint prep | Created Sprint 2 issues and backlog | 2 hours | - |
 
 **Total Time This Week:** 12.5 hours
@@ -66,9 +66,9 @@
 - Coordinated sprint activities as Scrum Master
 
 ### Tasks Completed
-- Task.01 - Create GitHub repository
-- Task.02 - Initialize ASP.NET Core project
-- Task.06 - Configure GitHub Actions workflow
+- Task.01 - [Backend] Setup database schema: Event
+- Task.05 - [Backend] Creation of the Organizer class/table
+- Task.06 - [Backend] Admin table creation
 - Task.08 - Design ERD
 - Task.09 - Create User model
 - Task.10 - Create Event model

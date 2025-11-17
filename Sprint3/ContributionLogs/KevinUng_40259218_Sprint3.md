@@ -15,10 +15,10 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Oct 21 | Team meeting | Sprint 3 planning and task assignment | 2.5 hours | - |
-| Oct 22 | Backend development | Implemented admin user approval system | 5 hours | Task.35 |
-| Oct 23 | Backend development | Created event moderation backend logic | 4 hours | Task.36 |
-| Oct 24 | Database updates | Added approval status fields to User model | 2 hours | Task.35 |
-| Oct 25 | Testing | Tested user approval workflow | 2 hours | Task.35 |
+| Oct 22 | Backend development | Implemented admin user approval system | 5 hours | Task.21 |
+| Oct 23 | Backend development | Created event moderation backend logic | 4 hours | Task.23 |
+| Oct 24 | Database updates | Added approval status fields to User model | 2 hours | Task.21 |
+| Oct 25 | Testing | Tested user approval workflow | 2 hours | Task.21 |
 | Oct 26 | Sprint coordination | Updated Sprint 3 backlog and assigned tasks | 1.5 hours | - |
 
 **Total Time This Week:** 17 hours
@@ -32,44 +32,45 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Oct 30 | Team meeting | Mid-sprint check-in | 1.5 hours | - |
-| Oct 31 | Backend development | Implemented global analytics queries | 5 hours | Task.37 |
-| Nov 1 | Backend development | Created organization management backend | 4 hours | Task.38 |
-| Nov 2 | Testing | Tested admin analytics calculations | 2.5 hours | Task.37 |
-| Nov 3 | Code review | Reviewed QR scanner implementation | 2 hours | Task.39 |
+| Oct 31 | Backend development | Implemented global analytics queries | 5 hours | Task.25 |
+| Nov 1 | Backend development | Created organization management backend | 4 hours | Task.27 |
+| Nov 2 | Testing | Tested admin analytics calculations | 2.5 hours | Task.25 |
+| Nov 3 | Code review | Reviewed QR scanner implementation | 2 hours | Task.19 |
 
 **Total Time This Week:** 15 hours
 
 ---
 
-## Week 3 (Nov 4 - Nov 10, 2025)
+## Week 3 (Nov 4 - Nov 8, 2025)
 
 ### Activities
 
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
-| Nov 4 | Frontend development | Implemented admin home page with analytics | 4 hours | Task.40 |
-| Nov 5 | Frontend development | Created admin user management page | 4.5 hours | Task.40 |
-| Nov 6 | Testing | End-to-end testing of admin features | 3 hours | Task.35, Task.36 |
-| Nov 7 | Bug fixing | Fixed user approval workflow issues | 2 hours | Task.35 |
-| Nov 8 | Code review | Reviewed admin dashboard implementations | 1.5 hours | Task.40 |
+| Nov 4 | Frontend development | Implemented admin home page with analytics | 4 hours | Task.26 |
+| Nov 5 | Frontend development | Created admin user management page | 4.5 hours | Task.22 |
+| Nov 6 | Testing | End-to-end testing of admin features | 3 hours | Task.21, Task.23 |
+| Nov 7 | Bug fixing | Fixed user approval workflow issues | 2 hours | Task.21 |
+| Nov 8 | Code review | Reviewed admin dashboard implementations | 1.5 hours | Task.26 |
 
 **Total Time This Week:** 15 hours
 
 ---
 
-## Week 4 (Nov 11 - Nov 17, 2025)
+## Week 3 Continued (Nov 9 - Nov 10, 2025)
 
 ### Activities
 
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
-| Nov 14 | Team meeting | Sprint 3 review and retrospective | 2.5 hours | - |
-| Nov 15 | Integration testing | Comprehensive testing of all admin features | 3 hours | - |
-| Nov 16 | Documentation | Updated architecture documentation | 2 hours | - |
-| Nov 17 | Sprint coordination | Final sprint deliverables preparation | 2 hours | - |
-| Nov 17 | Code review | Final code review of all Sprint 3 features | 1.5 hours | - |
+| Nov 9 | Team meeting | Sprint 3 review and retrospective | 2.5 hours | - |
+| Nov 9 | Integration testing | Comprehensive testing of all admin features | 3 hours | - |
+| Nov 10 | GitHub workflow | Set up automated workflow | 2 hours | Task.33 |
+| Nov 10 | Documentation | Updated architecture documentation | 2 hours | Task.34 |
+| Nov 10 | Sprint coordination | Final sprint deliverables preparation | 2 hours | - |
+| Nov 10 | Code review | Final code review of all Sprint 3 features | 1.5 hours | - |
 
-**Total Time This Week:** 11 hours
+**Total Time This Week:** 13 hours
 
 ---
 
@@ -88,6 +89,7 @@
 - Task.23 - [Backend] Event moderation
 - Task.25 - [Backend] Query for global stats
 - Task.27 - [Backend] Organizer management
+- Task.33 - [Github] automated Workflow setup
 - Task.34 - [Backend] Architecture documentation
 - Task.35 - [Frontend] Architecture documentation
 - Scrum Master duties: Sprint planning, stand-ups, retrospective
@@ -109,5 +111,5 @@
 
 ---
 
-**Total Time Spent on Sprint 3:** 58 hours
+**Total Time Spent on Sprint 3:** 60 hours
 
