@@ -116,12 +116,13 @@
                                 <th>Date & Time</th>
                                 <th>Purpose</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var rental in Model.AllRentals)
                             {
-                                <tr>
+                                <tr class="@(rental.Status == RentalStatus.Disabled ? "table-secondary" : "")">
                                     <td><strong>@rental.Room.Name</strong></td>
                                     <td>@rental.User.Name</td>
                                     <td>
@@ -134,9 +135,34 @@
                                         {
                                             <span class="badge bg-success">Rented</span>
                                         }
+                                        else if (rental.Status == RentalStatus.Disabled)
+                                        {
+                                            <span class="badge bg-danger">Disabled</span>
+                                        }
                                         else
                                         {
                                             <span class="badge bg-secondary">@rental.Status</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (rental.Status == RentalStatus.Rented)
+                                        {
+                                            <form method="post" asp-page-handler="DisableRental" class="d-inline"
+                                                  onsubmit="return confirm('Disable this rental? The room will be unavailable for this time period.');">
+                                                <input type="hidden" name="id" value="@rental.Id" />
+                                                <button type="submit" class="btn btn-sm btn-warning" title="Disable Rental">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        else if (rental.Status == RentalStatus.Disabled)
+                                        {
+                                            <form method="post" asp-page-handler="EnableRental" class="d-inline">
+                                                <input type="hidden" name="id" value="@rental.Id" />
+                                                <button type="submit" class="btn btn-sm btn-success" title="Re-enable Rental">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+                                            </form>
                                         }
                                     </td>
                                 </tr>

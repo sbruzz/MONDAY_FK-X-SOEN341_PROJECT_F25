@@ -150,5 +150,41 @@ public class RentalsModel : PageModel
         IsSuccess = true;
         return RedirectToPage();
     }
+
+    public async Task<IActionResult> OnPostDisableRentalAsync(int id)
+    {
+        var rental = await _context.Rentals.FindAsync(id);
+        if (rental == null)
+        {
+            Message = "Rental not found.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        rental.Status = RentalStatus.Disabled;
+        await _context.SaveChangesAsync();
+
+        Message = "Rental has been disabled. The room will be unavailable for this time period.";
+        IsSuccess = true;
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostEnableRentalAsync(int id)
+    {
+        var rental = await _context.Rentals.FindAsync(id);
+        if (rental == null)
+        {
+            Message = "Rental not found.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        rental.Status = RentalStatus.Rented;
+        await _context.SaveChangesAsync();
+
+        Message = "Rental has been re-enabled.";
+        IsSuccess = true;
+        return RedirectToPage();
+    }
 }
 

@@ -103,9 +103,10 @@ public class RentalsModel : PageModel
         }
 
         // Check availability
+        // Check for conflicting rentals (Rented or Disabled status)
         var conflictingRentals = await _context.Rentals
             .Where(r => r.RoomId == RentalInput.RoomId 
-                && r.Status == RentalStatus.Rented
+                && (r.Status == RentalStatus.Rented || r.Status == RentalStatus.Disabled)
                 && ((r.StartTime <= RentalInput.StartTime && r.EndTime > RentalInput.StartTime) ||
                     (r.StartTime < RentalInput.EndTime && r.EndTime >= RentalInput.EndTime) ||
                     (r.StartTime >= RentalInput.StartTime && r.EndTime <= RentalInput.EndTime)))
