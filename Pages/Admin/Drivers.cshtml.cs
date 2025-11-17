@@ -47,9 +47,11 @@ public class DriversModel : PageModel
         // Load drivers with related data
         var query = _context.Drivers
             .Include(d => d.User)
-            .Include(d => d.Event)
-            .Include(d => d.Passengers)
-                .ThenInclude(p => p.User)
+            .Include(d => d.CarpoolOffers)
+                .ThenInclude(o => o.Event)
+            .Include(d => d.CarpoolOffers)
+                .ThenInclude(o => o.Passengers)
+                    .ThenInclude(p => p.Passenger)
             .AsQueryable();
 
         // Filter by type

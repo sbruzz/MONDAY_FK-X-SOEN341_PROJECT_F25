@@ -67,8 +67,7 @@ public class RentalsModel : PageModel
 
         AllRentals = await _context.RoomRentals
             .Include(r => r.Room)
-            .Include(r => r.User)
-            .Include(r => r.Event)
+            .Include(r => r.Renter)
             .OrderByDescending(r => r.StartTime)
             .ToListAsync();
 
@@ -82,7 +81,7 @@ public class RentalsModel : PageModel
             Rooms = await _context.Rooms.Include(r => r.Rentals).ToListAsync();
             AllRentals = await _context.RoomRentals
                 .Include(r => r.Room)
-                .Include(r => r.User)
+                .Include(r => r.Renter)
                 .ToListAsync();
             return Page();
         }
