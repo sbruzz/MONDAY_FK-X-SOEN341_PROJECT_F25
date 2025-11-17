@@ -286,6 +286,9 @@ namespace CampusEvents.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("EventId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("ExpectedAttendees")
                         .HasColumnType("INTEGER");
 
@@ -308,6 +311,8 @@ namespace CampusEvents.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EventId");
 
                     b.HasIndex("RenterId");
 
@@ -516,6 +521,10 @@ namespace CampusEvents.Migrations
 
             modelBuilder.Entity("CampusEvents.Models.RoomRental", b =>
                 {
+                    b.HasOne("CampusEvents.Models.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId");
+
                     b.HasOne("CampusEvents.Models.User", "Renter")
                         .WithMany("RoomRentals")
                         .HasForeignKey("RenterId")
@@ -527,6 +536,8 @@ namespace CampusEvents.Migrations
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Event");
 
                     b.Navigation("Renter");
 
