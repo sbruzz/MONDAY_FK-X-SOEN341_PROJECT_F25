@@ -30,7 +30,7 @@
 | Sept 16 | Team meeting | Mid-sprint check-in | 1.5 hours | - |
 | Sept 17 | Backend development | Implemented login logic with BCrypt | 5 hours | Task.20 |
 | Sept 18 | Backend development | Added password hashing on signup | 3 hours | Task.21 |
-| Sept 19 | Testing | Tested authentication with all user roles | 3 hours | Task.25 |
+| Sept 19 | Testing | Tested authentication with all user roles | 3 hours | Task.20, Task.21 |
 | Sept 20 | Backend development | Implemented signup logic for students | 4 hours | Task.21 |
 | Sept 21 | Bug fixing | Fixed BCrypt work factor configuration | 2 hours | Task.20 |
 
@@ -45,10 +45,10 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Sept 24 | Team meeting | Sprint 1 review and retrospective | 2 hours | - |
-| Sept 25 | Backend development | Created query for approved events | 3 hours | Task.33 |
-| Sept 26 | Testing | Tested event browsing functionality | 2 hours | Task.33 |
-| Sept 27 | Backend development | Implemented event creation logic | 4 hours | Task.42 |
-| Sept 28 | Testing | End-to-end testing of event creation | 2.5 hours | Task.45 |
+| Sept 25 | Backend development | Continued work on authentication system | 3 hours | Task.20, Task.21 |
+| Sept 26 | Testing | Tested authentication with all user roles | 2 hours | Task.20, Task.21 |
+| Sept 27 | Backend development | Bug fixes and code cleanup | 4 hours | Task.20, Task.21 |
+| Sept 28 | Testing | End-to-end testing of authentication flow | 2.5 hours | Task.20, Task.21 |
 | Sept 29 | Documentation | Added XML comments to Page Models | 1.5 hours | - |
 
 **Total Time This Week:** 15 hours
@@ -69,9 +69,6 @@
 - Task.13 - Create SavedEvent model
 - Task.20 - Implement login logic
 - Task.21 - Implement signup logic
-- Task.33 - Query approved events from database
-- Task.42 - Implement event creation logic
-- Task.45 - Test event creation workflow
 
 ### Challenges Faced
 - **Challenge:** BCrypt performance issues on initial implementation

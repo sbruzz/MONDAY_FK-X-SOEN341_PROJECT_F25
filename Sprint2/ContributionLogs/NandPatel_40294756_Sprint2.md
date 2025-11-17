@@ -44,9 +44,9 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Oct 15 | Team meeting | Sprint 2 review and retrospective | 2 hours | - |
-| Oct 16 | UI polish | Added loading spinners to forms | 2 hours | - |
-| Oct 17 | Frontend development | Improved error message display | 2.5 hours | - |
-| Oct 18 | Testing | Comprehensive testing of authentication flows | 3 hours | - |
+| Oct 16 | Frontend development | Improved login page UI and functionality | 2 hours | Task.31 |
+| Oct 17 | Frontend development | Enhanced login form validation | 2.5 hours | Task.31 |
+| Oct 18 | Testing | Comprehensive testing of authentication flows | 3 hours | Task.31 |
 | Oct 19 | Bug fixing | Fixed edge cases in session management | 2 hours | Task.32 |
 | Oct 20 | Documentation | Documented session handling patterns | 1.5 hours | - |
 
@@ -64,6 +64,7 @@
 - Added loading states and improved error handling
 
 ### Tasks Completed
+- Task.31 - [Frontend] Login
 - Task.32 - [Frontend] Session-based home pages
 
 ### Challenges Faced

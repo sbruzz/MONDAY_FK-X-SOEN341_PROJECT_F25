@@ -16,7 +16,7 @@
 |------|----------|-------------|------------|-------------------|
 | Sept 9 | Team meeting | Sprint 1 kickoff and planning | 2 hours | - |
 | Sept 10 | Environment setup | Installed .NET 9.0 SDK and development tools | 2 hours | - |
-| Sept 11 | Repository setup | Cloned repo and explored Razor Pages structure | 2 hours | Task.03 |
+| Sept 11 | Repository setup | Cloned repo and explored Razor Pages structure | 2 hours | - |
 | Sept 12 | Frontend development | Created SignupStudent.cshtml page | 3.5 hours | Task.19 |
 | Sept 13 | Frontend development | Created SignupOrganizer.cshtml page | 3.5 hours | Task.19 |
 | Sept 14 | UI design | Designed signup form layouts with validation | 2 hours | Task.19 |
@@ -49,7 +49,7 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Sept 24 | Team meeting | Sprint 1 review and retrospective | 2 hours | - |
-| Sept 25 | Frontend development | Created shared layout structure | 3 hours | Task.04 |
+| Sept 25 | Backend development | Created student table | 3 hours | Task.04 |
 | Sept 26 | CSS styling | Styled signup pages with consistent theme | 3.5 hours | Task.19 |
 | Sept 27 | Testing | Cross-browser testing of signup forms | 2 hours | Task.19 |
 | Sept 28 | Code review | Reviewed login page implementation | 1.5 hours | Task.18 |
@@ -70,7 +70,7 @@
 - Created shared layout structure for application
 
 ### Tasks Completed
-- Task.04 - Create shared layout structure
+- Task.04 - [Backend] Creation of the student table
 - Task.19 - Implement signup pages (Student and Organizer)
 
 ### Challenges Faced
@@ -93,4 +93,5 @@
 ---
 
 **Total Time Spent on Sprint 1:** 46.5 hours
+
 
