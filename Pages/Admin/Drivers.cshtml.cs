@@ -59,7 +59,7 @@ public class DriversModel : PageModel
         {
             if (Enum.TryParse<DriverType>(TypeFilter, out var type))
             {
-                query = query.Where(d => d.Type == type);
+                query = query.Where(d => d.DriverType == type);
             }
         }
 
@@ -68,20 +68,20 @@ public class DriversModel : PageModel
         {
             if (StatusFilter == "Active")
             {
-                query = query.Where(d => d.IsActive && !d.IsMarkedByAdmin);
+                query = query.Where(d => d.Status == DriverStatus.Active && !d.SecurityFlags.Contains("flagged") && !d.SecurityFlags.Contains("suspended"));
             }
             else if (StatusFilter == "Marked")
             {
-                query = query.Where(d => d.IsMarkedByAdmin);
+                query = query.Where(d => d.SecurityFlags.Contains("flagged") || d.SecurityFlags.Contains("suspended"));
             }
             else if (StatusFilter == "Inactive")
             {
-                query = query.Where(d => !d.IsActive);
+                query = query.Where(d => d.Status != DriverStatus.Active);
             }
         }
 
         Drivers = await query
-            .OrderBy(d => d.IsMarkedByAdmin)
+            .OrderBy(d => d.SecurityFlags)
             .ThenBy(d => d.CreatedAt)
             .ToListAsync();
 
