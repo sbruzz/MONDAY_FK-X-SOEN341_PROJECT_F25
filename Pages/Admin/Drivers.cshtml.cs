@@ -16,7 +16,7 @@ public class DriversModel : PageModel
     }
 
     public List<Driver> Drivers { get; set; } = new();
-    public List<Passenger> AllPassengers { get; set; } = new();
+    public List<CarpoolPassenger> AllPassengers { get; set; } = new();
 
     [BindProperty(SupportsGet = true)]
     public string? TypeFilter { get; set; }
@@ -83,10 +83,10 @@ public class DriversModel : PageModel
             .ThenBy(d => d.CreatedAt)
             .ToListAsync();
 
-        AllPassengers = await _context.Passengers
-            .Include(p => p.User)
-            .Include(p => p.Driver)
-            .Include(p => p.Event)
+        AllPassengers = await _context.CarpoolPassengers
+            .Include(p => p.Passenger)
+            .Include(p => p.Offer)
+                .ThenInclude(o => o.Driver)
             .ToListAsync();
 
         return Page();
@@ -130,8 +130,9 @@ public class DriversModel : PageModel
 
     public async Task<IActionResult> OnPostReassignPassengerAsync(int passengerId, int newDriverId)
     {
-        var passenger = await _context.Passengers
-            .Include(p => p.Driver)
+        var passenger = await _context.CarpoolPassengers
+            .Include(p => p.Offer)
+                .ThenInclude(o => o.Driver)
             .FirstOrDefaultAsync(p => p.Id == passengerId);
         
         if (passenger == null)
@@ -142,7 +143,8 @@ public class DriversModel : PageModel
         }
 
         var newDriver = await _context.Drivers
-            .Include(d => d.Passengers)
+            .Include(d => d.CarpoolOffers)
+                .ThenInclude(o => o.Passengers)
             .FirstOrDefaultAsync(d => d.Id == newDriverId);
 
         if (newDriver == null)
@@ -161,8 +163,18 @@ public class DriversModel : PageModel
             return RedirectToPage();
         }
 
-        // Reassign
-        passenger.DriverId = newDriverId;
+        // Reassign - need to create a new carpool offer or add to existing one for the new driver
+        // For simplicity, find an active offer from the new driver or create one
+        var newOffer = newDriver.CarpoolOffers.FirstOrDefault(o => o.Status == CarpoolOfferStatus.Active && o.SeatsAvailable > 0);
+        if (newOffer == null)
+        {
+            Message = "Cannot reassign: Driver has no active carpool offers with available seats.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        passenger.OfferId = newOffer.Id;
+        newOffer.SeatsAvailable--;
         await _context.SaveChangesAsync();
 
         Message = $"Passenger has been reassigned successfully.";
@@ -172,7 +184,9 @@ public class DriversModel : PageModel
 
     public async Task<IActionResult> OnPostRemovePassengerAsync(int passengerId)
     {
-        var passenger = await _context.Passengers.FindAsync(passengerId);
+        var passenger = await _context.CarpoolPassengers
+            .Include(p => p.Offer)
+            .FirstOrDefaultAsync(p => p.Id == passengerId);
         if (passenger == null)
         {
             Message = "Passenger not found.";
@@ -180,7 +194,9 @@ public class DriversModel : PageModel
             return RedirectToPage();
         }
 
-        _context.Passengers.Remove(passenger);
+        // Free up the seat in the offer
+        passenger.Offer.SeatsAvailable++;
+        _context.CarpoolPassengers.Remove(passenger);
         await _context.SaveChangesAsync();
 
         Message = $"Passenger has been removed from carpool.";

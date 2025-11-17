@@ -58,7 +58,7 @@
                                     </td>
                                     <td>@(rental.Purpose ?? "N/A")</td>
                                     <td>
-                                        @if (rental.Status == RentalStatus.Rented)
+                                        @if (rental.Status == RentalStatus.Approved)
                                         {
                                             <span class="badge bg-success">Rented</span>
                                         }

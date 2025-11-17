@@ -76,7 +76,7 @@ namespace CampusEvents.Pages.Student
             IsDriver = await _context.Drivers
                 .AnyAsync(d => d.UserId == userId.Value && d.EventId == id && d.IsActive);
             
-            IsPassenger = await _context.Passengers
+            IsPassenger = await _context.CarpoolPassengers
                 .AnyAsync(p => p.UserId == userId.Value && p.EventId == id);
 
             // Load available drivers for this event
@@ -336,7 +336,7 @@ namespace CampusEvents.Pages.Student
             }
 
             // Check if already a passenger
-            var existingPassenger = await _context.Passengers
+            var existingPassenger = await _context.CarpoolPassengers
                 .FirstOrDefaultAsync(p => p.UserId == userId.Value && p.EventId == id);
             
             if (existingPassenger != null)
@@ -365,7 +365,7 @@ namespace CampusEvents.Pages.Student
                 return RedirectToPage(new { id });
             }
 
-            var passenger = new Passenger
+            var passenger = new CarpoolPassenger
             {
                 DriverId = driverId,
                 UserId = userId.Value,
@@ -373,7 +373,7 @@ namespace CampusEvents.Pages.Student
                 AssignedAt = DateTime.UtcNow
             };
 
-            _context.Passengers.Add(passenger);
+            _context.CarpoolPassengers.Add(passenger);
             await _context.SaveChangesAsync();
 
             Message = $"You are now riding with {driver.User.Name}!";

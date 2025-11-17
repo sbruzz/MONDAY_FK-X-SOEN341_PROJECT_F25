@@ -167,7 +167,7 @@ public class DriversModel : PageModel
         // Remove passengers first
         if (driver.Passengers.Any())
         {
-            _context.Passengers.RemoveRange(driver.Passengers);
+            _context.CarpoolPassengers.RemoveRange(driver.Passengers);
         }
 
         _context.Drivers.Remove(driver);

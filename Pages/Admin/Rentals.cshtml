@@ -48,7 +48,7 @@
                         <tbody>
                             @foreach (var room in Model.Rooms)
                             {
-                                var activeRentals = room.Rentals?.Count(r => r.Status == RentalStatus.Rented && r.EndTime > DateTime.UtcNow) ?? 0;
+                                var activeRentals = room.Rentals?.Count(r => r.Status == RentalStatus.Approved && r.EndTime > DateTime.UtcNow) ?? 0;
                                 <tr class="@(!room.IsEnabled ? "table-secondary" : "")">
                                     <td>@room.Id</td>
                                     <td><strong>@room.Name</strong></td>
@@ -122,7 +122,7 @@
                         <tbody>
                             @foreach (var rental in Model.AllRentals)
                             {
-                                <tr class="@(rental.Status == RentalStatus.Disabled ? "table-secondary" : "")">
+                                <tr class="@(rental.Status == RentalStatus.Rejected ? "table-secondary" : "")">
                                     <td><strong>@rental.Room.Name</strong></td>
                                     <td>@rental.User.Name</td>
                                     <td>
@@ -131,11 +131,11 @@
                                     </td>
                                     <td>@(rental.Purpose ?? "N/A")</td>
                                     <td>
-                                        @if (rental.Status == RentalStatus.Rented)
+                                        @if (rental.Status == RentalStatus.Approved)
                                         {
                                             <span class="badge bg-success">Rented</span>
                                         }
-                                        else if (rental.Status == RentalStatus.Disabled)
+                                        else if (rental.Status == RentalStatus.Rejected)
                                         {
                                             <span class="badge bg-danger">Disabled</span>
                                         }
@@ -145,7 +145,7 @@
                                         }
                                     </td>
                                     <td>
-                                        @if (rental.Status == RentalStatus.Rented)
+                                        @if (rental.Status == RentalStatus.Approved)
                                         {
                                             <form method="post" asp-page-handler="DisableRental" class="d-inline"
                                                   onsubmit="return confirm('Disable this rental? The room will be unavailable for this time period.');">
@@ -155,7 +155,7 @@
                                                 </button>
                                             </form>
                                         }
-                                        else if (rental.Status == RentalStatus.Disabled)
+                                        else if (rental.Status == RentalStatus.Rejected)
                                         {
                                             <form method="post" asp-page-handler="EnableRental" class="d-inline">
                                                 <input type="hidden" name="id" value="@rental.Id" />

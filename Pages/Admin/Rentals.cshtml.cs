@@ -17,7 +17,7 @@ public class RentalsModel : PageModel
     }
 
     public List<Room> Rooms { get; set; } = new();
-    public List<Rental> AllRentals { get; set; } = new();
+    public List<RoomRental> AllRentals { get; set; } = new();
 
     [BindProperty]
     public RoomInputModel RoomInput { get; set; } = new();
@@ -65,7 +65,7 @@ public class RentalsModel : PageModel
             .OrderBy(r => r.Name)
             .ToListAsync();
 
-        AllRentals = await _context.Rentals
+        AllRentals = await _context.RoomRentals
             .Include(r => r.Room)
             .Include(r => r.User)
             .Include(r => r.Event)
@@ -80,7 +80,7 @@ public class RentalsModel : PageModel
         if (!ModelState.IsValid)
         {
             Rooms = await _context.Rooms.Include(r => r.Rentals).ToListAsync();
-            AllRentals = await _context.Rentals
+            AllRentals = await _context.RoomRentals
                 .Include(r => r.Room)
                 .Include(r => r.User)
                 .ToListAsync();
@@ -90,7 +90,7 @@ public class RentalsModel : PageModel
         var room = new Room
         {
             Name = RoomInput.Name,
-            Location = RoomInput.Location,
+            Address = RoomInput.Location,
             Description = RoomInput.Description,
             Capacity = RoomInput.Capacity,
             IsEnabled = true,
@@ -153,7 +153,7 @@ public class RentalsModel : PageModel
 
     public async Task<IActionResult> OnPostDisableRentalAsync(int id)
     {
-        var rental = await _context.Rentals.FindAsync(id);
+        var rental = await _context.RoomRentals.FindAsync(id);
         if (rental == null)
         {
             Message = "Rental not found.";
@@ -161,7 +161,7 @@ public class RentalsModel : PageModel
             return RedirectToPage();
         }
 
-        rental.Status = RentalStatus.Disabled;
+        rental.Status = RentalStatus.Rejected;
         await _context.SaveChangesAsync();
 
         Message = "Rental has been disabled. The room will be unavailable for this time period.";
@@ -171,7 +171,7 @@ public class RentalsModel : PageModel
 
     public async Task<IActionResult> OnPostEnableRentalAsync(int id)
     {
-        var rental = await _context.Rentals.FindAsync(id);
+        var rental = await _context.RoomRentals.FindAsync(id);
         if (rental == null)
         {
             Message = "Rental not found.";
@@ -179,7 +179,7 @@ public class RentalsModel : PageModel
             return RedirectToPage();
         }
 
-        rental.Status = RentalStatus.Rented;
+        rental.Status = RentalStatus.Approved;
         await _context.SaveChangesAsync();
 
         Message = "Rental has been re-enabled.";
