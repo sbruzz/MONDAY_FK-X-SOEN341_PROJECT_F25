@@ -15,11 +15,11 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Oct 21 | Team meeting | Sprint 3 planning and task assignment | 2.5 hours | - |
-| Oct 22 | Frontend development | Implemented QR scanner file upload interface | 4.5 hours | Task.45 |
-| Oct 23 | Frontend development | Created QR validation result display | 3.5 hours | Task.45 |
-| Oct 24 | Frontend development | Built ticket redemption tracking UI | 4 hours | Task.45 |
-| Oct 25 | UI polish | Styled QR scanner page with consistent design | 2.5 hours | Task.45 |
-| Oct 26 | Testing | Tested QR scanner file upload functionality | 2 hours | Task.45 |
+| Oct 22 | Frontend development | Implemented QR scanner file upload interface | 4.5 hours | Task.20 |
+| Oct 23 | Frontend development | Created QR validation result display | 3.5 hours | Task.20 |
+| Oct 24 | Frontend development | Built ticket redemption tracking UI | 4 hours | Task.20 |
+| Oct 25 | UI polish | Styled QR scanner page with consistent design | 2.5 hours | Task.20 |
+| Oct 26 | Testing | Tested QR scanner file upload functionality | 2 hours | Task.20 |
 
 **Total Time This Week:** 18 hours
 
@@ -32,43 +32,43 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Oct 30 | Team meeting | Mid-sprint check-in | 1.5 hours | - |
-| Oct 31 | Frontend development | Enhanced QR scanner with validation feedback | 3.5 hours | Task.45 |
-| Nov 1 | UI consistency | Standardized form styling across all pages | 4 hours | Task.44 |
-| Nov 2 | Responsive design | Improved mobile responsiveness for forms | 3.5 hours | Task.44 |
-| Nov 3 | UI polish | Added loading states to all forms | 3 hours | Task.44 |
-| Nov 3 | Testing | Cross-browser testing of QR scanner | 2 hours | Task.45 |
+| Oct 31 | Frontend development | Enhanced QR scanner with validation feedback | 3.5 hours | Task.20 |
+| Nov 1 | UI consistency | Standardized form styling across all pages | 4 hours | - |
+| Nov 2 | Responsive design | Improved mobile responsiveness for forms | 3.5 hours | - |
+| Nov 3 | UI polish | Added loading states to all forms | 3 hours | - |
+| Nov 3 | Testing | Cross-browser testing of QR scanner | 2 hours | Task.20 |
 
 **Total Time This Week:** 17.5 hours
 
 ---
 
-## Week 3 (Nov 4 - Nov 10, 2025)
+## Week 3 (Nov 4 - Nov 8, 2025)
 
 ### Activities
 
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
-| Nov 4 | Frontend development | Created admin event moderation interface | 4 hours | Task.42 |
-| Nov 5 | Frontend development | Implemented event approval/rejection UI | 3.5 hours | Task.42 |
-| Nov 6 | UI enhancement | Added confirmation modals for admin actions | 3 hours | Task.42 |
-| Nov 7 | Responsive design | Made admin pages mobile-friendly | 3.5 hours | Task.44 |
-| Nov 8 | Testing | Comprehensive testing of admin interfaces | 2.5 hours | Task.42 |
+| Nov 4 | Frontend development | Created admin event moderation interface | 4 hours | Task.24 |
+| Nov 5 | Frontend development | Implemented event approval/rejection UI | 3.5 hours | Task.24 |
+| Nov 6 | UI enhancement | Added confirmation modals for admin actions | 3 hours | Task.24 |
+| Nov 7 | Responsive design | Made admin pages mobile-friendly | 3.5 hours | - |
+| Nov 8 | Testing | Comprehensive testing of admin interfaces | 2.5 hours | Task.24 |
 
 **Total Time This Week:** 16.5 hours
 
 ---
 
-## Week 4 (Nov 11 - Nov 17, 2025)
+## Week 3 Continued (Nov 9 - Nov 10, 2025)
 
 ### Activities
 
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
-| Nov 14 | Team meeting | Sprint 3 review and retrospective | 2.5 hours | - |
-| Nov 15 | UI polish | Final styling refinements across application | 3 hours | Task.44 |
-| Nov 16 | Testing | End-to-end testing of all user interfaces | 3 hours | - |
-| Nov 17 | Documentation | Documented frontend patterns and components | 2 hours | - |
-| Nov 17 | Code review | Reviewed all frontend implementations | 1.5 hours | - |
+| Nov 9 | Team meeting | Sprint 3 review and retrospective | 2.5 hours | - |
+| Nov 9 | UI polish | Final styling refinements across application | 3 hours | - |
+| Nov 10 | Testing | End-to-end testing of all user interfaces | 3 hours | - |
+| Nov 10 | Documentation | Documented frontend patterns and components | 2 hours | - |
+| Nov 10 | Code review | Reviewed all frontend implementations | 1.5 hours | - |
 
 **Total Time This Week:** 12 hours
 

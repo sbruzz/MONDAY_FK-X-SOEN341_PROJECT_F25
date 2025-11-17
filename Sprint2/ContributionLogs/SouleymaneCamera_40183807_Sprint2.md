@@ -45,9 +45,9 @@
 |------|----------|-------------|------------|-------------------|
 | Oct 15 | Team meeting | Sprint 2 review and retrospective | 2 hours | - |
 | Oct 16 | Code review | Reviewed CSV export button UI | 1 hour | Task.17 |
-| Oct 17 | UI enhancement | Styled search and filter components on student home | 3 hours | - |
-| Oct 18 | CSS organization | Refactored CSS into modular stylesheets | 2.5 hours | - |
-| Oct 19 | Documentation | Created UI component style guide | 2 hours | - |
+| Oct 17 | UI enhancement | Styled search and filter components on student home | 3 hours | Task.29 |
+| Oct 18 | CSS organization | Refactored CSS into modular stylesheets | 2.5 hours | Task.29 |
+| Oct 19 | Documentation | Created UI component style guide | 2 hours | Task.29 |
 | Oct 20 | Sprint prep | Prepared Sprint 3 frontend tasks | 1.5 hours | - |
 
 **Total Time This Week:** 12 hours
@@ -66,6 +66,7 @@
 
 ### Tasks Completed
 - Task.15 - [Frontend] Organizer dashboard
+- Task.29 - [Frontend] Home page
 
 ### Challenges Faced
 - **Challenge:** Dashboard too cluttered on mobile devices

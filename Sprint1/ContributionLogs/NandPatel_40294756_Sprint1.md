@@ -12,10 +12,10 @@
 |------|----------|-------------|------------|-------------------|
 | Sept 9 | Team meeting | Sprint 1 kickoff and planning | 2 hours | - |
 | Sept 10 | Environment setup | Installed .NET 9.0 SDK and development tools | 2 hours | - |
-| Sept 11 | Repository setup | Cloned repo and set up local development | 1.5 hours | Task.03 |
-| Sept 12 | Research | Studied Razor Pages and ASP.NET Core architecture | 3 hours | - |
-| Sept 13 | Frontend development | Created SignupStudent.cshtml page | 3.5 hours | Task.19 |
-| Sept 14 | CSS styling | Added styling to signup form | 2 hours | Task.29 |
+| Sept 11 | Repository setup | Cloned repo and explored Razor Pages structure | 2 hours | - |
+| Sept 12 | Frontend development | Created SignupStudent.cshtml page | 3.5 hours | Task.19 |
+| Sept 13 | Frontend development | Created SignupOrganizer.cshtml page | 3.5 hours | Task.19 |
+| Sept 14 | UI design | Designed signup form layouts with validation | 2 hours | Task.19 |
 
 **Total Time This Week:** 14 hours
 
@@ -45,11 +45,11 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Sept 24 | Team meeting | Sprint 1 review and retrospective | 2 hours | - |
-| Sept 25 | Form enhancement | Added organization field to organizer signup | 2.5 hours | Task.39 |
-| Sept 26 | Frontend development | Created search and filter components | 3.5 hours | Task.37 |
-| Sept 27 | Testing | Tested form validation edge cases | 2 hours | Task.24 |
-| Sept 28 | Bug fixing | Fixed validation issues on signup forms | 2 hours | Task.19 |
-| Sept 29 | Documentation | Documented form validation patterns | 1.5 hours | - |
+| Sept 25 | Backend development | Created student table | 3 hours | Task.04 |
+| Sept 26 | CSS styling | Styled signup pages with consistent theme | 3.5 hours | Task.19 |
+| Sept 27 | Testing | Cross-browser testing of signup forms | 2 hours | Task.19 |
+| Sept 28 | Code review | Reviewed login page implementation | 1.5 hours | Task.18 |
+| Sept 29 | Documentation | Documented signup page structure | 1.5 hours | - |
 
 **Total Time This Week:** 13.5 hours
 
@@ -66,12 +66,8 @@
 - Implemented Razor validation tag helpers
 
 ### Tasks Completed
-- Task.03 - Repository setup
-- Task.19 - Create SignupStudent page
-- Task.24 - Add form validation (client & server)
-- Task.29 - Add CSS styling
-- Task.37 - Add navigation between pages
-- Task.39 - Add organization field to signup
+- Task.04 - [Backend] Creation of the student table
+- Task.19 - Implement signup pages (Student and Organizer)
 
 ### Challenges Faced
 - **Challenge:** Form validation not displaying errors properly
@@ -93,4 +89,6 @@
 
 ---
 
-**Total Time Spent on Sprint 1:** 44 hours
+**Total Time Spent on Sprint 1:** 46.5 hours
+
+

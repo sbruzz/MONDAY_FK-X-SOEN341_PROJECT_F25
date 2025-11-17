@@ -11,11 +11,11 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Sept 9 | Team meeting | Sprint 1 kickoff and planning | 2 hours | - |
-| Sept 10 | Environment setup | Set up development environment, installed .NET SDK | 2.5 hours | - |
-| Sept 11 | Repository setup | Cloned repository, reviewed codebase structure | 1.5 hours | Task.03 |
-| Sept 12 | Database modeling | Created Organization model | 2 hours | Task.12 |
-| Sept 13 | Database configuration | Configured AppDbContext with DbSets | 3 hours | Task.14 |
-| Sept 14 | Migration | Created initial database migration | 2 hours | Task.16 |
+| Sept 10 | Environment setup | Installed .NET 9.0 SDK and VS Code extensions | 2 hours | - |
+| Sept 11 | Repository setup | Cloned repo and reviewed project structure | 1.5 hours | - |
+| Sept 12 | Database modeling | Created Organization model with relationships | 3.5 hours | Task.12 |
+| Sept 13 | Code review | Reviewed User and Event models for consistency | 1.5 hours | - |
+| Sept 14 | Migration preparation | Prepared database schema for initial migration | 2 hours | Task.15 |
 
 **Total Time This Week:** 13 hours
 
@@ -92,4 +92,6 @@
 
 ---
 
-**Total Time Spent on Sprint 1:** 43.5 hours
+**Total Time Spent on Sprint 1:** 40.5 hours
+
+

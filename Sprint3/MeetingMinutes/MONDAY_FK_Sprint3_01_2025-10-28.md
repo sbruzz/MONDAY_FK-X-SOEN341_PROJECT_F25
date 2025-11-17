@@ -117,7 +117,7 @@ Discussed and prioritized user stories:
 - UI polish implementation
 - Integration testing
 
-**Week 4 (Nov 11-17):**
+**Week 4 (Nov 9-10):**
 - Final testing
 - Bug fixes
 - Documentation
