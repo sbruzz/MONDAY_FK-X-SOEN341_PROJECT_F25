@@ -100,19 +100,68 @@
             gap: 0.5rem;
             flex: 1;
             min-width: 0;
-            overflow-x: auto;
-            overflow-y: hidden;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
         }
 
-        .header-nav::-webkit-scrollbar {
-            height: 4px;
+        .mobile-menu-toggle {
+            display: none;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
         }
 
-        .header-nav::-webkit-scrollbar-thumb {
+        .mobile-menu-toggle:hover {
             background: var(--primary);
-            border-radius: 2px;
+            color: white;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            max-height: 500px;
+            display: block;
+        }
+
+        .mobile-nav .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .mobile-nav .nav-link:hover {
+            background: var(--bg);
+            color: var(--primary);
+        }
+
+        .mobile-nav .nav-link.active {
+            background: var(--primary);
+            color: white;
         }
 
         .nav-link {
@@ -238,28 +287,32 @@
             .header-container {
                 flex-wrap: wrap;
                 gap: 1rem;
+                position: relative;
             }
 
             .header-nav {
-                width: 100%;
-                order: 3;
-                padding-bottom: 0.5rem;
-            }
-
-            .header-user {
-                order: 2;
-            }
-
-            .logout-btn {
-                order: 1;
-            }
-
-            .nav-link span {
                 display: none;
             }
 
-            .nav-link {
-                padding: 0.75rem 1rem;
+            .mobile-menu-toggle {
+                display: flex;
+                order: 2;
+            }
+
+            .header-user {
+                order: 3;
+            }
+
+            .logout-btn {
+                order: 4;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .header-brand span {
+                font-size: 1rem;
             }
         }
 
@@ -358,6 +411,9 @@
                 <i class="bi bi-calendar-check"></i>
                 <span>CampusEvents</span>
             </a>
+            <button class="mobile-menu-toggle" type="button" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                <i class="bi bi-list" id="menuIcon"></i>
+            </button>
             <nav class="header-nav">
                 <a href="/Organizer/Home" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Home") ? "active" : "")">
                     <i class="bi bi-house-door"></i>
@@ -382,6 +438,33 @@
                         <span>@pendingCount Pending Approval</span>
                     </div>
                 }
+                <a href="/Organizer/Drivers" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Drivers") ? "active" : "")">
+                    <i class="bi bi-car-front"></i>
+                    <span>Drivers</span>
+                </a>
+                <a href="/Organizer/Rentals" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Rentals") ? "active" : "")">
+                    <i class="bi bi-door-open"></i>
+                    <span>Rentals</span>
+                </a>
+            </nav>
+            <!-- Mobile Navigation -->
+            <nav class="mobile-nav" id="mobileNav">
+                <a href="/Organizer/Home" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Home") ? "active" : "")">
+                    <i class="bi bi-house-door"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/Organizer/CreateEvent" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/CreateEvent") ? "active" : "")">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Create Event</span>
+                </a>
+                <a href="/Organizer/Events" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Events") && !Context.Request.Path.StartsWithSegments("/Organizer/EventDetails") ? "active" : "")">
+                    <i class="bi bi-calendar2-event"></i>
+                    <span>My Events</span>
+                    @if (eventsCount > 0)
+                    {
+                        <span class="badge">@eventsCount</span>
+                    }
+                </a>
                 <a href="/Organizer/Drivers" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Drivers") ? "active" : "")">
                     <i class="bi bi-car-front"></i>
                     <span>Drivers</span>
@@ -456,6 +539,34 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuIcon = document.getElementById('menuIcon');
+            mobileNav.classList.toggle('active');
+            if (mobileNav.classList.contains('active')) {
+                menuIcon.classList.remove('bi-list');
+                menuIcon.classList.add('bi-x');
+            } else {
+                menuIcon.classList.remove('bi-x');
+                menuIcon.classList.add('bi-list');
+            }
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            if (mobileNav && menuToggle && !mobileNav.contains(event.target) && !menuToggle.contains(event.target)) {
+                mobileNav.classList.remove('active');
+                const menuIcon = document.getElementById('menuIcon');
+                if (menuIcon) {
+                    menuIcon.classList.remove('bi-x');
+                    menuIcon.classList.add('bi-list');
+                }
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
