@@ -86,11 +86,13 @@ public class RoomRental
     /// <summary>
     /// Optional event ID if rental is for an event (legacy)
     /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
     public int? EventId { get; set; }
 
     /// <summary>
     /// Optional event if rental is for an event (legacy)
     /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
     public Event? Event { get; set; }
 
     // Backward compatibility
