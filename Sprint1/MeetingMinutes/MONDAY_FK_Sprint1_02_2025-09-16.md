@@ -24,7 +24,8 @@
 
 ## Discussion Points
 
-### 1. Progress Update (Week 1 Complete)
+### 1. Progress Update
+**Note:** This meeting focused on adding info to Moodle team sheet and adding everyone to Git.
 
 **Burndown Status:**
 - Started with ~35 story points
@@ -167,4 +168,5 @@
 ---
 
 **Meeting Adjourned:** 15:30
+
 

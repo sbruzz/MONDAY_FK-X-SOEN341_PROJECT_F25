@@ -93,6 +93,12 @@ public class Driver
     /// </summary>
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    // Computed properties for frontend compatibility
+    public bool IsActive => Status == DriverStatus.Active;
+    public bool IsMarkedByAdmin => SecurityFlags.Contains("flagged") || SecurityFlags.Contains("marked");
+    public bool HasAccessibility => !string.IsNullOrEmpty(AccessibilityFeatures);
+    public DriverType Type => DriverType; // Alias for frontend
+
     // Navigation properties
 
     /// <summary>
@@ -104,4 +110,15 @@ public class Driver
     /// Carpool offers created by this driver
     /// </summary>
     public ICollection<CarpoolOffer> CarpoolOffers { get; set; } = new List<CarpoolOffer>();
+
+    /// <summary>
+    /// Passengers for frontend compatibility (computed from CarpoolOffers)
+    /// </summary>
+    public IEnumerable<CarpoolPassenger> Passengers
+    {
+        get
+        {
+            return CarpoolOffers?.SelectMany(o => o.Passengers ?? Enumerable.Empty<CarpoolPassenger>()) ?? Enumerable.Empty<CarpoolPassenger>();
+        }
+    }
 }

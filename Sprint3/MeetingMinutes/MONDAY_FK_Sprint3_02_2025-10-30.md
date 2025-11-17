@@ -160,7 +160,7 @@
 - [ ] Follow up on additional feature approval - Kevin - Due: Nov 1
 
 ## Next Meeting
-- **Date:** 2025-11-14
+- **Date:** 2025-11-10
 - **Time:** 14:00
 - **Agenda:** Sprint 3 review and retrospective
 

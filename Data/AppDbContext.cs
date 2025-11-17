@@ -23,6 +23,7 @@ public class AppDbContext : DbContext
     // Room rental system entities (US.04)
     public DbSet<Room> Rooms { get; set; }
     public DbSet<RoomRental> RoomRentals { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -34,28 +35,30 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<SavedEvent>()
             .HasOne(se => se.User)
             .WithMany(u => u.SavedEvents)
-            .HasForeignKey(se => se.UserId);
+            .HasForeignKey(se => se.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<SavedEvent>()
             .HasOne(se => se.Event)
             .WithMany(e => e.SavedByUsers)
-            .HasForeignKey(se => se.EventId);
+            .HasForeignKey(se => se.EventId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Configure User-Event relationship (Organizer)
-        modelBuilder.Entity<Event>()
-            .HasOne(e => e.Organizer)
-            .WithMany(u => u.OrganizedEvents)
-            .HasForeignKey(e => e.OrganizerId)
-            .OnDelete(DeleteBehavior.Restrict);
+        // Configure Ticket-User relationship
+        modelBuilder.Entity<Ticket>()
+            .HasOne(t => t.User)
+            .WithMany(u => u.Tickets)
+            .HasForeignKey(t => t.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Configure Event-Organization relationship
-        modelBuilder.Entity<Event>()
-            .HasOne(e => e.Organization)
-            .WithMany(o => o.Events)
-            .HasForeignKey(e => e.OrganizationId)
-            .OnDelete(DeleteBehavior.SetNull);
+        // Configure Ticket-Event relationship
+        modelBuilder.Entity<Ticket>()
+            .HasOne(t => t.Event)
+            .WithMany(e => e.Tickets)
+            .HasForeignKey(t => t.EventId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Configure unique email for User
+        // Configure unique email
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique();
@@ -129,5 +132,5 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<RoomRental>()
             .HasIndex(rr => new { rr.RoomId, rr.StartTime, rr.EndTime });
     }
-    
+
 }
