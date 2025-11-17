@@ -41,26 +41,156 @@ public class DbCSVCommunicator
             Console.WriteLine("   ⚠️  IMPORTANT: Change this password after first login!");
         }
 
-        // Only add test users if they don't already exist (prevents duplicate key error)
-        if (!_context.Users.Any(u => u.Id >= 501 && u.Id <= 510))
+        // Seed comprehensive demo data
+        if (!_context.Users.Any(u => u.Id >= 501 && u.Id <= 515))
         {
-            _context.Users.AddRange(new User { Id = 501, Email = "user1@example.com", PasswordHash = "hash1", Name = "Alice Smith", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, DateTimeKind.Utc) },
-                new User { Id = 502, Email = "user2@example.com", PasswordHash = "hash2", Name = "Bob Johnson", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 2, 11, 0, 0, DateTimeKind.Utc) },
-                new User { Id = 503, Email = "user3@example.com", PasswordHash = "hash3", Name = "Carol Williams", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 3, 12, 0, 0, DateTimeKind.Utc) },
-                new User { Id = 504, Email = "user4@example.com", PasswordHash = "hash4", Name = "David Brown", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 4, 13, 0, 0, DateTimeKind.Utc) },
-                new User { Id = 505, Email = "user5@example.com", PasswordHash = "hash5", Name = "Eve Davis", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 5, 14, 0, 0, DateTimeKind.Utc) },
-                new User { Id = 506, Email = "user6@example.com", PasswordHash = "hash6", Name = "Frank Miller", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 6, 15, 0, 0, DateTimeKind.Utc) },
-                new User { Id = 507, Email = "user7@example.com", PasswordHash = "hash7", Name = "Grace Wilson", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 7, 16, 0, 0, DateTimeKind.Utc) },
-                new User { Id = 508, Email = "user8@example.com", PasswordHash = "hash8", Name = "Hank Moore", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 8, 17, 0, 0, DateTimeKind.Utc) },
-                new User { Id = 509, Email = "user9@example.com", PasswordHash = "hash9", Name = "Ivy Taylor", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 9, 18, 0, 0, DateTimeKind.Utc) },
-                new User { Id = 510, Email = "user10@example.com", PasswordHash = "hash10", Name = "Jack Anderson", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = new DateTime(2025, 1, 10, 19, 0, 0, DateTimeKind.Utc) });
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword("Demo@123");
+
+            // Add students
+            _context.Users.AddRange(
+                new User { Id = 501, Email = "alice.smith@student.concordia.ca", PasswordHash = hashedPassword, Name = "Alice Smith", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, StudentId = "40101001", Program = "Computer Science", YearOfStudy = "3rd Year", PhoneNumber = "5141234567", CreatedAt = DateTime.UtcNow.AddDays(-30) },
+                new User { Id = 502, Email = "bob.johnson@student.concordia.ca", PasswordHash = hashedPassword, Name = "Bob Johnson", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, StudentId = "40101002", Program = "Engineering", YearOfStudy = "2nd Year", PhoneNumber = "5141234568", CreatedAt = DateTime.UtcNow.AddDays(-25) },
+                new User { Id = 503, Email = "carol.williams@student.concordia.ca", PasswordHash = hashedPassword, Name = "Carol Williams", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, StudentId = "40101003", Program = "Business", YearOfStudy = "4th Year", PhoneNumber = "5141234569", CreatedAt = DateTime.UtcNow.AddDays(-20) },
+                new User { Id = 504, Email = "david.brown@student.concordia.ca", PasswordHash = hashedPassword, Name = "David Brown", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, StudentId = "40101004", Program = "Computer Science", YearOfStudy = "1st Year", PhoneNumber = "5141234570", CreatedAt = DateTime.UtcNow.AddDays(-15) },
+                new User { Id = 505, Email = "eve.davis@student.concordia.ca", PasswordHash = hashedPassword, Name = "Eve Davis", Role = UserRole.Student, ApprovalStatus = ApprovalStatus.Approved, StudentId = "40101005", Program = "Arts", YearOfStudy = "2nd Year", PhoneNumber = "5141234571", CreatedAt = DateTime.UtcNow.AddDays(-10) }
+            );
+
+            // Add organizers
+            _context.Users.AddRange(
+                new User { Id = 511, Email = "tech.club@concordia.ca", PasswordHash = hashedPassword, Name = "Sarah Martinez", Role = UserRole.Organizer, ApprovalStatus = ApprovalStatus.Approved, Position = "President", Department = "Computer Science", PhoneNumber = "5149876543", CreatedAt = DateTime.UtcNow.AddDays(-60) },
+                new User { Id = 512, Email = "music.society@concordia.ca", PasswordHash = hashedPassword, Name = "Mike Chen", Role = UserRole.Organizer, ApprovalStatus = ApprovalStatus.Approved, Position = "Coordinator", Department = "Fine Arts", PhoneNumber = "5149876544", CreatedAt = DateTime.UtcNow.AddDays(-55) },
+                new User { Id = 513, Email = "sports.association@concordia.ca", PasswordHash = hashedPassword, Name = "Jennifer Lee", Role = UserRole.Organizer, ApprovalStatus = ApprovalStatus.Approved, Position = "Director", Department = "Athletics", PhoneNumber = "5149876545", CreatedAt = DateTime.UtcNow.AddDays(-50) }
+            );
+
+            // Add pending organizers (to show approval workflow)
+            _context.Users.AddRange(
+                new User { Id = 514, Email = "new.club@concordia.ca", PasswordHash = hashedPassword, Name = "Tom Wilson", Role = UserRole.Organizer, ApprovalStatus = ApprovalStatus.Pending, Position = "Founder", Department = "Business", PhoneNumber = "5149876546", CreatedAt = DateTime.UtcNow.AddDays(-2) },
+                new User { Id = 515, Email = "pending.org@concordia.ca", PasswordHash = hashedPassword, Name = "Lisa Garcia", Role = UserRole.Organizer, ApprovalStatus = ApprovalStatus.Pending, Position = "President", Department = "Engineering", PhoneNumber = "5149876547", CreatedAt = DateTime.UtcNow.AddDays(-1) }
+            );
+
             _context.SaveChanges();
-            Console.WriteLine("Test users added to database.");
+            Console.WriteLine("✅ Demo users created (Students: 5, Organizers: 3, Pending: 2)");
+            Console.WriteLine("   All passwords: Demo@123");
         }
-        else
+
+        // Seed organizations
+        if (!_context.Organizations.Any(o => o.Id >= 901 && o.Id <= 903))
         {
-            Console.WriteLine("Test users already exist in database, skipping seed.");
+            _context.Organizations.AddRange(
+                new Organization { Id = 901, Name = "Tech Innovators Club", Description = "Exploring cutting-edge technology and innovation", CreatedAt = DateTime.UtcNow.AddDays(-60) },
+                new Organization { Id = 902, Name = "Concordia Music Society", Description = "Bringing music lovers together", CreatedAt = DateTime.UtcNow.AddDays(-55) },
+                new Organization { Id = 903, Name = "Sports & Wellness Association", Description = "Promoting health and fitness on campus", CreatedAt = DateTime.UtcNow.AddDays(-50) }
+            );
+            _context.SaveChanges();
+
+            // Link organizers to organizations
+            var org511 = _context.Users.Find(511);
+            var org512 = _context.Users.Find(512);
+            var org513 = _context.Users.Find(513);
+            if (org511 != null) org511.OrganizationId = 901;
+            if (org512 != null) org512.OrganizationId = 902;
+            if (org513 != null) org513.OrganizationId = 903;
+            _context.SaveChanges();
+
+            Console.WriteLine("✅ Organizations created and linked");
         }
+
+        // Seed events
+        if (!_context.Events.Any(e => e.Id >= 801 && e.Id <= 806))
+        {
+            // Get existing approved organizers to link events to
+            var existingOrganizers = _context.Users
+                .Where(u => u.Role == UserRole.Organizer && u.ApprovalStatus == ApprovalStatus.Approved)
+                .Take(3)
+                .ToList();
+
+            // If no organizers exist, use demo organizers (511, 512, 513)
+            // Otherwise use existing organizers
+            int organizer1Id = existingOrganizers.Count > 0 ? existingOrganizers[0].Id : 511;
+            int organizer2Id = existingOrganizers.Count > 1 ? existingOrganizers[1].Id : 512;
+            int organizer3Id = existingOrganizers.Count > 2 ? existingOrganizers[2].Id : 513;
+
+            // Get organization IDs (use null if no organizations exist)
+            int? org1Id = existingOrganizers.Count > 0 ? existingOrganizers[0].OrganizationId : 901;
+            int? org2Id = existingOrganizers.Count > 1 ? existingOrganizers[1].OrganizationId : 902;
+            int? org3Id = existingOrganizers.Count > 2 ? existingOrganizers[2].OrganizationId : 903;
+
+            _context.Events.AddRange(
+                new Event { Id = 801, Title = "AI & Machine Learning Workshop", Description = "Learn the fundamentals of AI and ML", Category = "Workshop", EventDate = DateTime.UtcNow.AddDays(7), Location = "H-110", Capacity = 50, TicketType = TicketType.Free, Price = 0, OrganizerId = organizer1Id, OrganizationId = org1Id, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = DateTime.UtcNow.AddDays(-20) },
+                new Event { Id = 802, Title = "Open Mic Night", Description = "Showcase your musical talents", Category = "Social", EventDate = DateTime.UtcNow.AddDays(10), Location = "D-110", Capacity = 100, TicketType = TicketType.Paid, Price = 5, OrganizerId = organizer2Id, OrganizationId = org2Id, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = DateTime.UtcNow.AddDays(-18) },
+                new Event { Id = 803, Title = "Campus 5K Fun Run", Description = "Join us for a healthy morning run", Category = "Sports", EventDate = DateTime.UtcNow.AddDays(14), Location = "Loyola Campus", Capacity = 200, TicketType = TicketType.Paid, Price = 10, OrganizerId = organizer3Id, OrganizationId = org3Id, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = DateTime.UtcNow.AddDays(-15) },
+                new Event { Id = 804, Title = "Hackathon 2025", Description = "24-hour coding competition", Category = "Competition", EventDate = DateTime.UtcNow.AddDays(21), Location = "H-Building", Capacity = 80, TicketType = TicketType.Free, Price = 0, OrganizerId = organizer1Id, OrganizationId = org1Id, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = DateTime.UtcNow.AddDays(-10) },
+                new Event { Id = 805, Title = "Career Fair 2025", Description = "Meet potential employers", Category = "Career", EventDate = DateTime.UtcNow.AddDays(30), Location = "MB Building", Capacity = 500, TicketType = TicketType.Free, Price = 0, OrganizerId = organizer1Id, OrganizationId = org1Id, ApprovalStatus = ApprovalStatus.Pending, CreatedAt = DateTime.UtcNow.AddDays(-3) },
+                new Event { Id = 806, Title = "Jazz Concert", Description = "Evening of smooth jazz", Category = "Concert", EventDate = DateTime.UtcNow.AddDays(5), Location = "D-Theater", Capacity = 150, TicketType = TicketType.Paid, Price = 15, OrganizerId = organizer2Id, OrganizationId = org2Id, ApprovalStatus = ApprovalStatus.Approved, CreatedAt = DateTime.UtcNow.AddDays(-25) }
+            );
+            _context.SaveChanges();
+            Console.WriteLine($"✅ Events created (6 events, 1 pending approval) - Linked to {existingOrganizers.Count} existing organizers");
+        }
+
+        // Seed drivers
+        if (!_context.Drivers.Any(d => d.Id >= 701 && d.Id <= 703))
+        {
+            _context.Drivers.AddRange(
+                new Driver { Id = 701, UserId = 501, Capacity = 4, VehicleType = VehicleType.Sedan, DriverType = DriverType.Student, LicensePlate = "ABC123", Status = DriverStatus.Active, AccessibilityFeatures = "Wheelchair Accessible", SecurityFlags = "", History = "", CreatedAt = DateTime.UtcNow.AddDays(-15) },
+                new Driver { Id = 702, UserId = 502, Capacity = 6, VehicleType = VehicleType.SUV, DriverType = DriverType.Student, LicensePlate = "XYZ789", Status = DriverStatus.Active, SecurityFlags = "", History = "", CreatedAt = DateTime.UtcNow.AddDays(-10) },
+                new Driver { Id = 703, UserId = 503, Capacity = 3, VehicleType = VehicleType.Mini, DriverType = DriverType.Student, Status = DriverStatus.Pending, SecurityFlags = "", History = "", CreatedAt = DateTime.UtcNow.AddDays(-2) }
+            );
+            _context.SaveChanges();
+            Console.WriteLine("✅ Drivers created (2 active, 1 pending)");
+        }
+
+        // Seed carpool offers
+        if (!_context.CarpoolOffers.Any(co => co.Id >= 601 && co.Id <= 603))
+        {
+            _context.CarpoolOffers.AddRange(
+                new CarpoolOffer { Id = 601, EventId = 801, DriverId = 701, SeatsAvailable = 3, DepartureInfo = "Metro Snowdon", DepartureTime = DateTime.UtcNow.AddDays(7).AddHours(-1), Status = CarpoolOfferStatus.Active, Latitude = 45.4869, Longitude = -73.6278, CreatedAt = DateTime.UtcNow.AddDays(-5) },
+                new CarpoolOffer { Id = 602, EventId = 802, DriverId = 702, SeatsAvailable = 5, DepartureInfo = "Loyola Campus", DepartureTime = DateTime.UtcNow.AddDays(10).AddHours(-0.5), Status = CarpoolOfferStatus.Active, Latitude = 45.4586, Longitude = -73.6398, CreatedAt = DateTime.UtcNow.AddDays(-4) },
+                new CarpoolOffer { Id = 603, EventId = 804, DriverId = 701, SeatsAvailable = 2, DepartureInfo = "Guy-Concordia Metro", DepartureTime = DateTime.UtcNow.AddDays(21).AddHours(-1), Status = CarpoolOfferStatus.Active, Latitude = 45.4974, Longitude = -73.5779, CreatedAt = DateTime.UtcNow.AddDays(-3) }
+            );
+            _context.SaveChanges();
+            Console.WriteLine("✅ Carpool offers created (3 active rides)");
+        }
+
+        // Seed rooms
+        if (!_context.Rooms.Any(r => r.Id >= 401 && r.Id <= 403))
+        {
+            // Get existing approved organizers to link rooms to
+            var existingOrganizers = _context.Users
+                .Where(u => u.Role == UserRole.Organizer && u.ApprovalStatus == ApprovalStatus.Approved)
+                .Take(3)
+                .ToList();
+
+            // If no organizers exist, use demo organizers (511, 512, 513)
+            int organizer1Id = existingOrganizers.Count > 0 ? existingOrganizers[0].Id : 511;
+            int organizer2Id = existingOrganizers.Count > 1 ? existingOrganizers[1].Id : 512;
+            int organizer3Id = existingOrganizers.Count > 2 ? existingOrganizers[2].Id : 513;
+
+            _context.Rooms.AddRange(
+                new Room { Id = 401, OrganizerId = organizer1Id, Name = "Tech Lab Main Room", Address = "H-920, Hall Building", Capacity = 30, Status = RoomStatus.Enabled, Amenities = "Projector,Whiteboard,WiFi", HourlyRate = 25, RoomInfo = "Perfect for workshops and meetings", AvailabilityStart = DateTime.UtcNow, AvailabilityEnd = DateTime.UtcNow.AddDays(90), CreatedAt = DateTime.UtcNow.AddDays(-40) },
+                new Room { Id = 402, OrganizerId = organizer2Id, Name = "Music Practice Studio", Address = "D-205, D Building", Capacity = 15, Status = RoomStatus.Enabled, Amenities = "Piano,Sound System,Microphones", HourlyRate = 15, RoomInfo = "Soundproof practice space", AvailabilityStart = DateTime.UtcNow, AvailabilityEnd = DateTime.UtcNow.AddDays(60), CreatedAt = DateTime.UtcNow.AddDays(-35) },
+                new Room { Id = 403, OrganizerId = organizer3Id, Name = "Fitness Training Room", Address = "PERFORM Centre", Capacity = 20, Status = RoomStatus.Enabled, Amenities = "Mats,Mirrors,Sound System", RoomInfo = "Great for yoga and fitness classes", AvailabilityStart = DateTime.UtcNow, AvailabilityEnd = DateTime.UtcNow.AddDays(120), CreatedAt = DateTime.UtcNow.AddDays(-30) }
+            );
+            _context.SaveChanges();
+            Console.WriteLine($"✅ Rooms created (3 available rooms) - Linked to {existingOrganizers.Count} existing organizers");
+        }
+
+        // Seed room rentals
+        if (!_context.RoomRentals.Any(rr => rr.Id >= 301 && rr.Id <= 305))
+        {
+            _context.RoomRentals.AddRange(
+                new RoomRental { Id = 301, RoomId = 401, RenterId = 504, StartTime = DateTime.UtcNow.AddDays(3).AddHours(14), EndTime = DateTime.UtcNow.AddDays(3).AddHours(17), Purpose = "Study group session", ExpectedAttendees = 15, Status = RentalStatus.Approved, TotalCost = 75, CreatedAt = DateTime.UtcNow.AddDays(-5) },
+                new RoomRental { Id = 302, RoomId = 402, RenterId = 505, StartTime = DateTime.UtcNow.AddDays(5).AddHours(18), EndTime = DateTime.UtcNow.AddDays(5).AddHours(20), Purpose = "Band practice", ExpectedAttendees = 8, Status = RentalStatus.Pending, TotalCost = 30, CreatedAt = DateTime.UtcNow.AddDays(-2) },
+                new RoomRental { Id = 303, RoomId = 403, RenterId = 501, StartTime = DateTime.UtcNow.AddDays(6).AddHours(10), EndTime = DateTime.UtcNow.AddDays(6).AddHours(12), Purpose = "Yoga class", ExpectedAttendees = 12, Status = RentalStatus.Approved, CreatedAt = DateTime.UtcNow.AddDays(-4) },
+                new RoomRental { Id = 304, RoomId = 401, RenterId = 502, StartTime = DateTime.UtcNow.AddDays(8).AddHours(13), EndTime = DateTime.UtcNow.AddDays(8).AddHours(16), Purpose = "Project presentation prep", ExpectedAttendees = 20, Status = RentalStatus.Pending, TotalCost = 75, CreatedAt = DateTime.UtcNow.AddDays(-1) },
+                new RoomRental { Id = 305, RoomId = 402, RenterId = 503, StartTime = DateTime.UtcNow.AddDays(2).AddHours(15), EndTime = DateTime.UtcNow.AddDays(2).AddHours(17), Purpose = "Music recording session", ExpectedAttendees = 5, Status = RentalStatus.Approved, TotalCost = 30, CreatedAt = DateTime.UtcNow.AddDays(-6) }
+            );
+            _context.SaveChanges();
+            Console.WriteLine("✅ Room rentals created (3 approved, 2 pending)");
+        }
+
+        Console.WriteLine("✅ Demo data seeding completed successfully!");
+        Console.WriteLine("   📧 Login Credentials: any seeded email + password 'Demo@123'");
+        Console.WriteLine("   🔑 Admin: admin@campusevents.com / Admin@123");
         Console.WriteLine("DbMainTest Finished");
     }
 

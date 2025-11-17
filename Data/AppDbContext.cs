@@ -14,8 +14,15 @@ public class AppDbContext : DbContext
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<Organization> Organizations { get; set; }
     public DbSet<SavedEvent> SavedEvents { get; set; }
-    public DbSet<Rental> Rentals { get; set; }
-    public DbSet<Drivers> Drivers{ get; set; }
+
+    // Carpool system entities (US.04)
+    public DbSet<Driver> Drivers { get; set; }
+    public DbSet<CarpoolOffer> CarpoolOffers { get; set; }
+    public DbSet<CarpoolPassenger> CarpoolPassengers { get; set; }
+
+    // Room rental system entities (US.04)
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<RoomRental> RoomRentals { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -57,33 +64,70 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Ticket>()
             .HasIndex(t => t.UniqueCode)
             .IsUnique();
-        
-        //configure rental 
-        modelBuilder.Entity<Rental>()
-            .HasKey(r => new { r.UserId, r.EventId });
 
-        modelBuilder.Entity<Rental>()
-            .HasMany(r => r.users)
-            .WithMany(u => u.Rentedrooms)
-            .HasForeignKey(r => r.UserId);
+        // ===== Carpool System Configuration (US.04) =====
 
-        modelBuilder.Entity<Rental>()
-            .HasOne(r => r.Event)
-            .WithOne(e => e.Rental)
-            .HasForeignKey(r => r.EventId); 
-        //configure driver
-        modelBuilder.Entity<Drivers>()
-            .HasKey(d => new { d.UserId, d.EventId });
+        // Configure Driver-User relationship (one-to-one)
+        modelBuilder.Entity<Driver>()
+            .HasOne(d => d.User)
+            .WithOne(u => u.DriverProfile)
+            .HasForeignKey<Driver>(d => d.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Rental>()
-            .HasMany(d => d.users)
-            .WithOne(u => u.Car)
-            .HasForeignKey(r => r.UserId);
+        // Configure CarpoolOffer-Driver relationship
+        modelBuilder.Entity<CarpoolOffer>()
+            .HasOne(co => co.Driver)
+            .WithMany(d => d.CarpoolOffers)
+            .HasForeignKey(co => co.DriverId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Rental>()
-            .HasOne(d => d.Event)
-            .WithOne(e => e.Rental)
-            .HasForeignKey(d => d.EventId); 
+        // Configure CarpoolOffer-Event relationship
+        modelBuilder.Entity<CarpoolOffer>()
+            .HasOne(co => co.Event)
+            .WithMany(e => e.CarpoolOffers)
+            .HasForeignKey(co => co.EventId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Configure CarpoolPassenger-CarpoolOffer relationship
+        modelBuilder.Entity<CarpoolPassenger>()
+            .HasOne(cp => cp.Offer)
+            .WithMany(co => co.Passengers)
+            .HasForeignKey(cp => cp.OfferId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Configure CarpoolPassenger-User relationship
+        modelBuilder.Entity<CarpoolPassenger>()
+            .HasOne(cp => cp.Passenger)
+            .WithMany(u => u.CarpoolPassengers)
+            .HasForeignKey(cp => cp.PassengerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // ===== Room Rental System Configuration (US.04) =====
+
+        // Configure Room-User relationship (organizer)
+        modelBuilder.Entity<Room>()
+            .HasOne(r => r.Organizer)
+            .WithMany(u => u.ManagedRooms)
+            .HasForeignKey(r => r.OrganizerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configure RoomRental-Room relationship
+        modelBuilder.Entity<RoomRental>()
+            .HasOne(rr => rr.Room)
+            .WithMany(r => r.Rentals)
+            .HasForeignKey(rr => rr.RoomId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Configure RoomRental-User relationship (renter)
+        modelBuilder.Entity<RoomRental>()
+            .HasOne(rr => rr.Renter)
+            .WithMany(u => u.RoomRentals)
+            .HasForeignKey(rr => rr.RenterId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Index for preventing double booking (overlapping rentals)
+        modelBuilder.Entity<RoomRental>()
+            .HasIndex(rr => new { rr.RoomId, rr.StartTime, rr.EndTime });
     }
     
 }

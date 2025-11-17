@@ -340,6 +340,14 @@
                         <span class="badge">@savedCount</span>
                     }
                 </a>
+                <a href="/Student/Carpools" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Carpool") || Context.Request.Path.StartsWithSegments("/Student/BecomeDriver") || Context.Request.Path.StartsWithSegments("/Student/OfferRide") ? "active" : "")">
+                    <i class="bi bi-car-front"></i>
+                    <span>Carpools</span>
+                </a>
+                <a href="/Student/Rooms" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Room") ? "active" : "")">
+                    <i class="bi bi-door-open"></i>
+                    <span>Rooms</span>
+                </a>
             </nav>
             <div class="header-user">
                 <div class="user-avatar">@userName.Substring(0, 1).ToUpper()</div>
