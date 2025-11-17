@@ -21,12 +21,29 @@ namespace CampusEvents.Pages.Student
         public Event? Event { get; set; }
         public bool HasTicket { get; set; }
         public bool IsSaved { get; set; }
+        public List<Driver> AvailableDrivers { get; set; } = new();
+        public bool IsDriver { get; set; }
+        public bool IsPassenger { get; set; }
+        public bool ShouldShowDriverPrompt { get; set; }
 
         [TempData]
         public string? Message { get; set; }
 
         [TempData]
         public bool IsSuccess { get; set; }
+
+        [BindProperty]
+        public DriverInputModel DriverInput { get; set; } = new();
+
+        public class DriverInputModel
+        {
+            public VehicleType VehicleType { get; set; }
+            public int Capacity { get; set; }
+            public bool HasAccessibility { get; set; }
+            public string? VehicleDescription { get; set; }
+            public string? LicensePlate { get; set; }
+            public string? ContactPhone { get; set; }
+        }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -54,6 +71,23 @@ namespace CampusEvents.Pages.Student
             // Check if event is saved
             IsSaved = await _context.SavedEvents
                 .AnyAsync(se => se.EventId == id && se.UserId == userId.Value);
+
+            // Check carpool status
+            IsDriver = await _context.Drivers
+                .AnyAsync(d => d.UserId == userId.Value && d.EventId == id && d.IsActive);
+            
+            IsPassenger = await _context.Passengers
+                .AnyAsync(p => p.UserId == userId.Value && p.EventId == id);
+
+            // Load available drivers for this event
+            AvailableDrivers = await _context.Drivers
+                .Include(d => d.User)
+                .Include(d => d.Passengers)
+                .Where(d => d.EventId == id && d.IsActive && !d.IsMarkedByAdmin)
+                .ToListAsync();
+
+            // Show driver prompt if: has ticket, not already driver/passenger, event has location
+            ShouldShowDriverPrompt = HasTicket && !IsDriver && !IsPassenger && !string.IsNullOrEmpty(Event.Location);
 
             return Page();
         }
@@ -243,6 +277,115 @@ namespace CampusEvents.Pages.Student
                 IsSuccess = true;
             }
 
+            return RedirectToPage(new { id });
+        }
+
+        public async Task<IActionResult> OnPostBecomeDriverAsync(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToPage("/Login");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return await OnGetAsync(id);
+            }
+
+            // Check if already a driver
+            var existingDriver = await _context.Drivers
+                .FirstOrDefaultAsync(d => d.UserId == userId.Value && d.EventId == id);
+            
+            if (existingDriver != null)
+            {
+                Message = "You are already registered as a driver for this event.";
+                IsSuccess = false;
+                return RedirectToPage(new { id });
+            }
+
+            var driver = new Driver
+            {
+                UserId = userId.Value,
+                EventId = id,
+                Type = DriverType.Student,
+                VehicleType = DriverInput.VehicleType,
+                Capacity = DriverInput.Capacity,
+                HasAccessibility = DriverInput.HasAccessibility,
+                VehicleDescription = DriverInput.VehicleDescription,
+                LicensePlate = DriverInput.LicensePlate,
+                ContactPhone = DriverInput.ContactPhone ?? "",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Drivers.Add(driver);
+            await _context.SaveChangesAsync();
+
+            Message = "You are now registered as a driver! Students can request to ride with you.";
+            IsSuccess = true;
+            return RedirectToPage(new { id });
+        }
+
+        public async Task<IActionResult> OnPostChooseDriverAsync(int id, int driverId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToPage("/Login");
+            }
+
+            // Check if already a passenger
+            var existingPassenger = await _context.Passengers
+                .FirstOrDefaultAsync(p => p.UserId == userId.Value && p.EventId == id);
+            
+            if (existingPassenger != null)
+            {
+                Message = "You are already assigned to a driver for this event.";
+                IsSuccess = false;
+                return RedirectToPage(new { id });
+            }
+
+            // Check driver capacity
+            var driver = await _context.Drivers
+                .Include(d => d.Passengers)
+                .FirstOrDefaultAsync(d => d.Id == driverId && d.EventId == id);
+            
+            if (driver == null)
+            {
+                Message = "Driver not found.";
+                IsSuccess = false;
+                return RedirectToPage(new { id });
+            }
+
+            if (driver.Passengers.Count >= driver.Capacity)
+            {
+                Message = "This driver has reached their capacity.";
+                IsSuccess = false;
+                return RedirectToPage(new { id });
+            }
+
+            var passenger = new Passenger
+            {
+                DriverId = driverId,
+                UserId = userId.Value,
+                EventId = id,
+                AssignedAt = DateTime.UtcNow
+            };
+
+            _context.Passengers.Add(passenger);
+            await _context.SaveChangesAsync();
+
+            Message = $"You are now riding with {driver.User.Name}!";
+            IsSuccess = true;
+            return RedirectToPage(new { id });
+        }
+
+        public async Task<IActionResult> OnPostDeclineCarpoolAsync(int id)
+        {
+            // Just set a flag or do nothing - user declined
+            Message = "You can always set up carpooling later if you change your mind.";
+            IsSuccess = true;
             return RedirectToPage(new { id });
         }
 

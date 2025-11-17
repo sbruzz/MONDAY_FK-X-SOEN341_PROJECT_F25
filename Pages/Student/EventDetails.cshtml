@@ -205,6 +205,86 @@ else
                     </div>
                 </div>
 
+                <!-- Carpool Card -->
+                @if (Model.IsDriver)
+                {
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0"><i class="bi bi-car-front"></i> You're a Driver</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">You're registered as a driver for this event. Students can request to ride with you.</p>
+                        </div>
+                    </div>
+                }
+                else if (Model.IsPassenger)
+                {
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0"><i class="bi bi-person"></i> You're a Passenger</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">You're assigned to a driver for this event.</p>
+                        </div>
+                    </div>
+                }
+                else if (Model.HasTicket && !string.IsNullOrEmpty(Model.Event.Location))
+                {
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0"><i class="bi bi-car-front"></i> Carpool Options</h6>
+                        </div>
+                        <div class="card-body">
+                            @if (Model.AvailableDrivers.Any())
+                            {
+                                <p class="mb-3">Available drivers for this event:</p>
+                                @foreach (var driver in Model.AvailableDrivers)
+                                {
+                                    var passengerCount = driver.Passengers?.Count ?? 0;
+                                    var available = passengerCount < driver.Capacity;
+                                    <div class="card mb-2 @(!available ? "border-secondary" : "")">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>@driver.User.Name</strong><br>
+                                                    <small class="text-muted">
+                                                        @driver.VehicleType
+                                                        @if (driver.HasAccessibility)
+                                                        {
+                                                            <span class="badge bg-secondary">Accessible</span>
+                                                        }
+                                                        | @passengerCount/@driver.Capacity passengers
+                                                    </small>
+                                                </div>
+                                                @if (available)
+                                                {
+                                                    <form method="post" asp-page-handler="ChooseDriver" class="d-inline">
+                                                        <input type="hidden" name="id" value="@Model.Event.Id" />
+                                                        <input type="hidden" name="driverId" value="@driver.Id" />
+                                                        <button type="submit" class="btn btn-sm btn-primary">
+                                                            <i class="bi bi-check-circle"></i> Choose
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">Full</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <button type="button" class="btn btn-primary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#becomeDriverModal">
+                                <i class="bi bi-car-front"></i> Become a Driver
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#declineCarpoolModal">
+                                <i class="bi bi-x-circle"></i> Not Interested
+                            </button>
+                        </div>
+                    </div>
+                }
+
                 <!-- Share Card -->
                 <div class="card shadow-sm">
                     <div class="card-body">
@@ -215,6 +295,91 @@ else
                             </button>
                         </div>
                         <input type="hidden" id="eventLink" value="@Url.PageLink("/Student/EventDetails", values: new { id = Model.Event.Id })">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Become Driver Modal -->
+        <div class="modal fade" id="becomeDriverModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-car-front"></i> Become a Driver</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="post" asp-page-handler="BecomeDriver">
+                        <input type="hidden" name="id" value="@Model.Event.Id" />
+                        <div class="modal-body">
+                            <p class="text-muted">Help other students get to the event by offering a ride!</p>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Vehicle Type <span class="text-danger">*</span></label>
+                                <select asp-for="DriverInput.VehicleType" class="form-select" required>
+                                    <option value="">Select...</option>
+                                    <option value="@VehicleType.Car">Car</option>
+                                    <option value="@VehicleType.Van">Van</option>
+                                    <option value="@VehicleType.SUV">SUV</option>
+                                    <option value="@VehicleType.Truck">Truck</option>
+                                    <option value="@VehicleType.Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Passenger Capacity <span class="text-danger">*</span></label>
+                                <input type="number" asp-for="DriverInput.Capacity" class="form-control" min="1" max="15" required />
+                                <small class="text-muted">How many passengers can you take?</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" asp-for="DriverInput.HasAccessibility" class="form-check-input" />
+                                    <label class="form-check-label">Wheelchair accessible</label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Vehicle Description (Optional)</label>
+                                <textarea asp-for="DriverInput.VehicleDescription" class="form-control" rows="2" 
+                                          placeholder="e.g., Red Honda Civic"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">License Plate (Optional)</label>
+                                <input type="text" asp-for="DriverInput.LicensePlate" class="form-control" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Contact Phone (Optional)</label>
+                                <input type="tel" asp-for="DriverInput.ContactPhone" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Register as Driver</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decline Carpool Modal -->
+        <div class="modal fade" id="declineCarpoolModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Not Interested in Carpooling?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You can always set up carpooling later if you change your mind.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form method="post" asp-page-handler="DeclineCarpool" class="d-inline">
+                            <input type="hidden" name="id" value="@Model.Event.Id" />
+                            <button type="submit" class="btn btn-outline-secondary">Decline</button>
+                        </form>
                     </div>
                 </div>
             </div>

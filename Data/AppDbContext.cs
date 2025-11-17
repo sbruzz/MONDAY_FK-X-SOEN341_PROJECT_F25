@@ -14,6 +14,12 @@ public class AppDbContext : DbContext
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<Organization> Organizations { get; set; }
     public DbSet<SavedEvent> SavedEvents { get; set; }
+    
+    // Carpool and Rental system
+    public DbSet<Driver> Drivers { get; set; }
+    public DbSet<Passenger> Passengers { get; set; }
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<Rental> Rentals { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -56,6 +62,57 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Ticket>()
             .HasIndex(t => t.UniqueCode)
             .IsUnique();
+        
+        // Configure Driver relationships
+        modelBuilder.Entity<Driver>()
+            .HasOne(d => d.User)
+            .WithMany()
+            .HasForeignKey(d => d.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<Driver>()
+            .HasOne(d => d.Event)
+            .WithMany()
+            .HasForeignKey(d => d.EventId)
+            .OnDelete(DeleteBehavior.SetNull);
+        
+        // Configure Passenger relationships
+        modelBuilder.Entity<Passenger>()
+            .HasOne(p => p.Driver)
+            .WithMany(d => d.Passengers)
+            .HasForeignKey(p => p.DriverId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<Passenger>()
+            .HasOne(p => p.User)
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<Passenger>()
+            .HasOne(p => p.Event)
+            .WithMany()
+            .HasForeignKey(p => p.EventId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        // Configure Rental relationships
+        modelBuilder.Entity<Rental>()
+            .HasOne(r => r.Room)
+            .WithMany(room => room.Rentals)
+            .HasForeignKey(r => r.RoomId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<Rental>()
+            .HasOne(r => r.User)
+            .WithMany()
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<Rental>()
+            .HasOne(r => r.Event)
+            .WithMany()
+            .HasForeignKey(r => r.EventId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
     
 }
