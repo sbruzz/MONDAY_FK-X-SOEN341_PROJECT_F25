@@ -1,11 +1,7 @@
 # Sprint 1 Contribution Log
-
 **Name:** Dmitrii Cazacu
-
 **Student ID:** 40314501
-
 **GitHub Username:** Hildthelsta
-
 **Role:** Backend Developer
 
 ## Week 1 (Sept 9 - Sept 15, 2025)
@@ -21,7 +17,7 @@
 | Sept 13 | Code review | Reviewed User and Event models for consistency | 1.5 hours | - |
 | Sept 14 | Migration preparation | Prepared database schema for initial migration | 2 hours | Task.15 |
 
-**Total Time This Week:** 12.5 hours
+**Total Time This Week:** 13 hours
 
 ---
 
@@ -32,13 +28,13 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Sept 16 | Team meeting | Mid-sprint check-in | 1.5 hours | - |
-| Sept 17 | Database migration | Created initial EF Core migration | 3 hours | Task.15 |
-| Sept 18 | Migration testing | Tested migration and verified table creation | 2.5 hours | Task.17 |
-| Sept 19 | Backend development | Added Organization-User relationship logic | 3.5 hours | Task.12 |
-| Sept 20 | Testing | Tested database relationships and constraints | 2.5 hours | Task.17 |
-| Sept 21 | Bug fixing | Fixed foreign key constraint issues | 2 hours | Task.15 |
+| Sept 17 | Backend development | Implemented signup logic for students | 4 hours | Task.21 |
+| Sept 18 | Testing | Tested database creation and seed data | 3 hours | Task.17 |
+| Sept 19 | Backend development | Created EventDetailsModel PageModel | 3.5 hours | Task.36 |
+| Sept 20 | Database optimization | Added indexes to frequently queried columns | 2.5 hours | Task.14 |
+| Sept 21 | Code review | Reviewed login backend implementation | 1 hour | Task.20 |
 
-**Total Time This Week:** 16 hours
+**Total Time This Week:** 15.5 hours
 
 ---
 
@@ -49,45 +45,50 @@
 | Date | Activity | Description | Time Spent | Related Issue/Task |
 |------|----------|-------------|------------|-------------------|
 | Sept 24 | Team meeting | Sprint 1 review and retrospective | 2 hours | - |
-| Sept 25 | Code review | Reviewed authentication implementation | 1.5 hours | Task.20 |
-| Sept 26 | Backend development | Created organization query service | 3 hours | Task.34 |
-| Sept 27 | Testing | Tested organization creation and retrieval | 2 hours | Task.34 |
-| Sept 28 | Documentation | Added XML comments to Organization model | 1.5 hours | - |
-| Sept 29 | Migration update | Updated migration after schema changes | 2 hours | Task.15 |
+| Sept 25 | Backend development | Implemented event creation backend logic | 4 hours | Task.42 |
+| Sept 26 | Testing | Integration testing for authentication | 2.5 hours | Task.25 |
+| Sept 27 | Database work | Added relationship configurations in OnModelCreating | 3 hours | Task.14 |
+| Sept 28 | Bug fixing | Fixed foreign key constraint issues | 2 hours | - |
+| Sept 29 | Documentation | Documented database schema and relationships | 1.5 hours | - |
 
-**Total Time This Week:** 12 hours
+**Total Time This Week:** 15 hours
 
 ---
 
 ## Summary
 
 ### Key Contributions
-- Designed and implemented Organization entity model
-- Created Entity Framework Core database migrations
-- Established Organization-User relationship in database schema
-- Implemented organization query service for data retrieval
-- Tested and verified database schema and relationships
+- Created Organization entity model with proper relationships
+- Configured AppDbContext with all DbSets and relationships
+- Implemented database migrations for initial schema
+- Added database indexes for query optimization
+- Built event details page backend
+- Implemented event creation logic with validation
 
 ### Tasks Completed
+- Task.03 - Repository setup and review
 - Task.12 - Create Organization model
-- Task.15 - Database migration creation and management
-- Task.17 - Test database creation and migrations
-- Task.34 - Organization query service
+- Task.14 - Configure AppDbContext with DbSets
+- Task.16 - Create initial migration
+- Task.17 - Test database creation and seeding
+- Task.21 - Implement signup logic (student)
+- Task.36 - Create EventDetails PageModel
+- Task.42 - Implement event creation logic
 
 ### Challenges Faced
-- **Challenge:** Migration conflicts when multiple team members worked on models simultaneously
-  - **Resolution:** Implemented branch-based migration strategy and coordinated model changes
-- **Challenge:** Foreign key constraints causing deletion issues
-  - **Resolution:** Configured proper cascade delete behaviors in EF Core
-- **Challenge:** Database schema changes requiring multiple migration iterations
-  - **Resolution:** Documented migration workflow and created migration rollback procedures
+- **Challenge:** Entity Framework Core foreign key configuration causing circular dependencies
+  - **Resolution:** Studied EF Core relationship patterns and implemented proper navigation properties
+- **Challenge:** Migration conflicts when multiple developers created migrations simultaneously
+  - **Resolution:** Established team workflow for migration creation (one at a time)
+- **Challenge:** Database indexes not improving query performance as expected
+  - **Resolution:** Analyzed query plans and added composite indexes where needed
 
 ### Learnings
-- Mastered Entity Framework Core migration commands and workflows
-- Learned database relationship configuration in EF Core (one-to-many, many-to-one)
-- Improved understanding of database schema design principles
-- Enhanced skills in SQLite database management through EF Core
-- Learned migration strategy for team collaboration
+- Mastered Entity Framework Core fluent API for relationship configuration
+- Learned database migration management and conflict resolution
+- Improved understanding of SQL indexing strategies
+- Enhanced skills in Razor Pages PageModel architecture
+- Learned ASP.NET Core dependency injection patterns
 
 ---
 

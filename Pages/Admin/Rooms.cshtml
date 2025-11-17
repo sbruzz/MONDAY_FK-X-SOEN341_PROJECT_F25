@@ -1,0 +1,247 @@
+@page
+@model CampusEvents.Pages.Admin.RoomsModel
+@{
+    ViewData["Title"] = "Manage Rooms";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-door-closed"></i> Room Management</h1>
+        <a href="/Admin/Home" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Enabled Rooms</h5>
+                    <h2>@Model.Rooms.Count(r => r.Status == CampusEvents.Models.RoomStatus.Enabled)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Disabled</h5>
+                    <h2>@Model.Rooms.Count(r => r.Status == CampusEvents.Models.RoomStatus.Disabled)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Rentals</h5>
+                    <h2>@Model.AllRentals.Count</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Requests</h5>
+                    <h2>@Model.AllRentals.Count(r => r.Status == CampusEvents.Models.RentalStatus.Pending)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rooms Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">All Rooms (@Model.Rooms.Count)</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Room</th>
+                            <th>Organizer</th>
+                            <th>Capacity</th>
+                            <th>Rate</th>
+                            <th>Status</th>
+                            <th>Rentals</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var room in Model.Rooms)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@room.Name</strong><br />
+                                    <small class="text-muted"><i class="bi bi-geo-alt"></i> @room.Address</small><br />
+                                    @if (!string.IsNullOrEmpty(room.Amenities))
+                                    {
+                                        <small class="text-muted">@room.Amenities</small>
+                                    }
+                                </td>
+                                <td>
+                                    @room.Organizer.Name<br />
+                                    <small class="text-muted">@room.Organizer.Email</small>
+                                </td>
+                                <td>@room.Capacity</td>
+                                <td>
+                                    @if (room.HourlyRate.HasValue)
+                                    {
+                                        <span class="text-success">$@room.HourlyRate.Value.ToString("F2")/hr</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Free</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-@(room.Status == CampusEvents.Models.RoomStatus.Enabled ? "success" : "danger")">
+                                        @room.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        @room.Rentals.Count total
+                                    </span><br />
+                                    <small class="text-muted">
+                                        @room.Rentals.Count(r => r.Status == CampusEvents.Models.RentalStatus.Pending) pending
+                                    </small>
+                                </td>
+                                <td>
+                                    @if (room.Status == CampusEvents.Models.RoomStatus.Enabled)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#disableModal-@room.Id">
+                                            Disable
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <form method="post" asp-page-handler="Enable" class="d-inline">
+                                            <input type="hidden" name="roomId" value="@room.Id" />
+                                            <button type="submit" class="btn btn-sm btn-success">Enable</button>
+                                        </form>
+                                    }
+
+                                    <!-- Disable Modal -->
+                                    <div class="modal fade" id="disableModal-@room.Id" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form method="post" asp-page-handler="Disable">
+                                                    <input type="hidden" name="roomId" value="@room.Id" />
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Disable Room</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Disable <strong>@room.Name</strong>?</p>
+                                                        <p class="text-muted">This will reject all pending rental requests.</p>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Reason</label>
+                                                            <textarea name="reason" class="form-control" rows="3" required></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-danger">Disable Room</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Rentals -->
+    @if (Model.AllRentals.Any(r => r.Status == CampusEvents.Models.RentalStatus.Pending || r.Status == CampusEvents.Models.RentalStatus.Approved))
+    {
+        <div class="card mt-4">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Active Rental Requests</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Room</th>
+                                <th>Renter</th>
+                                <th>Time</th>
+                                <th>Purpose</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var rental in Model.AllRentals.Where(r => r.Status == CampusEvents.Models.RentalStatus.Pending || r.Status == CampusEvents.Models.RentalStatus.Approved).Take(10))
+                            {
+                                <tr>
+                                    <td>@rental.Room.Name</td>
+                                    <td>@rental.Renter.Name</td>
+                                    <td>
+                                        @rental.StartTime.ToString("MMM dd, HH:mm") - @rental.EndTime.ToString("HH:mm")
+                                    </td>
+                                    <td>@rental.Purpose</td>
+                                    <td>
+                                        <span class="badge bg-@(rental.Status == CampusEvents.Models.RentalStatus.Approved ? "success" : "warning")">@rental.Status</span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancelRentalModal-@rental.Id">
+                                            <i class="bi bi-x-circle"></i> Cancel
+                                        </button>
+
+                                        <!-- Cancel Rental Modal -->
+                                        <div class="modal fade" id="cancelRentalModal-@rental.Id" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form method="post" asp-page-handler="CancelRental">
+                                                        <input type="hidden" name="rentalId" value="@rental.Id" />
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Cancel Rental</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Cancel rental for <strong>@rental.Room.Name</strong> by <strong>@rental.Renter.Name</strong>?</p>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Reason (optional)</label>
+                                                                <textarea name="reason" class="form-control" rows="2" placeholder="Reason for cancellation..."></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-danger">Cancel Rental</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

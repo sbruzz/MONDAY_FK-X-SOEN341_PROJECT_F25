@@ -320,6 +320,10 @@
                         <span class="badge">@eventsCount</span>
                     }
                 </a>
+                <a href="/Organizer/Rooms" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Rooms") ? "active" : "")">
+                    <i class="bi bi-door-open"></i>
+                    <span>Rooms</span>
+                </a>
                 @if (pendingCount > 0)
                 {
                     <div class="nav-link" style="pointer-events: none; opacity: 0.7;">

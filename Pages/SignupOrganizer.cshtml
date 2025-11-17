@@ -348,7 +348,11 @@
                 </div>
                 <div class="mb-4">
                     <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
-                    <input type="tel" class="form-control" id="phone" asp-for="PhoneNumber" required placeholder="e.g., (514) 123-4567">
+                    <input type="tel" class="form-control" id="phone" asp-for="PhoneNumber" required
+                           pattern="[0-9]{10}"
+                           title="Phone number must be exactly 10 digits (no spaces or special characters)"
+                           placeholder="e.g., 5141234567">
+                    <div class="form-text">Enter 10 digits only (e.g., 5141234567)</div>
                 </div>
                 <div class="d-flex gap-2">
                     <button type="button" class="btn btn-outline-secondary" onclick="prevStep()"><i class="bi bi-arrow-left"></i> Back</button>
