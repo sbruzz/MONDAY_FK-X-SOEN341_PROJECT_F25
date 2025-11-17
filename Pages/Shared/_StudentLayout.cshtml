@@ -340,6 +340,10 @@
                         <span class="badge">@savedCount</span>
                     }
                 </a>
+                <a href="/Student/Rentals" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Rentals") ? "active" : "")">
+                    <i class="bi bi-door-open"></i>
+                    <span>Rentals</span>
+                </a>
             </nav>
             <div class="header-user">
                 <div class="user-avatar">@userName.Substring(0, 1).ToUpper()</div>

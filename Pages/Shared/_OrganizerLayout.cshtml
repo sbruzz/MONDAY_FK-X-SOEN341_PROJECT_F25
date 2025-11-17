@@ -327,6 +327,14 @@
                         <span>@pendingCount Pending Approval</span>
                     </div>
                 }
+                <a href="/Organizer/Drivers" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Drivers") ? "active" : "")">
+                    <i class="bi bi-car-front"></i>
+                    <span>Drivers</span>
+                </a>
+                <a href="/Organizer/Rentals" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Rentals") ? "active" : "")">
+                    <i class="bi bi-door-open"></i>
+                    <span>Rentals</span>
+                </a>
             </nav>
             <div class="header-user">
                 <div class="user-avatar">@userName.Substring(0, 1).ToUpper()</div>
