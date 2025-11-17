@@ -150,9 +150,12 @@ namespace CampusEvents.Pages.Organizer
             // Mark ticket as redeemed
             ValidatedTicket.IsRedeemed = true;
             ValidatedTicket.RedeemedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
 
-            ResultMessage = "✓ Ticket Valid! Attendee Successfully Checked In.";
+            // Ensure the ticket is being tracked and saved
+            _context.Entry(ValidatedTicket).State = EntityState.Modified;
+            var saveResult = await _context.SaveChangesAsync();
+
+            ResultMessage = $"✓ Ticket Valid! Attendee Successfully Checked In. (DB Updated: {saveResult > 0})";
             IsSuccess = true;
 
             await LoadEventStats(eventId);

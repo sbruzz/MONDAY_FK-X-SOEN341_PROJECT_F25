@@ -1,0 +1,190 @@
+@page
+@model CampusEvents.Pages.Student.CarpoolsModel
+@{
+    ViewData["Title"] = "My Carpools";
+}
+
+<div class="container mt-4">
+    <h2>My Carpools</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Driver Status Section -->
+    @if (Model.DriverProfile != null)
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Driver Profile</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Status:</strong>
+                            <span class="badge bg-@(Model.DriverProfile.Status == CampusEvents.Models.DriverStatus.Active ? "success" : Model.DriverProfile.Status == CampusEvents.Models.DriverStatus.Pending ? "warning" : "danger")">
+                                @Model.DriverProfile.Status
+                            </span>
+                        </p>
+                        <p><strong>Vehicle:</strong> @Model.DriverProfile.VehicleType</p>
+                        <p><strong>Capacity:</strong> @Model.DriverProfile.Capacity passengers</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Type:</strong> @Model.DriverProfile.DriverType</p>
+                        @if (!string.IsNullOrEmpty(Model.DriverProfile.AccessibilityFeatures))
+                        {
+                            <p><strong>Accessibility:</strong> @Model.DriverProfile.AccessibilityFeatures</p>
+                        }
+                        <a href="/Student/BecomeDriver?edit=true" class="btn btn-sm btn-outline-primary">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h5>Not a Driver Yet?</h5>
+            <p>Become a driver to offer rides to events and help fellow students!</p>
+            <a href="/Student/BecomeDriver" class="btn btn-primary">Become a Driver</a>
+        </div>
+    }
+
+    <!-- Rides I'm Offering (as Driver) -->
+    @if (Model.OffersAsDriver.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Rides I'm Offering (@Model.OffersAsDriver.Count)</h5>
+            </div>
+            <div class="card-body">
+                @foreach (var offer in Model.OffersAsDriver)
+                {
+                    <div class="border rounded p-3 mb-3">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6>@offer.Event.Title</h6>
+                                <p class="text-muted mb-1">
+                                    <i class="bi bi-calendar"></i> @offer.Event.EventDate.ToString("MMM dd, yyyy HH:mm")
+                                </p>
+                                <p class="mb-1"><strong>Departure:</strong> @offer.DepartureInfo</p>
+                                <p class="mb-1"><strong>Departure Time:</strong> @offer.DepartureTime.ToString("HH:mm")</p>
+                                @if (!string.IsNullOrEmpty(offer.DepartureAddress))
+                                {
+                                    <p class="mb-1"><small><i class="bi bi-geo-alt"></i> @offer.DepartureAddress</small></p>
+                                }
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <p>
+                                    <span class="badge bg-@(offer.Status == CampusEvents.Models.CarpoolOfferStatus.Active ? "success" : "secondary")">
+                                        @offer.Status
+                                    </span>
+                                </p>
+                                <p><strong>Seats:</strong> @offer.SeatsAvailable / @Model.DriverProfile!.Capacity</p>
+                                <p><strong>Passengers:</strong> @offer.Passengers.Count(p => p.Status == CampusEvents.Models.PassengerStatus.Confirmed)</p>
+                                @if (offer.Status == CampusEvents.Models.CarpoolOfferStatus.Active)
+                                {
+                                    <form method="post" asp-page-handler="CancelOffer" class="d-inline">
+                                        <input type="hidden" name="offerId" value="@offer.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Cancel this ride offer?')">
+                                            Cancel Offer
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- List passengers -->
+                        @if (offer.Passengers.Any(p => p.Status == CampusEvents.Models.PassengerStatus.Confirmed))
+                        {
+                            <hr />
+                            <h6 class="text-muted">Passengers:</h6>
+                            <ul class="list-unstyled">
+                                @foreach (var passenger in offer.Passengers.Where(p => p.Status == CampusEvents.Models.PassengerStatus.Confirmed))
+                                {
+                                    <li class="mb-1">
+                                        <i class="bi bi-person-circle"></i> @passenger.Passenger.Name
+                                        @if (!string.IsNullOrEmpty(passenger.PickupLocation))
+                                        {
+                                            <small class="text-muted">- @passenger.PickupLocation</small>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Rides I'm Joining (as Passenger) -->
+    @if (Model.RidesAsPassenger.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Rides I'm Joining (@Model.RidesAsPassenger.Count)</h5>
+            </div>
+            <div class="card-body">
+                @foreach (var passenger in Model.RidesAsPassenger)
+                {
+                    <div class="border rounded p-3 mb-3">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6>@passenger.Offer.Event.Title</h6>
+                                <p class="text-muted mb-1">
+                                    <i class="bi bi-calendar"></i> @passenger.Offer.Event.EventDate.ToString("MMM dd, yyyy HH:mm")
+                                </p>
+                                <p class="mb-1"><strong>Driver:</strong> @passenger.Offer.Driver.User.Name</p>
+                                <p class="mb-1"><strong>Departure:</strong> @passenger.Offer.DepartureInfo</p>
+                                <p class="mb-1"><strong>Departure Time:</strong> @passenger.Offer.DepartureTime.ToString("HH:mm")</p>
+                                @if (!string.IsNullOrEmpty(passenger.PickupLocation))
+                                {
+                                    <p class="mb-1"><strong>Pickup:</strong> @passenger.PickupLocation</p>
+                                }
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <p>
+                                    <span class="badge bg-@(passenger.Status == CampusEvents.Models.PassengerStatus.Confirmed ? "success" : "secondary")">
+                                        @passenger.Status
+                                    </span>
+                                </p>
+                                @if (passenger.Status == CampusEvents.Models.PassengerStatus.Confirmed)
+                                {
+                                    <form method="post" asp-page-handler="LeaveRide" class="d-inline">
+                                        <input type="hidden" name="offerId" value="@passenger.OfferId" />
+                                        <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Leave this carpool?')">
+                                            Leave Ride
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Empty State -->
+    @if (!Model.OffersAsDriver.Any() && !Model.RidesAsPassenger.Any())
+    {
+        <div class="alert alert-secondary text-center">
+            <h5>No Carpools Yet</h5>
+            <p>Browse events to find or offer rides!</p>
+            <a href="/Student/Events" class="btn btn-primary">Browse Events</a>
+        </div>
+    }
+</div>

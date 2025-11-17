@@ -17,6 +17,132 @@ namespace CampusEvents.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
 
+            modelBuilder.Entity("CampusEvents.Models.CarpoolOffer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DepartureAddress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DepartureInfo")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DepartureTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DriverId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("SeatsAvailable")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("CarpoolOffers");
+                });
+
+            modelBuilder.Entity("CampusEvents.Models.CarpoolPassenger", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OfferId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PassengerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PickupLocation")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OfferId");
+
+                    b.HasIndex("PassengerId");
+
+                    b.ToTable("CarpoolPassengers");
+                });
+
+            modelBuilder.Entity("CampusEvents.Models.Driver", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccessibilityFeatures")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DriverType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("History")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LicensePlate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SecurityFlags")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("VehicleType")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Drivers");
+                });
+
             modelBuilder.Entity("CampusEvents.Models.Event", b =>
                 {
                     b.Property<int>("Id")
@@ -94,6 +220,100 @@ namespace CampusEvents.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Organizations");
+                });
+
+            modelBuilder.Entity("CampusEvents.Models.Room", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Amenities")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("AvailabilityEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("AvailabilityStart")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("HourlyRate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OrganizerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RoomInfo")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrganizerId");
+
+                    b.ToTable("Rooms");
+                });
+
+            modelBuilder.Entity("CampusEvents.Models.RoomRental", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AdminNotes")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("ExpectedAttendees")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Purpose")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RenterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal?>("TotalCost")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RenterId");
+
+                    b.HasIndex("RoomId", "StartTime", "EndTime");
+
+                    b.ToTable("RoomRentals");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.SavedEvent", b =>
@@ -202,6 +422,10 @@ namespace CampusEvents.Migrations
                     b.Property<string>("YearOfStudy")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("history")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -210,6 +434,55 @@ namespace CampusEvents.Migrations
                     b.HasIndex("OrganizationId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("CampusEvents.Models.CarpoolOffer", b =>
+                {
+                    b.HasOne("CampusEvents.Models.Driver", "Driver")
+                        .WithMany("CarpoolOffers")
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CampusEvents.Models.Event", "Event")
+                        .WithMany("CarpoolOffers")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Driver");
+
+                    b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("CampusEvents.Models.CarpoolPassenger", b =>
+                {
+                    b.HasOne("CampusEvents.Models.CarpoolOffer", "Offer")
+                        .WithMany("Passengers")
+                        .HasForeignKey("OfferId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CampusEvents.Models.User", "Passenger")
+                        .WithMany("CarpoolPassengers")
+                        .HasForeignKey("PassengerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Offer");
+
+                    b.Navigation("Passenger");
+                });
+
+            modelBuilder.Entity("CampusEvents.Models.Driver", b =>
+                {
+                    b.HasOne("CampusEvents.Models.User", "User")
+                        .WithOne("DriverProfile")
+                        .HasForeignKey("CampusEvents.Models.Driver", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Event", b =>
@@ -228,6 +501,36 @@ namespace CampusEvents.Migrations
                     b.Navigation("Organization");
 
                     b.Navigation("Organizer");
+                });
+
+            modelBuilder.Entity("CampusEvents.Models.Room", b =>
+                {
+                    b.HasOne("CampusEvents.Models.User", "Organizer")
+                        .WithMany("ManagedRooms")
+                        .HasForeignKey("OrganizerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Organizer");
+                });
+
+            modelBuilder.Entity("CampusEvents.Models.RoomRental", b =>
+                {
+                    b.HasOne("CampusEvents.Models.User", "Renter")
+                        .WithMany("RoomRentals")
+                        .HasForeignKey("RenterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CampusEvents.Models.Room", "Room")
+                        .WithMany("Rentals")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Renter");
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.SavedEvent", b =>
@@ -277,8 +580,20 @@ namespace CampusEvents.Migrations
                     b.Navigation("Organization");
                 });
 
+            modelBuilder.Entity("CampusEvents.Models.CarpoolOffer", b =>
+                {
+                    b.Navigation("Passengers");
+                });
+
+            modelBuilder.Entity("CampusEvents.Models.Driver", b =>
+                {
+                    b.Navigation("CarpoolOffers");
+                });
+
             modelBuilder.Entity("CampusEvents.Models.Event", b =>
                 {
+                    b.Navigation("CarpoolOffers");
+
                     b.Navigation("SavedByUsers");
 
                     b.Navigation("Tickets");
@@ -289,9 +604,22 @@ namespace CampusEvents.Migrations
                     b.Navigation("Events");
                 });
 
+            modelBuilder.Entity("CampusEvents.Models.Room", b =>
+                {
+                    b.Navigation("Rentals");
+                });
+
             modelBuilder.Entity("CampusEvents.Models.User", b =>
                 {
+                    b.Navigation("CarpoolPassengers");
+
+                    b.Navigation("DriverProfile");
+
+                    b.Navigation("ManagedRooms");
+
                     b.Navigation("OrganizedEvents");
+
+                    b.Navigation("RoomRentals");
 
                     b.Navigation("SavedEvents");
 

@@ -185,6 +185,313 @@
             </div>
         </div>
     </div>
+
+    <!-- Driver Profile Section -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mt-4">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mt-4">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.DriverProfile != null)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-car-front-fill"></i> Driver Profile</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <small class="text-muted">Driver Status</small>
+                                    <p class="mb-0">
+                                        <span class="badge bg-@(Model.DriverProfile.Status == CampusEvents.Models.DriverStatus.Active ? "success" : Model.DriverProfile.Status == CampusEvents.Models.DriverStatus.Pending ? "warning" : "danger")">
+                                            @Model.DriverProfile.Status
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted">Vehicle Type</small>
+                                    <p class="mb-0"><strong>@Model.DriverProfile.VehicleType</strong></p>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted">Capacity</small>
+                                    <p class="mb-0"><strong>@Model.DriverProfile.Capacity passengers</strong></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                @if (!string.IsNullOrEmpty(Model.DriverProfile.LicensePlate))
+                                {
+                                    <div class="mb-3">
+                                        <small class="text-muted">License Plate</small>
+                                        <p class="mb-0"><strong>@Model.DriverProfile.LicensePlate</strong></p>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.DriverProfile.AccessibilityFeatures))
+                                {
+                                    <div class="mb-3">
+                                        <small class="text-muted">Accessibility Features</small>
+                                        <p class="mb-0">@Model.DriverProfile.AccessibilityFeatures.Replace(",", ", ")</p>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.DriverProfile.SecurityFlags))
+                                {
+                                    <div class="mb-3">
+                                        <small class="text-muted">Security Flags</small>
+                                        <p class="mb-0 text-warning">@Model.DriverProfile.SecurityFlags</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            @if (Model.DriverProfile.Status == CampusEvents.Models.DriverStatus.Pending)
+                            {
+                                <form method="post" asp-page-handler="ApproveDriver" class="d-inline">
+                                    <input type="hidden" name="driverId" value="@Model.DriverProfile.Id" />
+                                    <input type="hidden" name="userId" value="@Model.User.Id" />
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="bi bi-check-circle"></i> Approve Driver
+                                    </button>
+                                </form>
+                            }
+                            @if (Model.DriverProfile.Status == CampusEvents.Models.DriverStatus.Active)
+                            {
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#suspendDriverModal">
+                                    <i class="bi bi-slash-circle"></i> Suspend Driver
+                                </button>
+                            }
+                            @if (Model.DriverProfile.Status == CampusEvents.Models.DriverStatus.Suspended)
+                            {
+                                <form method="post" asp-page-handler="UnsuspendDriver" class="d-inline">
+                                    <input type="hidden" name="driverId" value="@Model.DriverProfile.Id" />
+                                    <input type="hidden" name="userId" value="@Model.User.Id" />
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="bi bi-check-circle"></i> Unsuspend Driver
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suspend Driver Modal -->
+        <div class="modal fade" id="suspendDriverModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="post" asp-page-handler="SuspendDriver">
+                        <input type="hidden" name="driverId" value="@Model.DriverProfile.Id" />
+                        <input type="hidden" name="userId" value="@Model.User.Id" />
+                        <div class="modal-header">
+                            <h5 class="modal-title">Suspend Driver</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Suspend <strong>@Model.User.Name</strong> as a driver?</p>
+                            <p class="text-muted">This will prevent them from creating new carpool offers.</p>
+                            <div class="mb-3">
+                                <label class="form-label">Reason <span class="text-danger">*</span></label>
+                                <textarea name="reason" class="form-control" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Suspend Driver</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Carpool Activity Section -->
+    @if (Model.CarpoolOffersAsDriver.Any() || Model.CarpoolsAsPassenger.Any())
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-car-front"></i> Carpool Activity</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.CarpoolOffersAsDriver.Any())
+                        {
+                            <h6 class="mb-3">Rides Offered (@Model.CarpoolOffersAsDriver.Count)</h6>
+                            <div class="table-responsive mb-4">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Event</th>
+                                            <th>Departure</th>
+                                            <th>Seats</th>
+                                            <th>Passengers</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var offer in Model.CarpoolOffersAsDriver)
+                                        {
+                                            <tr>
+                                                <td>@offer.Event.Title</td>
+                                                <td>@offer.DepartureTime.ToString("MMM dd, HH:mm")</td>
+                                                <td>@offer.SeatsAvailable available</td>
+                                                <td>@offer.Passengers.Count joined</td>
+                                                <td>
+                                                    <span class="badge bg-@(offer.Status == CampusEvents.Models.CarpoolOfferStatus.Active ? "success" : offer.Status == CampusEvents.Models.CarpoolOfferStatus.Full ? "info" : "secondary")">
+                                                        @offer.Status
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+
+                        @if (Model.CarpoolsAsPassenger.Any())
+                        {
+                            <h6 class="mb-3">Rides Joined (@Model.CarpoolsAsPassenger.Count)</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Event</th>
+                                            <th>Driver</th>
+                                            <th>Departure</th>
+                                            <th>Pickup Location</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var passenger in Model.CarpoolsAsPassenger)
+                                        {
+                                            <tr>
+                                                <td>@passenger.Offer.Event.Title</td>
+                                                <td>@passenger.Offer.Driver.User.Name</td>
+                                                <td>@passenger.Offer.DepartureTime.ToString("MMM dd, HH:mm")</td>
+                                                <td>@passenger.PickupLocation</td>
+                                                <td>
+                                                    <span class="badge bg-@(passenger.Status == CampusEvents.Models.PassengerStatus.Confirmed ? "success" : passenger.Status == CampusEvents.Models.PassengerStatus.Pending ? "warning" : "secondary")">
+                                                        @passenger.Status
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Room Management Section -->
+    @if (Model.ManagedRooms.Any() || Model.UserRentals.Any())
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-door-open"></i> Room Management</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.ManagedRooms.Any())
+                        {
+                            <h6 class="mb-3">Managed Rooms (@Model.ManagedRooms.Count)</h6>
+                            <div class="table-responsive mb-4">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Room Name</th>
+                                            <th>Address</th>
+                                            <th>Capacity</th>
+                                            <th>Status</th>
+                                            <th>Rentals</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var room in Model.ManagedRooms)
+                                        {
+                                            <tr>
+                                                <td><strong>@room.Name</strong></td>
+                                                <td>@room.Address</td>
+                                                <td>@room.Capacity</td>
+                                                <td>
+                                                    <span class="badge bg-@(room.Status == CampusEvents.Models.RoomStatus.Enabled ? "success" : "danger")">
+                                                        @room.Status
+                                                    </span>
+                                                </td>
+                                                <td>@room.Rentals.Count total</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+
+                        @if (Model.UserRentals.Any())
+                        {
+                            <h6 class="mb-3">Room Rental Requests (@Model.UserRentals.Count)</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Room</th>
+                                            <th>Start Time</th>
+                                            <th>End Time</th>
+                                            <th>Purpose</th>
+                                            <th>Status</th>
+                                            <th>Cost</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var rental in Model.UserRentals)
+                                        {
+                                            <tr>
+                                                <td>@rental.Room.Name</td>
+                                                <td>@rental.StartTime.ToString("MMM dd, HH:mm")</td>
+                                                <td>@rental.EndTime.ToString("MMM dd, HH:mm")</td>
+                                                <td>@rental.Purpose</td>
+                                                <td>
+                                                    <span class="badge bg-@(rental.Status == CampusEvents.Models.RentalStatus.Approved ? "success" : rental.Status == CampusEvents.Models.RentalStatus.Pending ? "warning" : "secondary")">
+                                                        @rental.Status
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    @if (rental.TotalCost.HasValue)
+                                                    {
+                                                        <span>$@rental.TotalCost.Value.ToString("F2")</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">Free</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 @section Scripts {

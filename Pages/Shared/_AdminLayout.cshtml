@@ -383,6 +383,14 @@
                     <i class="bi bi-building"></i>
                     <span>Organizations</span>
                 </a>
+                <a href="/Admin/Drivers" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Drivers") ? "active" : "")">
+                    <i class="bi bi-car-front-fill"></i>
+                    <span>Drivers</span>
+                </a>
+                <a href="/Admin/Rooms" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Rooms") ? "active" : "")">
+                    <i class="bi bi-door-closed"></i>
+                    <span>Rooms</span>
+                </a>
             </nav>
             <div class="header-user">
                 <div class="user-avatar">@userName.Substring(0, 1).ToUpper()</div>
