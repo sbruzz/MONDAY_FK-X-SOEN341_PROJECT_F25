@@ -1,0 +1,233 @@
+@page
+@model RentalsModel
+@{
+    ViewData["Title"] = "Room & Rental Management";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-door-open"></i> Room & Rental Management</h1>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createRoomModal">
+                <i class="bi bi-plus-circle"></i> Add Room
+            </button>
+            <a href="/Admin/Home" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert @(Model.IsSuccess ? "alert-success" : "alert-danger") alert-dismissible fade show" role="alert">
+            @Model.Message
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Rooms Management -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-building"></i> Rooms</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Rooms.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Location</th>
+                                <th>Capacity</th>
+                                <th>Status</th>
+                                <th>Active Rentals</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var room in Model.Rooms)
+                            {
+                                var activeRentals = room.Rentals?.Count(r => r.Status == RentalStatus.Approved && r.EndTime > DateTime.UtcNow) ?? 0;
+                                <tr class="@(!room.IsEnabled ? "table-secondary" : "")">
+                                    <td>@room.Id</td>
+                                    <td><strong>@room.Name</strong></td>
+                                    <td>@room.Location</td>
+                                    <td>@room.Capacity</td>
+                                    <td>
+                                        @if (room.IsEnabled)
+                                        {
+                                            <span class="badge bg-success">Enabled</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Disabled</span>
+                                        }
+                                    </td>
+                                    <td>@activeRentals</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <form method="post" asp-page-handler="ToggleRoom" class="d-inline">
+                                                <input type="hidden" name="id" value="@room.Id" />
+                                                <button type="submit" class="btn @(room.IsEnabled ? "btn-warning" : "btn-success")" 
+                                                        title="@(room.IsEnabled ? "Disable" : "Enable")">
+                                                    <i class="bi bi-@(room.IsEnabled ? "x-circle" : "check-circle")"></i>
+                                                </button>
+                                            </form>
+                                            @if (!room.Rentals.Any())
+                                            {
+                                                <form method="post" asp-page-handler="DeleteRoom" class="d-inline"
+                                                      onsubmit="return confirm('Delete this room?');">
+                                                    <input type="hidden" name="id" value="@room.Id" />
+                                                    <button type="submit" class="btn btn-danger" title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">No rooms have been created yet.</p>
+            }
+        </div>
+    </div>
+
+    <!-- All Rentals -->
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="bi bi-list-check"></i> All Rentals</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.AllRentals.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Room</th>
+                                <th>Rented By</th>
+                                <th>Date & Time</th>
+                                <th>Purpose</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var rental in Model.AllRentals)
+                            {
+                                <tr class="@(rental.Status == RentalStatus.Rejected ? "table-secondary" : "")">
+                                    <td><strong>@rental.Room.Name</strong></td>
+                                    <td>@rental.User.Name</td>
+                                    <td>
+                                        @rental.StartTime.ToString("MMM dd, yyyy")<br>
+                                        <small>@rental.StartTime.ToString("h:mm tt") - @rental.EndTime.ToString("h:mm tt")</small>
+                                    </td>
+                                    <td>@(rental.Purpose ?? "N/A")</td>
+                                    <td>
+                                        @if (rental.Status == RentalStatus.Approved)
+                                        {
+                                            <span class="badge bg-success">Rented</span>
+                                        }
+                                        else if (rental.Status == RentalStatus.Rejected)
+                                        {
+                                            <span class="badge bg-danger">Disabled</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@rental.Status</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (rental.Status == RentalStatus.Approved)
+                                        {
+                                            <form method="post" asp-page-handler="DisableRental" class="d-inline"
+                                                  onsubmit="return confirm('Disable this rental? The room will be unavailable for this time period.');">
+                                                <input type="hidden" name="id" value="@rental.Id" />
+                                                <button type="submit" class="btn btn-sm btn-warning" title="Disable Rental">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        else if (rental.Status == RentalStatus.Rejected)
+                                        {
+                                            <form method="post" asp-page-handler="EnableRental" class="d-inline">
+                                                <input type="hidden" name="id" value="@rental.Id" />
+                                                <button type="submit" class="btn btn-sm btn-success" title="Re-enable Rental">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">No rentals found.</p>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Create Room Modal -->
+<div class="modal fade" id="createRoomModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Add New Room</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="CreateRoom">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="RoomInput.Name" class="form-label">
+                            Room Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" asp-for="RoomInput.Name" class="form-control" required />
+                        <span asp-validation-for="RoomInput.Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="RoomInput.Location" class="form-label">
+                            Location <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" asp-for="RoomInput.Location" class="form-control" required />
+                        <span asp-validation-for="RoomInput.Location" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="RoomInput.Capacity" class="form-label">
+                            Capacity <span class="text-danger">*</span>
+                        </label>
+                        <input type="number" asp-for="RoomInput.Capacity" class="form-control" min="1" max="1000" required />
+                        <span asp-validation-for="RoomInput.Capacity" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="RoomInput.Description" class="form-label">Description (Optional)</label>
+                        <textarea asp-for="RoomInput.Description" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Room</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
