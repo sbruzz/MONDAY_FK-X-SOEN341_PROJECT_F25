@@ -119,6 +119,26 @@ This project follows **Agile Scrum** methodology with 4 sprints (~3-4 weeks each
 | Kevin Ung | 40259218 | pengukev | Backend (Scrum Master) |
 | Nand Patel | 40294756 | ns-1456 | Frontend |
 
+## Utility Classes and Helpers
+
+The project includes a comprehensive set of utility classes in the `Services/` directory:
+
+- **ValidationHelper**: Input validation, email/student ID validation, coordinate validation
+- **DateTimeHelper**: Date formatting, relative time, timezone conversion
+- **StringExtensions**: String manipulation and formatting extensions
+- **ErrorHandler**: Centralized error handling and logging
+- **Constants**: Application-wide constants and configuration values
+- **QueryHelper**: Database query extension methods and filtering
+- **PasswordHelper**: Secure password hashing and validation
+- **EmailHelper**: Email validation and formatting utilities
+- **FormatHelper**: Currency, percentage, file size, and phone number formatting
+- **ServiceExtensions**: Dependency injection extension methods
+- **CacheHelper**: In-memory caching utilities
+- **LoggingHelper**: Structured logging helpers
+- **ResponseHelper**: Standardized API response creation
+- **FileHelper**: File validation and MIME type detection
+- **NumberHelper**: Number manipulation and formatting utilities
+
 ## Contributing
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines and workflow.
