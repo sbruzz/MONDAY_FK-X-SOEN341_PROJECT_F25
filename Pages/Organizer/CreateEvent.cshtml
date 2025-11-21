@@ -36,7 +36,7 @@
                             <label asp-for="Input.Title" class="form-label">
                                 Event Title <span class="text-danger">*</span>
                             </label>
-                            <input asp-for="Input.Title" class="form-control" placeholder="e.g., AI Workshop Series"
+                            <input asp-for="Input.Title" class="form-control" maxlength="200" id="textBoxForTitle" placeholder="e.g., AI Workshop Series"
                                 required />
                             <span asp-validation-for="Input.Title" class="text-danger"></span>
                         </div>
@@ -102,7 +102,7 @@
                             <label asp-for="Input.Location" class="form-label">
                                 Location <span class="text-danger">*</span>
                             </label>
-                            <input asp-for="Input.Location" class="form-control"
+                            <input asp-for="Input.Location" class="form-control" maxlength="300" id="textBoxForLocation"
                                 placeholder="e.g., EV Building, Room 3.309" required />
                             <span asp-validation-for="Input.Location" class="text-danger"></span>
                         </div>
@@ -208,6 +208,18 @@
 
         $('#textBoxForDescription').bind('input propertychange', function() {
             if (this.value.length == 2000) {
+                alert("You have reached the maximum amount characters");
+            }
+        });
+
+        $('#textBoxForTitle').bind('input propertychange', function() {
+            if (this.value.length == 200) {
+                alert("You have reached the maximum amount characters");
+            }
+        });
+
+        $('#textBoxForLocation').bind('input propertychange', function() {
+            if (this.value.length == 300) {
                 alert("You have reached the maximum amount characters");
             }
         });
