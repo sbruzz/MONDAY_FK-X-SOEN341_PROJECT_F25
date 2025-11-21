@@ -28,6 +28,9 @@ public class LoginModel : PageModel
     [BindProperty]
     public string Role { get; set; } = "Student";
 
+    [BindProperty]
+    public string roletab { get; set; }
+
     public void OnGet()
     {
     }
@@ -39,6 +42,16 @@ public class LoginModel : PageModel
         if (user == null || !BCrypt.Net.BCrypt.Verify(Password, user.PasswordHash))
         {
             TempData["Error"] = "Invalid email or password";
+            return Page();
+        }
+
+        Console.Write(user.Role.ToString());
+        Console.Write(roletab);
+        Console.Write("AAAAAAAAAAAAAAAAAAAA");
+
+        if (user.Role.ToString() != roletab)
+        {
+            TempData["Error"] = "Invalid Role";
             return Page();
         }
 
