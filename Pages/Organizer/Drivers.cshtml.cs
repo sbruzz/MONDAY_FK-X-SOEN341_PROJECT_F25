@@ -71,9 +71,12 @@ public class DriversModel : PageModel
         // Load organizer's drivers
         Drivers = await _context.Drivers
             .Include(d => d.User)
-            .Include(d => d.Event)
-            .Include(d => d.Passengers)
-            .Where(d => d.OrganizerId == userId.Value)
+            .Include(d => d.CarpoolOffers)
+                .ThenInclude(o => o.Event)
+            .Include(d => d.CarpoolOffers)
+                .ThenInclude(o => o.Passengers)
+                    .ThenInclude(p => p.Passenger)
+            .Where(d => d.UserId == userId.Value)
             .OrderByDescending(d => d.CreatedAt)
             .ToListAsync();
 
@@ -105,8 +108,9 @@ public class DriversModel : PageModel
             // Reload data
             Drivers = await _context.Drivers
                 .Include(d => d.User)
-                .Include(d => d.Event)
-                .Where(d => d.OrganizerId == userId.Value)
+                .Include(d => d.CarpoolOffers)
+                    .ThenInclude(o => o.Event)
+                .Where(d => d.UserId == userId.Value)
                 .ToListAsync();
 
             Events = await _context.Events
@@ -117,22 +121,18 @@ public class DriversModel : PageModel
             return Page();
         }
 
-        // Create a driver entry
-        // Note: For organizer-created drivers, we might need a separate User entry or use organizer's user
-        // For now, we'll create a driver entry linked to the organizer
+        // Create a driver entry linked to the organizer
         var driver = new Driver
         {
-            UserId = userId.Value, // Organizer's user ID
-            OrganizerId = userId.Value,
-            EventId = Input.EventId,
-            Type = DriverType.Organizer,
+            UserId = userId.Value,
+            DriverType = DriverType.Organizer,
             VehicleType = Input.VehicleType,
             Capacity = Input.Capacity,
-            HasAccessibility = Input.HasAccessibility,
-            VehicleDescription = Input.VehicleDescription,
-            LicensePlate = Input.LicensePlate,
-            ContactPhone = Input.ContactPhone ?? "",
-            IsActive = true,
+            AccessibilityFeatures = Input.HasAccessibility ? "Wheelchair accessible" : "",
+            LicensePlate = Input.LicensePlate ?? "",
+            Status = DriverStatus.Active,
+            SecurityFlags = "",
+            History = "",
             CreatedAt = DateTime.UtcNow
         };
 
@@ -154,8 +154,9 @@ public class DriversModel : PageModel
         }
 
         var driver = await _context.Drivers
-            .Include(d => d.Passengers)
-            .FirstOrDefaultAsync(d => d.Id == id && d.OrganizerId == userId.Value);
+            .Include(d => d.CarpoolOffers)
+                .ThenInclude(o => o.Passengers)
+            .FirstOrDefaultAsync(d => d.Id == id && d.UserId == userId.Value);
 
         if (driver == null)
         {
@@ -164,10 +165,17 @@ public class DriversModel : PageModel
             return RedirectToPage();
         }
 
-        // Remove passengers first
-        if (driver.Passengers.Any())
+        // Remove carpool offers and their passengers first
+        if (driver.CarpoolOffers.Any())
         {
-            _context.CarpoolPassengers.RemoveRange(driver.Passengers);
+            foreach (var offer in driver.CarpoolOffers)
+            {
+                if (offer.Passengers.Any())
+                {
+                    _context.CarpoolPassengers.RemoveRange(offer.Passengers);
+                }
+            }
+            _context.CarpoolOffers.RemoveRange(driver.CarpoolOffers);
         }
 
         _context.Drivers.Remove(driver);

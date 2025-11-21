@@ -62,8 +62,8 @@ public class RentalsModel : PageModel
         // Load organizer's rentals
         MyRentals = await _context.RoomRentals
             .Include(r => r.Room)
-            .Include(r => r.Event)
-            .Where(r => r.UserId == userId.Value)
+            .Include(r => r.Renter)
+            .Where(r => r.RenterId == userId.Value)
             .OrderByDescending(r => r.StartTime)
             .ToListAsync();
 
@@ -88,7 +88,7 @@ public class RentalsModel : PageModel
         {
             MyRentals = await _context.RoomRentals
                 .Include(r => r.Room)
-                .Where(r => r.UserId == userId.Value)
+                .Where(r => r.RenterId == userId.Value)
                 .ToListAsync();
             AvailableRooms = await _context.Rooms.Where(r => r.IsEnabled).ToListAsync();
             return Page();
@@ -97,7 +97,7 @@ public class RentalsModel : PageModel
         if (RentalInput.EndTime <= RentalInput.StartTime)
         {
             ModelState.AddModelError("RentalInput.EndTime", "End time must be after start time.");
-            MyRentals = await _context.RoomRentals.Include(r => r.Room).Where(r => r.UserId == userId.Value).ToListAsync();
+            MyRentals = await _context.RoomRentals.Include(r => r.Room).Where(r => r.RenterId == userId.Value).ToListAsync();
             AvailableRooms = await _context.Rooms.Where(r => r.IsEnabled).ToListAsync();
             return Page();
         }
@@ -130,12 +130,14 @@ public class RentalsModel : PageModel
         var rental = new RoomRental
         {
             RoomId = RentalInput.RoomId,
-            UserId = userId.Value,
-            EventId = RentalInput.EventId,
+            RenterId = userId.Value,
             StartTime = RentalInput.StartTime,
             EndTime = RentalInput.EndTime,
-            Purpose = RentalInput.Purpose,
+            Purpose = RentalInput.Purpose ?? "",
             Status = RentalStatus.Approved,
+            AdminNotes = "",
+            ExpectedAttendees = 0,
+            TotalCost = 0m,
             CreatedAt = DateTime.UtcNow
         };
 
