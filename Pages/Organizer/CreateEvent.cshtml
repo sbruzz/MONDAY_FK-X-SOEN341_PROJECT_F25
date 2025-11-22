@@ -36,7 +36,8 @@
                             <label asp-for="Input.Title" class="form-label">
                                 Event Title <span class="text-danger">*</span>
                             </label>
-                            <input asp-for="Input.Title" class="form-control" placeholder="e.g., AI Workshop Series" required />
+                            <input asp-for="Input.Title" class="form-control" maxlength="200" id="textBoxForTitle" placeholder="e.g., AI Workshop Series"
+                                required />
                             <span asp-validation-for="Input.Title" class="text-danger"></span>
                         </div>
 
@@ -45,11 +46,14 @@
                             <label asp-for="Input.Description" class="form-label">
                                 Description <span class="text-danger">*</span>
                             </label>
-                            <textarea asp-for="Input.Description" class="form-control" rows="5"
-                                      placeholder="Provide details about your event, what attendees will learn or experience..."
-                                      required></textarea>
+                            <textarea asp-for="Input.Description" maxlength="2000" class="form-control" rows="5"
+                                id="textBoxForDescription"
+                                placeholder="Provide details about your event, what attendees will learn or experience..."
+                                required></textarea>
                             <span asp-validation-for="Input.Description" class="text-danger"></span>
-                            <small class="text-muted">Be descriptive to attract more attendees</small>
+                            <span id="limitWarning" style="color: red; display: none;">Character limit reached!</span>
+                            <small class="text-muted" id="messageForDescription">Be descriptive to attract more
+                                attendees</small>
                         </div>
 
                         <!-- Category -->
@@ -78,7 +82,7 @@
                                         Event Date <span class="text-danger">*</span>
                                     </label>
                                     <input asp-for="Input.EventDate" type="date" class="form-control"
-                                           min="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                                        min="@DateTime.Now.ToString("yyyy-MM-dd")" required />
                                     <span asp-validation-for="Input.EventDate" class="text-danger"></span>
                                 </div>
                             </div>
@@ -98,8 +102,8 @@
                             <label asp-for="Input.Location" class="form-label">
                                 Location <span class="text-danger">*</span>
                             </label>
-                            <input asp-for="Input.Location" class="form-control"
-                                   placeholder="e.g., EV Building, Room 3.309" required />
+                            <input asp-for="Input.Location" class="form-control" maxlength="300" id="textBoxForLocation"
+                                placeholder="e.g., EV Building, Room 3.309" required />
                             <span asp-validation-for="Input.Location" class="text-danger"></span>
                         </div>
 
@@ -124,7 +128,7 @@
                                 Capacity <span class="text-danger">*</span>
                             </label>
                             <input asp-for="Input.Capacity" type="number" class="form-control" min="1" max="10000"
-                                   placeholder="Maximum number of attendees" required />
+                                placeholder="Maximum number of attendees" required />
                             <span asp-validation-for="Input.Capacity" class="text-danger"></span>
                         </div>
 
@@ -135,14 +139,14 @@
                             </label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="Input.TicketType" id="ticketTypeFree"
-                                       value="Free" checked onchange="togglePriceField()" />
+                                    value="Free" checked onchange="togglePriceField()" />
                                 <label class="form-check-label" for="ticketTypeFree">
                                     Free Event
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="Input.TicketType" id="ticketTypePaid"
-                                       value="Paid" onchange="togglePriceField()" />
+                                    value="Paid" onchange="togglePriceField()" />
                                 <label class="form-check-label" for="ticketTypePaid">
                                     Paid Event
                                 </label>
@@ -155,7 +159,7 @@
                                 Ticket Price ($) <span class="text-danger">*</span>
                             </label>
                             <input asp-for="Input.Price" type="number" class="form-control" min="0" step="0.01"
-                                   placeholder="0.00" />
+                                placeholder="0.00" />
                             <span asp-validation-for="Input.Price" class="text-danger"></span>
                             <small class="text-muted">Payment will be mock/simulated for prototype</small>
                         </div>
@@ -171,7 +175,8 @@
                         </div>
 
                         <div class="mt-3 text-muted small">
-                            <i class="bi bi-info-circle"></i> Your event will be submitted for admin approval before being published.
+                            <i class="bi bi-info-circle"></i> Your event will be submitted for admin approval before
+                            being published.
                         </div>
                     </form>
                 </div>
@@ -179,6 +184,7 @@
         </div>
     </div>
 </div>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -195,8 +201,27 @@
         }
 
         // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             togglePriceField();
+        });
+
+
+        $('#textBoxForDescription').bind('input propertychange', function() {
+            if (this.value.length == 2000) {
+                alert("You have reached the maximum amount characters");
+            }
+        });
+
+        $('#textBoxForTitle').bind('input propertychange', function() {
+            if (this.value.length == 200) {
+                alert("You have reached the maximum amount characters");
+            }
+        });
+
+        $('#textBoxForLocation').bind('input propertychange', function() {
+            if (this.value.length == 300) {
+                alert("You have reached the maximum amount characters");
+            }
         });
     </script>
 }
