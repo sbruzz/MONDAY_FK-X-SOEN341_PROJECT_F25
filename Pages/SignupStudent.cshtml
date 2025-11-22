@@ -84,7 +84,7 @@
                 </div>
                 <div class="mb-4">
                     <label for="phone" class="form-label">Phone Number</label>
-                    <input type="tel" class="form-control" id="phone" asp-for="PhoneNumber"
+                    <input type="tel" class="form-control" id="phone" asp-for="PhoneNumber" 
                            pattern="[0-9]{10}"
                            title="Phone number must be exactly 10 digits (no spaces or special characters)"
                            placeholder="e.g., 5141234567">
@@ -131,3 +131,4 @@
 @section Scripts {
     <script src="~/js/signup.js" asp-append-version="true"></script>
 }
+

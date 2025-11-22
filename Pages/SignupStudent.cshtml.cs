@@ -45,10 +45,10 @@ public class SignupStudentModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        // Check if email already exists
-        if (await _context.Users.AnyAsync(u => u.Email == Email))
+        // Check if email or student id already exists
+        if (await _context.Users.AnyAsync(u => u.Email == Email || u.StudentId == StudentId))
         {
-            ErrorMessage = "An account with this email already exists.";
+            ErrorMessage = "An account with this email or student id already exists.";
             return Page();
         }
 
