@@ -164,27 +164,16 @@ namespace CampusEvents.Pages.Student
                 return RedirectToPage(new { id });
             }
 
-            // Generate unique code for ticket
+            // Generate unique code for ticket (canonical source of truth)
             var uniqueCode = Guid.NewGuid().ToString();
             _logger.LogInformation("Generated unique ticket code: {UniqueCode}", uniqueCode);
-            Console.WriteLine($"Generated unique ticket code: {uniqueCode}");
 
-            // Generate QR Code
-            _logger.LogInformation("Generating QR code...");
-            Console.WriteLine("Generating QR code...");
-            string qrCodeBase64 = GenerateQRCode(uniqueCode);
-            _logger.LogInformation("QR code generated, length: {Length} characters", qrCodeBase64.Length);
-            Console.WriteLine($"QR code generated, length: {qrCodeBase64.Length} characters");
-
-            // Create ticket
-            _logger.LogInformation("Creating ticket object...");
-            Console.WriteLine("Creating ticket object...");
+            // Create ticket (QR code will be generated on-demand from UniqueCode)
             var ticket = new Ticket
             {
                 EventId = id,
                 UserId = userId.Value,
                 UniqueCode = uniqueCode,
-                QrCodeImage = qrCodeBase64,
                 ClaimedAt = DateTime.UtcNow,
                 IsRedeemed = false
             };

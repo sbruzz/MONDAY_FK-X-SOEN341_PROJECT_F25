@@ -188,37 +188,39 @@
     .stat-card {
         border-radius: 15px;
         padding: 1.5rem;
-        color: white;
+        color: #3d3d3d;
         display: flex;
         align-items: center;
         gap: 1rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         transition: transform 0.3s ease;
+        border: 1px solid rgba(213, 189, 175, 0.3);
     }
 
     .stat-card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     }
 
     .bg-primary-gradient {
-        background: linear-gradient(135deg, #d4756e 0%, #c15f58 100%);
-    }
-
-    .bg-success-gradient {
-        background: linear-gradient(135deg, #e8b17e 0%, #d4756e 100%);
-    }
-
-    .bg-info-gradient {
         background: linear-gradient(135deg, #d5bdaf 0%, #c9a999 100%);
     }
 
-    .bg-warning-gradient {
+    .bg-success-gradient {
         background: linear-gradient(135deg, #e3d5ca 0%, #d5bdaf 100%);
+    }
+
+    .bg-info-gradient {
+        background: linear-gradient(135deg, #c9a999 0%, #b39a8d 100%);
+    }
+
+    .bg-warning-gradient {
+        background: linear-gradient(135deg, #f0e8df 0%, #e3d5ca 100%);
     }
 
     .stat-icon {
         font-size: 2.5rem;
-        opacity: 0.8;
+        opacity: 0.7;
     }
 
     .stat-content {
@@ -229,25 +231,29 @@
         font-size: 2rem;
         font-weight: 800;
         margin: 0;
+        color: #3d3d3d;
     }
 
     .stat-label {
         margin: 0;
         font-size: 0.9rem;
-        opacity: 0.9;
+        opacity: 0.8;
+        color: #6b6b6b;
     }
 
     .action-card {
         border-radius: 15px;
-        border: none;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(213, 189, 175, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
         transition: all 0.3s ease;
         height: 100%;
+        background: #fdfbf9;
     }
 
     .action-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        border-color: rgba(213, 189, 175, 0.4);
     }
 
     .action-icon {
@@ -262,23 +268,23 @@
     }
 
     .bg-primary-light {
-        background: rgba(212, 117, 110, 0.15);
-        color: #d4756e;
+        background: rgba(213, 189, 175, 0.15);
+        color: #8d7d75;
     }
 
     .bg-success-light {
-        background: rgba(232, 177, 126, 0.15);
-        color: #e8b17e;
+        background: rgba(227, 213, 202, 0.2);
+        color: #a89f9a;
     }
 
     .bg-info-light {
-        background: rgba(213, 189, 175, 0.15);
-        color: #c9a999;
+        background: rgba(201, 169, 153, 0.2);
+        color: #8d7d75;
     }
 
     .bg-warning-light {
-        background: rgba(227, 213, 202, 0.15);
-        color: #d5bdaf;
+        background: rgba(240, 232, 223, 0.5);
+        color: #a89f9a;
     }
 
     .category-stat-item {
@@ -288,21 +294,47 @@
     .progress {
         height: 10px;
         border-radius: 5px;
+        background: rgba(213, 189, 175, 0.15);
+    }
+
+    .progress-bar {
+        background: linear-gradient(135deg, #d5bdaf, #c9a999);
     }
 
     .alert-danger {
-        background: rgba(212, 117, 110, 0.1);
-        border: 1px solid rgba(212, 117, 110, 0.3);
-        color: #d4756e;
+        background: rgba(213, 189, 175, 0.12);
+        border: 1px solid rgba(213, 189, 175, 0.3);
+        color: #6b6b6b;
     }
 
     .alert-danger h5 {
-        color: #c15f58;
+        color: #8d7d75;
     }
 
     .list-group-item {
         border-radius: 12px !important;
         margin-bottom: 0.5rem;
-        border: 1px solid var(--border);
+        border: 1px solid rgba(213, 189, 175, 0.2);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #c9a999, #b39a8d);
+        border: none;
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #b39a8d, #9d8a7e);
+        color: #ffffff;
+    }
+
+    .badge.bg-danger {
+        background: linear-gradient(135deg, #d5bdaf, #c9a999) !important;
+        color: #3d3d3d;
+    }
+
+    .badge.bg-primary {
+        background: linear-gradient(135deg, #c9a999, #b39a8d) !important;
+        color: #ffffff;
     }
 </style>

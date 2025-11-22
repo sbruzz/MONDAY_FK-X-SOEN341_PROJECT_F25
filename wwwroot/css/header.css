@@ -1,7 +1,7 @@
 /* Header Styles */
 .site-header {
-    background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%);
-    border-bottom: 1px solid rgba(213, 189, 175, 0.2);
+    background: linear-gradient(to bottom, #f0e8df 0%, #e3d5ca 100%);
+    border-bottom: 1px solid rgba(213, 189, 175, 0.3);
     padding: 0;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
     position: sticky;

@@ -205,5 +205,45 @@ public class DriversModel : PageModel
         IsSuccess = true;
         return RedirectToPage();
     }
+
+    public async Task<IActionResult> OnPostActivateDriverAsync(int id)
+    {
+        var driver = await _context.Drivers
+            .Include(d => d.User)
+            .FirstOrDefaultAsync(d => d.Id == id);
+        if (driver == null)
+        {
+            Message = "Driver not found.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        driver.IsActive = true;
+        await _context.SaveChangesAsync();
+
+        Message = $"Driver {driver.User.Name} has been activated.";
+        IsSuccess = true;
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostDeactivateDriverAsync(int id)
+    {
+        var driver = await _context.Drivers
+            .Include(d => d.User)
+            .FirstOrDefaultAsync(d => d.Id == id);
+        if (driver == null)
+        {
+            Message = "Driver not found.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        driver.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        Message = $"Driver {driver.User.Name} has been deactivated.";
+        IsSuccess = true;
+        return RedirectToPage();
+    }
 }
 

@@ -185,5 +185,49 @@ public class RentalsModel : PageModel
         IsSuccess = true;
         return RedirectToPage();
     }
+
+    public async Task<IActionResult> OnPostApproveRentalAsync(int id)
+    {
+        var rental = await _context.RoomRentals
+            .Include(r => r.Room)
+            .Include(r => r.Renter)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (rental == null)
+        {
+            Message = "Rental not found.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        rental.Status = RentalStatus.Approved;
+        await _context.SaveChangesAsync();
+
+        Message = $"Rental for {rental.Room.Name} by {rental.Renter.Name} has been approved.";
+        IsSuccess = true;
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostRejectRentalAsync(int id)
+    {
+        var rental = await _context.RoomRentals
+            .Include(r => r.Room)
+            .Include(r => r.Renter)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (rental == null)
+        {
+            Message = "Rental not found.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        rental.Status = RentalStatus.Rejected;
+        await _context.SaveChangesAsync();
+
+        Message = $"Rental for {rental.Room.Name} by {rental.Renter.Name} has been rejected.";
+        IsSuccess = true;
+        return RedirectToPage();
+    }
 }
 

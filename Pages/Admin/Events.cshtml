@@ -52,20 +52,30 @@
         </div>
     </div>
 
+    <!-- Events Summary -->
+    @if (Model.TotalEvents > 0)
+    {
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <p class="text-muted mb-0">
+                Showing @((Model.CurrentPage - 1) * Model.PageSize + 1)-@Math.Min(Model.CurrentPage * Model.PageSize, Model.TotalEvents) of @Model.TotalEvents events
+            </p>
+        </div>
+    }
+
     <!-- Events List -->
     @if (Model.Events.Any())
     {
-        <div class="row g-4">
+        <div class="row g-4 mb-4">
             @foreach (var evt in Model.Events)
             {
                 <div class="col-md-6 col-lg-4">
-                    <div class="card event-card h-100 @(evt.ApprovalStatus == ApprovalStatus.Pending ? "border-warning" : "")">
+                    <div class="card event-card h-100 shadow-sm">
                         <div class="card-header @(evt.ApprovalStatus == ApprovalStatus.Pending ? "bg-warning" : evt.ApprovalStatus == ApprovalStatus.Approved ? "bg-success text-white" : "bg-danger text-white")">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge @(evt.ApprovalStatus == ApprovalStatus.Pending ? "bg-dark" : "bg-light text-dark")">
+                                <span class="badge @(evt.ApprovalStatus == ApprovalStatus.Pending ? "bg-dark" : evt.ApprovalStatus == ApprovalStatus.Approved ? "bg-white text-success" : "bg-white text-danger")">
                                     @evt.Category
                                 </span>
-                                <span class="badge @(evt.ApprovalStatus == ApprovalStatus.Pending ? "bg-dark" : "bg-light text-dark")">
+                                <span class="badge @(evt.ApprovalStatus == ApprovalStatus.Pending ? "bg-dark" : evt.ApprovalStatus == ApprovalStatus.Approved ? "bg-white text-success" : "bg-white text-danger")">
                                     @evt.ApprovalStatus
                                 </span>
                             </div>
@@ -111,14 +121,14 @@
                         <div class="card-footer bg-transparent">
                             @if (evt.ApprovalStatus == ApprovalStatus.Pending)
                             {
-                                <div class="d-flex gap-2">
+                                <div class="btn-group w-100" role="group">
                                     <form method="post" asp-page-handler="Approve" asp-route-id="@evt.Id" class="flex-fill">
                                         <button type="submit" class="btn btn-success w-100">
                                             <i class="bi bi-check-circle"></i> Approve
                                         </button>
                                     </form>
                                     <form method="post" asp-page-handler="Reject" asp-route-id="@evt.Id" class="flex-fill">
-                                        <button type="submit" class="btn btn-warning w-100">
+                                        <button type="submit" class="btn btn-danger w-100">
                                             <i class="bi bi-x-circle"></i> Reject
                                         </button>
                                     </form>
@@ -126,7 +136,7 @@
                             }
                             else if (evt.ApprovalStatus == ApprovalStatus.Rejected)
                             {
-                                <div class="d-flex gap-2">
+                                <div class="btn-group w-100" role="group">
                                     <form method="post" asp-page-handler="Approve" asp-route-id="@evt.Id" class="flex-fill">
                                         <button type="submit" class="btn btn-success w-100">
                                             <i class="bi bi-check-circle"></i> Approve
@@ -154,6 +164,66 @@
                 </div>
             }
         </div>
+
+        <!-- Pagination Controls -->
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Event pagination" class="mt-4 mb-5">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous Button -->
+                    <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                        <a class="page-link"
+                           href="?CurrentPage=@(Model.CurrentPage - 1)&StatusFilter=@Model.StatusFilter&CategoryFilter=@Model.CategoryFilter"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    @{
+                        var startPage = Math.Max(1, Model.CurrentPage - 2);
+                        var endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+
+                        if (startPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="?CurrentPage=1&StatusFilter=@Model.StatusFilter&CategoryFilter=@Model.CategoryFilter">1</a>
+                            </li>
+                            if (startPage > 2)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+                        }
+
+                        for (var i = startPage; i <= endPage; i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="?CurrentPage=@i&StatusFilter=@Model.StatusFilter&CategoryFilter=@Model.CategoryFilter">@i</a>
+                            </li>
+                        }
+
+                        if (endPage < Model.TotalPages)
+                        {
+                            if (endPage < Model.TotalPages - 1)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+                            <li class="page-item">
+                                <a class="page-link" href="?CurrentPage=@Model.TotalPages&StatusFilter=@Model.StatusFilter&CategoryFilter=@Model.CategoryFilter">@Model.TotalPages</a>
+                            </li>
+                        }
+                    }
+
+                    <!-- Next Button -->
+                    <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link"
+                           href="?CurrentPage=@(Model.CurrentPage + 1)&StatusFilter=@Model.StatusFilter&CategoryFilter=@Model.CategoryFilter"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
     }
     else
     {
@@ -177,10 +247,6 @@
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
 
-    .event-card.border-warning {
-        border-width: 2px;
-    }
-
     .event-details {
         font-size: 0.9rem;
     }
@@ -195,5 +261,34 @@
     .detail-item i {
         color: #6c757d;
         width: 16px;
+    }
+
+    /* Pagination styling */
+    .pagination .page-link {
+        background: linear-gradient(135deg, #d5bdaf, #c9a999);
+        color: #3d3d3d;
+        border: 1px solid #b39a8d;
+        margin: 0 2px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+    .pagination .page-link:hover {
+        background: linear-gradient(135deg, #c9a999, #b39a8d);
+        color: #3d3d3d;
+        border-color: #a38a7d;
+    }
+
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #a38a7d, #8d7a6d);
+        color: #ffffff;
+        border-color: #8d7a6d;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        background: linear-gradient(135deg, #e5d5c9, #d9c9bd);
+        color: #999;
+        border-color: #d9c9bd;
+        opacity: 0.6;
     }
 </style>

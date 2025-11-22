@@ -135,9 +135,13 @@
 }
 
 .event-card .card-header {
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
     padding: 0.875rem 1.25rem;
+}
+
+.event-card .card-header.bg-success,
+.event-card .card-header.bg-danger,
+.event-card .card-header.bg-warning {
+    border-bottom: none;
 }
 
 .event-card .card-body {

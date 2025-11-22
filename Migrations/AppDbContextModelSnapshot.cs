@@ -60,7 +60,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("CarpoolOffers", (string)null);
+                    b.ToTable("CarpoolOffers");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.CarpoolPassenger", b =>
@@ -93,7 +93,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("PassengerId");
 
-                    b.ToTable("CarpoolPassengers", (string)null);
+                    b.ToTable("CarpoolPassengers");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Driver", b =>
@@ -140,7 +140,7 @@ namespace CampusEvents.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Drivers", (string)null);
+                    b.ToTable("Drivers");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Event", b =>
@@ -198,7 +198,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("OrganizerId");
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Organization", b =>
@@ -219,7 +219,7 @@ namespace CampusEvents.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizations", (string)null);
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Room", b =>
@@ -268,7 +268,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("OrganizerId");
 
-                    b.ToTable("Rooms", (string)null);
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.RoomRental", b =>
@@ -313,7 +313,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("RoomId", "StartTime", "EndTime");
 
-                    b.ToTable("RoomRentals", (string)null);
+                    b.ToTable("RoomRentals");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.SavedEvent", b =>
@@ -331,7 +331,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("SavedEvents", (string)null);
+                    b.ToTable("SavedEvents");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Ticket", b =>
@@ -348,9 +348,6 @@ namespace CampusEvents.Migrations
 
                     b.Property<bool>("IsRedeemed")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("QrCodeImage")
-                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("RedeemedAt")
                         .HasColumnType("TEXT");
@@ -371,7 +368,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tickets", (string)null);
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.User", b =>
@@ -433,7 +430,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.CarpoolOffer", b =>

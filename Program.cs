@@ -21,6 +21,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddTransient<DbCSVCommunicator>();
 
+// Register ticket signing service (singleton for performance)
+builder.Services.AddSingleton<TicketSigningService>();
+
 // Register US.04 services (Carpool and Room Rental)
 builder.Services.AddScoped<CarpoolService>();
 builder.Services.AddScoped<RoomRentalService>();

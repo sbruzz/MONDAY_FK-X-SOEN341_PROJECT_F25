@@ -30,20 +30,26 @@
     @await RenderSectionAsync("Styles", required: false)
     <style>
         :root {
-            --primary: #d4756e;
-            --primary-dark: #c15f58;
-            --primary-light: #e8988e;
-            --primary-lighter: #f0b3ac;
-            --primary-lightest: #f8d7d3;
-            --secondary: #e8b17e;
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #3b82f6;
+            --primary-lighter: #60a5fa;
+            --primary-lightest: #93c5fd;
+            --secondary: #92827d;
             --accent: #d5bdaf;
-            --success: #d4756e;
-            --warning: #e8b17e;
-            --danger: #c15f58;
-            --info: #e8988e;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --info: #0891b2;
             --bg: #f5ebe0;
             --card-bg: #ffffff;
             --text: #3d3d3d;
+
+            /* Beige palette with alpha channels */
+            --beige-primary: #d5bdaf;
+            --beige-medium: #c9a999;
+            --beige-dark: #b39a8d;
+            --beige-bg: #f5ebe0;
             --text-light: #6b6b6b;
             --border: #e3d5ca;
         }
@@ -63,8 +69,8 @@
 
         /* Admin Header */
         .admin-header {
-            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
-            border-bottom: 1px solid rgba(212, 117, 110, 0.12);
+            background: linear-gradient(135deg, #f0e8df 0%, #e3d5ca 100%);
+            border-bottom: 1px solid rgba(213, 189, 175, 0.3);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -129,7 +135,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            filter: drop-shadow(0 2px 4px rgba(212, 117, 110, 0.2));
+            filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.2));
         }
 
         .header-nav {
@@ -221,23 +227,23 @@
         }
 
         .nav-link:hover {
-            background: linear-gradient(135deg, rgba(212, 117, 110, 0.08), rgba(232, 177, 126, 0.08));
-            color: var(--primary);
+            background: linear-gradient(135deg, rgba(213, 189, 175, 0.12), rgba(201, 169, 153, 0.12));
+            color: var(--text);
             transform: translateY(-1px);
-            border-color: rgba(212, 117, 110, 0.15);
-            box-shadow: 0 4px 12px rgba(212, 117, 110, 0.1);
+            border-color: rgba(213, 189, 175, 0.2);
+            box-shadow: 0 4px 12px rgba(213, 189, 175, 0.15);
         }
 
         .nav-link.active {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, #c9a999, #b39a8d);
             color: white;
-            box-shadow: 0 4px 16px rgba(212, 117, 110, 0.35);
+            box-shadow: 0 4px 16px rgba(201, 169, 153, 0.4);
             border-color: transparent;
         }
 
         .nav-link.active:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 117, 110, 0.45);
+            box-shadow: 0 6px 20px rgba(201, 169, 153, 0.5);
         }
 
         .nav-link i {
@@ -250,22 +256,22 @@
         }
 
         .nav-link .badge {
-            background: linear-gradient(135deg, #dc3545, #c82333);
+            background: linear-gradient(135deg, #b39a8d, #a89f9a);
             color: white;
             border-radius: 12px;
             padding: 0.2rem 0.6rem;
             font-size: 0.7rem;
             font-weight: 700;
-            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+            box-shadow: 0 2px 8px rgba(179, 154, 141, 0.3);
             animation: pulse 2s infinite;
         }
 
         @@keyframes pulse {
             0%, 100% {
-                box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+                box-shadow: 0 2px 8px rgba(179, 154, 141, 0.3);
             }
             50% {
-                box-shadow: 0 2px 12px rgba(220, 53, 69, 0.5);
+                box-shadow: 0 2px 12px rgba(179, 154, 141, 0.5);
             }
         }
 
@@ -277,13 +283,13 @@
             background: linear-gradient(135deg, rgba(245, 235, 224, 0.6), rgba(255, 255, 255, 0.8));
             border-radius: 50px;
             flex-shrink: 1;
-            border: 1px solid rgba(212, 117, 110, 0.12);
-            box-shadow: 0 2px 12px rgba(212, 117, 110, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.12);
+            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
             transition: all 0.3s ease;
         }
 
         .header-user:hover {
-            box-shadow: 0 4px 16px rgba(212, 117, 110, 0.15);
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
             transform: translateY(-1px);
         }
 
@@ -298,7 +304,7 @@
             justify-content: center;
             font-weight: 700;
             font-size: 0.95rem;
-            box-shadow: 0 3px 12px rgba(212, 117, 110, 0.25);
+            box-shadow: 0 3px 12px rgba(37, 99, 235, 0.25);
             border: 2px solid white;
             transition: transform 0.3s ease;
         }
@@ -329,7 +335,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            box-shadow: 0 2px 8px rgba(212, 117, 110, 0.2);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
             width: fit-content;
         }
 
@@ -349,14 +355,14 @@
             flex-shrink: 1;
             white-space: nowrap;
             font-size: 0.875rem;
-            box-shadow: 0 2px 8px rgba(212, 117, 110, 0.1);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
         }
 
         .logout-btn:hover {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 117, 110, 0.3);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
             border-color: transparent;
         }
 
@@ -501,72 +507,72 @@
             background: var(--primary);
             border-color: var(--primary);
             color: white;
-            box-shadow: 0 4px 12px rgba(212, 117, 110, 0.3);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
         .btn-primary:hover {
             background: var(--primary-dark);
             border-color: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 117, 110, 0.4);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
         }
 
         .btn-success {
-            background: var(--primary);
-            border-color: var(--primary);
+            background: var(--success);
+            border-color: var(--success);
         }
 
         .btn-success:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
+            background: #047857;
+            border-color: #047857;
             transform: translateY(-2px);
         }
 
         .btn-warning {
-            background: var(--primary-light);
-            border-color: var(--primary-light);
+            background: var(--warning);
+            border-color: var(--warning);
             color: white;
         }
 
         .btn-warning:hover {
-            background: var(--primary);
-            border-color: var(--primary);
+            background: #b45309;
+            border-color: #b45309;
             transform: translateY(-2px);
         }
 
         .btn-danger {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
+            background: var(--danger);
+            border-color: var(--danger);
         }
 
         .btn-danger:hover {
-            background: #a94c46;
-            border-color: #a94c46;
+            background: #b91c1c;
+            border-color: #b91c1c;
             transform: translateY(-2px);
         }
 
         .btn-info {
-            background: var(--primary-lighter);
-            border-color: var(--primary-lighter);
+            background: var(--info);
+            border-color: var(--info);
             color: white;
         }
 
         .btn-info:hover {
-            background: var(--primary-light);
-            border-color: var(--primary-light);
+            background: #0e7490;
+            border-color: #0e7490;
             transform: translateY(-2px);
         }
 
         .badge.bg-success {
-            background: var(--primary) !important;
+            background: var(--success) !important;
         }
 
         .badge.bg-warning {
-            background: var(--primary-light) !important;
+            background: var(--warning) !important;
         }
 
         .badge.bg-info {
-            background: var(--primary-lighter) !important;
+            background: var(--info) !important;
         }
 
         .btn-sm {
@@ -606,7 +612,7 @@
 
         .form-control:focus, .form-select:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 0.2rem rgba(212, 117, 110, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
         }
 
         .alert {
@@ -624,6 +630,223 @@
 
         .table {
             border-radius: 16px;
+        }
+
+        /* Monochromatic Beige Color Overrides */
+        .bg-primary {
+            background: linear-gradient(135deg, #d5bdaf, #c9a999) !important;
+            color: #3d3d3d !important;
+        }
+
+        .bg-info {
+            background: linear-gradient(135deg, #e3d5ca, #d5bdaf) !important;
+            color: #3d3d3d !important;
+        }
+
+        .bg-success {
+            background: linear-gradient(135deg, #c9a999, #b39a8d) !important;
+            color: #ffffff !important;
+        }
+
+        .bg-warning {
+            background: linear-gradient(135deg, #f0e8df, #e3d5ca) !important;
+            color: #3d3d3d !important;
+        }
+
+        .bg-danger {
+            background: linear-gradient(135deg, #b39a8d, #a89f9a) !important;
+            color: #ffffff !important;
+        }
+
+        .card-header.bg-primary,
+        .card-header.bg-info,
+        .card-header.bg-warning {
+            color: #3d3d3d !important;
+        }
+
+        /* Event card headers should use actual status colors, not beige */
+        .event-card .card-header.bg-success {
+            background: linear-gradient(135deg, #059669, #047857) !important;
+            color: #ffffff !important;
+        }
+
+        .event-card .card-header.bg-danger {
+            background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+            color: #ffffff !important;
+        }
+
+        .event-card .card-header.bg-warning {
+            background: linear-gradient(135deg, #eab308, #ca8a04) !important;
+            color: #3d3d3d !important;
+        }
+
+        /* Other card headers can keep default text color */
+        .card-header.bg-success,
+        .card-header.bg-danger {
+            color: #ffffff !important;
+        }
+
+        .card-header.text-white {
+            color: #3d3d3d !important;
+        }
+
+        .card {
+            background: #fdfbf9 !important;
+            border-color: rgba(213, 189, 175, 0.2) !important;
+        }
+
+        .card-body {
+            background: #fdfbf9 !important;
+        }
+
+        .alert-success {
+            background: rgba(201, 169, 153, 0.15) !important;
+            border-color: rgba(201, 169, 153, 0.3) !important;
+            color: #6b6b6b !important;
+        }
+
+        .alert-warning {
+            background: rgba(240, 232, 223, 0.3) !important;
+            border-color: rgba(227, 213, 202, 0.4) !important;
+            color: #6b6b6b !important;
+        }
+
+        .alert-info {
+            background: rgba(227, 213, 202, 0.2) !important;
+            border-color: rgba(213, 189, 175, 0.3) !important;
+            color: #6b6b6b !important;
+        }
+
+        .badge.rounded-pill {
+            background: linear-gradient(135deg, #c9a999, #b39a8d) !important;
+            color: #ffffff !important;
+        }
+
+        /* DELETE buttons should be RED */
+        .btn-danger,
+        button.btn-danger,
+        a.btn-danger,
+        button[title="Delete"],
+        button:has(.bi-trash),
+        form[asp-page-handler*="Delete"] button {
+            background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+            border-color: transparent !important;
+            color: #ffffff !important;
+        }
+
+        .btn-danger:hover,
+        button[title="Delete"]:hover,
+        button:has(.bi-trash):hover {
+            background: linear-gradient(135deg, #b91c1c, #991b1b) !important;
+            transform: translateY(-1px);
+        }
+
+        /* Remove all bright blues, reds, cyans, greens */
+        [style*="background: #dc3545"],
+        [style*="background-color: #dc3545"],
+        [style*="background: red"],
+        [style*="background: #007bff"],
+        [style*="background: blue"],
+        [style*="background: #17a2b8"],
+        [style*="background: cyan"],
+        [style*="background: #28a745"],
+        [style*="background: green"] {
+            background: linear-gradient(135deg, #c9a999, #b39a8d) !important;
+        }
+
+        /* Badge overrides for all status badges */
+        .badge,
+        span.badge {
+            border: none !important;
+        }
+
+        .badge.bg-danger,
+        span[style*="background: red"],
+        span[style*="background-color: red"] {
+            background: linear-gradient(135deg, #b39a8d, #a89f9a) !important;
+            color: #ffffff !important;
+        }
+
+        .badge.bg-info,
+        span[style*="background: cyan"],
+        span[style*="background: #17a2b8"] {
+            background: linear-gradient(135deg, #c9a999, #b39a8d) !important;
+            color: #3d3d3d !important;
+        }
+
+        /* Specific button type overrides */
+        button[style*="background: rgb(37, 99, 235)"],
+        button[style*="background-color: rgb(37, 99, 235)"],
+        .btn[style*="background: blue"] {
+            background: linear-gradient(135deg, #c9a999, #b39a8d) !important;
+            border-color: transparent !important;
+            color: #ffffff !important;
+        }
+
+        /* APPROVED = GREEN (scoped to badges only) */
+        .badge.bg-success {
+            background: linear-gradient(135deg, #059669, #047857) !important;
+            color: #ffffff !important;
+        }
+
+        /* PENDING = YELLOW (scoped to badges only) */
+        .badge.bg-warning {
+            background: linear-gradient(135deg, #eab308, #ca8a04) !important;
+            color: #3d3d3d !important;
+        }
+
+        /* Remove forced white text - let buttons use their proper text color */
+        .card-header.text-white {
+            color: #3d3d3d !important;
+        }
+
+        /* Action button groups - force continuous pill shape */
+        .btn-group.driver-actions,
+        .btn-group.room-actions,
+        .btn-group.rental-actions {
+            overflow: hidden;
+        }
+
+        .btn-group.driver-actions .btn,
+        .btn-group.driver-actions form .btn,
+        .btn-group.room-actions .btn,
+        .btn-group.room-actions form .btn,
+        .btn-group.rental-actions .btn,
+        .btn-group.rental-actions form .btn {
+            border-radius: 0 !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .btn-group.driver-actions .btn:first-child,
+        .btn-group.driver-actions form:first-child .btn,
+        .btn-group.room-actions .btn:first-child,
+        .btn-group.room-actions form:first-child .btn,
+        .btn-group.rental-actions .btn:first-child,
+        .btn-group.rental-actions form:first-child .btn {
+            border-top-left-radius: 999px !important;
+            border-bottom-left-radius: 999px !important;
+        }
+
+        .btn-group.driver-actions .btn:last-child,
+        .btn-group.driver-actions form:last-child .btn,
+        .btn-group.driver-actions > :last-child .btn,
+        .btn-group.room-actions .btn:last-child,
+        .btn-group.room-actions form:last-child .btn,
+        .btn-group.room-actions > :last-child .btn,
+        .btn-group.rental-actions .btn:last-child,
+        .btn-group.rental-actions form:last-child .btn,
+        .btn-group.rental-actions > :last-child .btn {
+            border-top-right-radius: 999px !important;
+            border-bottom-right-radius: 999px !important;
+        }
+
+        /* Ensure buttons in action groups have no gaps */
+        .btn-group.driver-actions form,
+        .btn-group.room-actions form,
+        .btn-group.rental-actions form {
+            display: inline-block;
+            margin: 0;
         }
     </style>
 </head>

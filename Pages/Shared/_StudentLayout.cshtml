@@ -29,13 +29,17 @@
     @await RenderSectionAsync("Styles", required: false)
     <style>
         :root {
-            --primary: #d5bdaf;
-            --primary-dark: #c9a999;
-            --secondary: #e3d5ca;
-            --accent: #d6ccc2;
-            --success: #90b494;
-            --warning: #e8b17e;
-            --danger: #d4756e;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-lighter: #a5b4fc;
+            --primary-lightest: #c7d2fe;
+            --secondary: #92827d;
+            --accent: #d5bdaf;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --info: #0891b2;
             --bg: #f5ebe0;
             --card-bg: #ffffff;
             --text: #3d3d3d;
@@ -58,8 +62,8 @@
 
         /* Student Header */
         .student-header {
-            background: var(--card-bg);
-            border-bottom: 2px solid var(--border);
+            background: linear-gradient(135deg, #f0e8df 0%, #e3d5ca 100%);
+            border-bottom: 1px solid rgba(213, 189, 175, 0.3);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -451,6 +455,171 @@
 
         .progress-bar {
             border-radius: 20px;
+        }
+
+        /* Monochromatic Beige Color Overrides */
+        .bg-primary {
+            background: linear-gradient(135deg, #d5bdaf, #c9a999) !important;
+            color: #3d3d3d !important;
+        }
+
+        .bg-info {
+            background: linear-gradient(135deg, #e3d5ca, #d5bdaf) !important;
+            color: #3d3d3d !important;
+        }
+
+        .bg-success {
+            background: linear-gradient(135deg, #c9a999, #b39a8d) !important;
+            color: #ffffff !important;
+        }
+
+        .bg-warning {
+            background: linear-gradient(135deg, #f0e8df, #e3d5ca) !important;
+            color: #3d3d3d !important;
+        }
+
+        .bg-danger {
+            background: linear-gradient(135deg, #b39a8d, #a89f9a) !important;
+            color: #ffffff !important;
+        }
+
+        .card-header.bg-primary,
+        .card-header.bg-info,
+        .card-header.bg-warning {
+            color: #3d3d3d !important;
+        }
+
+        .card-header.bg-success,
+        .card-header.bg-danger {
+            color: #ffffff !important;
+        }
+
+        .card-header.text-white {
+            color: #3d3d3d !important;
+        }
+
+        .card {
+            background: #fdfbf9 !important;
+            border-color: rgba(213, 189, 175, 0.2) !important;
+        }
+
+        .card-body {
+            background: #fdfbf9 !important;
+        }
+
+        .alert-success {
+            background: rgba(201, 169, 153, 0.15) !important;
+            border-color: rgba(201, 169, 153, 0.3) !important;
+            color: #6b6b6b !important;
+        }
+
+        .alert-warning {
+            background: rgba(240, 232, 223, 0.3) !important;
+            border-color: rgba(227, 213, 202, 0.4) !important;
+            color: #6b6b6b !important;
+        }
+
+        .alert-info {
+            background: rgba(227, 213, 202, 0.2) !important;
+            border-color: rgba(213, 189, 175, 0.3) !important;
+            color: #6b6b6b !important;
+        }
+
+        .badge.rounded-pill {
+            background: linear-gradient(135deg, #c9a999, #b39a8d) !important;
+            color: #ffffff !important;
+        }
+
+        /* DELETE buttons should be RED */
+        .btn-danger,
+        button.btn-danger,
+        a.btn-danger,
+        button[title="Delete"],
+        button:has(.bi-trash),
+        form[asp-page-handler*="Delete"] button {
+            background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+            border-color: transparent !important;
+            color: #ffffff !important;
+        }
+
+        .btn-danger:hover,
+        button[title="Delete"]:hover,
+        button:has(.bi-trash):hover {
+            background: linear-gradient(135deg, #b91c1c, #991b1b) !important;
+            transform: translateY(-1px);
+        }
+
+        /* Remove all bright blues, reds, cyans, greens */
+        [style*="background: #dc3545"],
+        [style*="background-color: #dc3545"],
+        [style*="background: red"],
+        [style*="background: #007bff"],
+        [style*="background: blue"],
+        [style*="background: #17a2b8"],
+        [style*="background: cyan"],
+        [style*="background: #28a745"],
+        [style*="background: green"] {
+            background: linear-gradient(135deg, #c9a999, #b39a8d) !important;
+        }
+
+        /* Badge overrides for all status badges */
+        .badge,
+        span.badge {
+            border: none !important;
+        }
+
+        .badge.bg-danger,
+        span[style*="background: red"],
+        span[style*="background-color: red"] {
+            background: linear-gradient(135deg, #b39a8d, #a89f9a) !important;
+            color: #ffffff !important;
+        }
+
+        .badge.bg-info,
+        span[style*="background: cyan"],
+        span[style*="background: #17a2b8"] {
+            background: linear-gradient(135deg, #c9a999, #b39a8d) !important;
+            color: #3d3d3d !important;
+        }
+
+        /* Specific button type overrides */
+        button[style*="background: rgb(37, 99, 235)"],
+        button[style*="background-color: rgb(37, 99, 235)"],
+        .btn[style*="background: blue"] {
+            background: linear-gradient(135deg, #c9a999, #b39a8d) !important;
+            border-color: transparent !important;
+            color: #ffffff !important;
+        }
+
+        /* APPROVED = GREEN */
+        .badge.bg-success,
+        span.badge:contains("Approved"),
+        span:contains("Approved"),
+        button:contains("Approved") {
+            background: linear-gradient(135deg, #059669, #047857) !important;
+            color: #ffffff !important;
+        }
+
+        /* PENDING = YELLOW */
+        .badge.bg-warning,
+        span.badge:contains("Pending"),
+        span:contains("Pending"),
+        button:contains("Pending") {
+            background: linear-gradient(135deg, #eab308, #ca8a04) !important;
+            color: #3d3d3d !important;
+        }
+
+        button[disabled],
+        .btn[disabled],
+        button:contains("Has Events") {
+            background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+            color: #3d3d3d !important;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .card-header.text-white {
+            color: #3d3d3d !important;
         }
     </style>
 </head>

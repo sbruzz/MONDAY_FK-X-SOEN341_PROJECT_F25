@@ -66,21 +66,22 @@
                                     </td>
                                     <td>@activeRentals</td>
                                     <td>
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <form method="post" asp-page-handler="ToggleRoom" class="d-inline">
+                                        <div class="btn-group btn-group-sm room-actions" role="group" aria-label="Room actions for @room.Name">
+                                            <form method="post" asp-page-handler="ToggleRoom">
                                                 <input type="hidden" name="id" value="@room.Id" />
-                                                <button type="submit" class="btn @(room.IsEnabled ? "btn-warning" : "btn-success")" 
-                                                        title="@(room.IsEnabled ? "Disable" : "Enable")">
-                                                    <i class="bi bi-@(room.IsEnabled ? "x-circle" : "check-circle")"></i>
+                                                <button type="submit" class="btn btn-sm @(room.IsEnabled ? "btn-warning" : "btn-success")"
+                                                        title="@(room.IsEnabled ? "Disable" : "Enable")"
+                                                        aria-label="@(room.IsEnabled ? "Disable room" : "Enable room")">
+                                                    <i class="bi bi-@(room.IsEnabled ? "x-circle" : "check-circle")" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                             @if (!room.Rentals.Any())
                                             {
-                                                <form method="post" asp-page-handler="DeleteRoom" class="d-inline"
+                                                <form method="post" asp-page-handler="DeleteRoom"
                                                       onsubmit="return confirm('Delete this room?');">
                                                     <input type="hidden" name="id" value="@room.Id" />
-                                                    <button type="submit" class="btn btn-danger" title="Delete">
-                                                        <i class="bi bi-trash"></i>
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete" aria-label="Delete room">
+                                                        <i class="bi bi-trash" aria-hidden="true"></i>
                                                     </button>
                                                 </form>
                                             }
@@ -145,25 +146,43 @@
                                         }
                                     </td>
                                     <td>
-                                        @if (rental.Status == RentalStatus.Approved)
-                                        {
-                                            <form method="post" asp-page-handler="DisableRental" class="d-inline"
-                                                  onsubmit="return confirm('Disable this rental? The room will be unavailable for this time period.');">
-                                                <input type="hidden" name="id" value="@rental.Id" />
-                                                <button type="submit" class="btn btn-sm btn-warning" title="Disable Rental">
-                                                    <i class="bi bi-x-circle"></i>
-                                                </button>
-                                            </form>
-                                        }
-                                        else if (rental.Status == RentalStatus.Rejected)
-                                        {
-                                            <form method="post" asp-page-handler="EnableRental" class="d-inline">
-                                                <input type="hidden" name="id" value="@rental.Id" />
-                                                <button type="submit" class="btn btn-sm btn-success" title="Re-enable Rental">
-                                                    <i class="bi bi-check-circle"></i>
-                                                </button>
-                                            </form>
-                                        }
+                                        <div class="btn-group btn-group-sm rental-actions" role="group" aria-label="Rental actions">
+                                            @if (rental.Status == RentalStatus.Pending)
+                                            {
+                                                <form method="post" asp-page-handler="ApproveRental">
+                                                    <input type="hidden" name="id" value="@rental.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-success" title="Approve Rental">
+                                                        <i class="bi bi-check-circle"></i>
+                                                    </button>
+                                                </form>
+                                                <form method="post" asp-page-handler="RejectRental"
+                                                      onsubmit="return confirm('Reject this rental request?');">
+                                                    <input type="hidden" name="id" value="@rental.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Reject Rental">
+                                                        <i class="bi bi-x-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else if (rental.Status == RentalStatus.Approved)
+                                            {
+                                                <form method="post" asp-page-handler="DisableRental"
+                                                      onsubmit="return confirm('Disable this rental? The room will be unavailable for this time period.');">
+                                                    <input type="hidden" name="id" value="@rental.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-warning" title="Disable Rental">
+                                                        <i class="bi bi-x-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else if (rental.Status == RentalStatus.Rejected)
+                                            {
+                                                <form method="post" asp-page-handler="EnableRental">
+                                                    <input type="hidden" name="id" value="@rental.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-success" title="Re-enable Rental">
+                                                        <i class="bi bi-check-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -176,6 +195,13 @@
                 <p class="text-muted mb-0">No rentals found.</p>
             }
         </div>
+    </div>
+
+    <div class="mt-3 mb-5">
+        <p class="text-muted">
+            Active Rooms: <strong>@Model.Rooms.Count(r => r.IsEnabled)</strong> / @Model.Rooms.Count |
+            Active Rentals: <strong>@Model.AllRentals.Count(r => r.Status == RentalStatus.Approved)</strong> / @Model.AllRentals.Count
+        </p>
     </div>
 </div>
 
