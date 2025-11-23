@@ -60,6 +60,17 @@ public class CarpoolServiceIntegrationTests : IDisposable
     public async Task CreateOfferAndJoin_EndToEnd_ShouldUpdateSeatsCorrectly()
     {
         // Setup
+        var organizer = new User
+        {
+            Email = "organizer@test.com",
+            PasswordHash = "hash",
+            Name = "Test Organizer",
+            Role = UserRole.Organizer,
+            ApprovalStatus = ApprovalStatus.Approved
+        };
+        _context.Users.Add(organizer);
+        await _context.SaveChangesAsync();
+
         var driverUser = new User
         {
             Email = "driver@test.com",
@@ -87,7 +98,7 @@ public class CarpoolServiceIntegrationTests : IDisposable
             Capacity = 100,
             TicketType = TicketType.Free,
             Category = "Test",
-            OrganizerId = 1,
+            OrganizerId = organizer.Id,
             ApprovalStatus = ApprovalStatus.Approved
         };
         _context.Events.Add(eventEntity);
@@ -147,6 +158,17 @@ public class CarpoolServiceIntegrationTests : IDisposable
         driver!.Status.Should().Be(DriverStatus.Active);
 
         // Now should be able to create offer
+        var organizer = new User
+        {
+            Email = "organizer@test.com",
+            PasswordHash = "hash",
+            Name = "Test Organizer",
+            Role = UserRole.Organizer,
+            ApprovalStatus = ApprovalStatus.Approved
+        };
+        _context.Users.Add(organizer);
+        await _context.SaveChangesAsync();
+
         var eventEntity = new Event
         {
             Title = "Test Event",
@@ -156,7 +178,7 @@ public class CarpoolServiceIntegrationTests : IDisposable
             Capacity = 100,
             TicketType = TicketType.Free,
             Category = "Test",
-            OrganizerId = 1,
+            OrganizerId = organizer.Id,
             ApprovalStatus = ApprovalStatus.Approved
         };
         _context.Events.Add(eventEntity);

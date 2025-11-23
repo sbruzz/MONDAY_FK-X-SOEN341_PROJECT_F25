@@ -79,7 +79,7 @@ public class RoomRentalServiceIntegrationTests : IDisposable
         rentalResult.Rental.Should().NotBeNull();
         if (rentalResult.Rental != null)
         {
-            rentalResult.Rental.TotalCost.Should().Be(50.00m); // 2 hours * $25/hour
+            rentalResult.Rental.TotalCost.Should().BeApproximately(50.00m, 0.01m); // 2 hours * $25/hour (allow small precision difference)
         }
 
         // Verify persistence

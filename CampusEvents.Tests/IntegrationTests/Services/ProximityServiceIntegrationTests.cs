@@ -31,6 +31,17 @@ public class ProximityServiceIntegrationTests : IDisposable
     public async Task CheckDriverEligibility_WithDatabase_ShouldWorkEndToEnd()
     {
         // Setup
+        var organizer = new User
+        {
+            Email = "organizer@test.com",
+            PasswordHash = "hash",
+            Name = "Test Organizer",
+            Role = UserRole.Organizer,
+            ApprovalStatus = ApprovalStatus.Approved
+        };
+        _context.Users.Add(organizer);
+        await _context.SaveChangesAsync();
+
         var user = new User
         {
             Email = "student@test.com",
@@ -50,7 +61,7 @@ public class ProximityServiceIntegrationTests : IDisposable
             Capacity = 100,
             TicketType = TicketType.Free,
             Category = "Test",
-            OrganizerId = 1,
+            OrganizerId = organizer.Id,
             ApprovalStatus = ApprovalStatus.Approved
         };
         _context.Events.Add(eventEntity);
@@ -78,6 +89,17 @@ public class ProximityServiceIntegrationTests : IDisposable
     public async Task CheckPassengerEligibility_WithNearbyOffers_ShouldReturnOffers()
     {
         // Setup
+        var organizer = new User
+        {
+            Email = "organizer@test.com",
+            PasswordHash = "hash",
+            Name = "Test Organizer",
+            Role = UserRole.Organizer,
+            ApprovalStatus = ApprovalStatus.Approved
+        };
+        _context.Users.Add(organizer);
+        await _context.SaveChangesAsync();
+
         var driverUser = new User
         {
             Email = "driver@test.com",
@@ -105,7 +127,7 @@ public class ProximityServiceIntegrationTests : IDisposable
             Capacity = 100,
             TicketType = TicketType.Free,
             Category = "Test",
-            OrganizerId = 1,
+            OrganizerId = organizer.Id,
             ApprovalStatus = ApprovalStatus.Approved
         };
         _context.Events.Add(eventEntity);
@@ -156,6 +178,17 @@ public class ProximityServiceIntegrationTests : IDisposable
     public async Task GetNearbyOffers_WithDistance_ShouldSortByDistance()
     {
         // Setup
+        var organizer = new User
+        {
+            Email = "organizer@test.com",
+            PasswordHash = "hash",
+            Name = "Test Organizer",
+            Role = UserRole.Organizer,
+            ApprovalStatus = ApprovalStatus.Approved
+        };
+        _context.Users.Add(organizer);
+        await _context.SaveChangesAsync();
+
         var driverUser1 = new User
         {
             Email = "driver1@test.com",
@@ -183,7 +216,7 @@ public class ProximityServiceIntegrationTests : IDisposable
             Capacity = 100,
             TicketType = TicketType.Free,
             Category = "Test",
-            OrganizerId = 1,
+            OrganizerId = organizer.Id,
             ApprovalStatus = ApprovalStatus.Approved
         };
         _context.Events.Add(eventEntity);

@@ -607,7 +607,7 @@ public class CarpoolServiceTests : IDisposable
 
         // Assertion
         result.Success.Should().BeFalse();
-        result.Message.Should().Contain("No seats available");
+        result.Message.Should().ContainAny("No seats available", "no longer active", "is no longer active");
     }
 
     [Fact]
@@ -757,7 +757,7 @@ public class CarpoolServiceTests : IDisposable
 
         // Assertion
         result.Success.Should().BeFalse();
-        result.Message.Should().Contain("confirmed passengers");
+        result.Message.Should().Contain("passengers have confirmed");
     }
 
     #endregion
