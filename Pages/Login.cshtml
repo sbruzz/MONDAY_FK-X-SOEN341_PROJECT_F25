@@ -7,12 +7,12 @@
 <div class="login-container">
     <div class="login-card">
         <h2 class="text-center mb-4">Campus Events Login</h2>
-        <form method="post" asp-page-handler="Login">
+
         <!-- Three-way Toggle Tabs (Visual only for signup) -->
         <div class="role-tabs mb-4">
-            <input type="radio" name="roletab" id="student-tab" value="Student" checked>
-            <input type="radio" name="roletab" id="organizer-tab" value="Organizer">
-            <input type="radio" name="roletab" id="admin-tab" value="Admin">
+            <input type="radio" name="role-tab" id="student-tab" value="Student" checked>
+            <input type="radio" name="role-tab" id="organizer-tab" value="Organizer">
+            <input type="radio" name="role-tab" id="admin-tab" value="Admin">
 
             <label for="student-tab" class="tab-label">Student</label>
             <label for="organizer-tab" class="tab-label">Organizer</label>
@@ -23,7 +23,7 @@
 
         <!-- Login Form -->
         <div class="auth-section" id="login-section">
-            
+            <form method="post" asp-page-handler="Login">
                 <div class="mb-3">
                     <label for="login-email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="login-email" name="Email" required>
@@ -33,11 +33,11 @@
                     <input type="password" class="form-control" id="login-password" name="Password" required>
                 </div>
                 <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+            </form>
             <p class="text-center mb-0">
                 Don't have an account? <a href="#" id="show-signup">Sign up</a>
             </p>
         </div>
-        </form>
 
         <!-- Signup Form (Hidden by default) -->
         <div class="auth-section" id="signup-section" style="display: none;">
@@ -140,6 +140,10 @@
         border-radius: 8px;
         margin: 0;
         color: var(--text-light);
+    }
+
+    .role-tabs input[type="radio"]:checked + label {
+        color: white;
     }
 
     .tab-indicator {
@@ -255,7 +259,7 @@
     });
 
     // Update signup button text and hidden role field based on selected tab
-    const tabs = document.querySelectorAll('input[name="roletab"]');
+    const tabs = document.querySelectorAll('input[name="role-tab"]');
     const signupBtn = document.getElementById('signup-btn');
     const roleInput = document.getElementById('signup-role');
 

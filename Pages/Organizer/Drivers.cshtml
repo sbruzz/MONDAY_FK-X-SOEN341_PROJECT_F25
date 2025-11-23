@@ -1,0 +1,207 @@
+@page
+@model DriversModel
+@{
+    ViewData["Title"] = "Manage Drivers";
+    Layout = "_OrganizerLayout";
+}
+
+<div class="container mt-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Organizer/Home">Home</a></li>
+            <li class="breadcrumb-item active">Manage Drivers</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-car-front"></i> Manage Drivers</h1>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDriverModal">
+            <i class="bi bi-plus-circle"></i> Add Driver
+        </button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert @(Model.IsSuccess ? "alert-success" : "alert-danger") alert-dismissible fade show" role="alert">
+            @Model.Message
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Drivers List -->
+    @if (Model.Drivers.Any())
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Event</th>
+                                <th>Vehicle</th>
+                                <th>Capacity</th>
+                                <th>Passengers</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var driver in Model.Drivers)
+                            {
+                                var passengerCount = driver.Passengers?.Count ?? 0;
+                                <tr>
+                                    <td>@driver.Id</td>
+                                    <td>
+                                        @if (driver.Event != null)
+                                        {
+                                            <strong>@driver.Event.Title</strong><br>
+                                            <small class="text-muted">@driver.Event.EventDate.ToString("MMM dd, yyyy")</small>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">General</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @driver.VehicleType
+                                        @if (driver.HasAccessibility)
+                                        {
+                                            <span class="badge bg-secondary">Accessible</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(driver.VehicleDescription))
+                                        {
+                                            <br><small class="text-muted">@driver.VehicleDescription</small>
+                                        }
+                                    </td>
+                                    <td>@driver.Capacity</td>
+                                    <td>
+                                        <span class="@(passengerCount >= driver.Capacity ? "text-danger" : "")">
+                                            @passengerCount / @driver.Capacity
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (driver.IsActive)
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <form method="post" asp-page-handler="RemoveDriver" class="d-inline"
+                                              onsubmit="return confirm('Are you sure you want to remove this driver?');">
+                                            <input type="hidden" name="id" value="@driver.Id" />
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Remove">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h5><i class="bi bi-info-circle"></i> No drivers yet</h5>
+            <p class="mb-0">Create your first driver to help students get to your events.</p>
+        </div>
+    }
+</div>
+
+<!-- Create Driver Modal -->
+<div class="modal fade" id="createDriverModal" tabindex="-1" aria-labelledby="createDriverModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="createDriverModalLabel">
+                    <i class="bi bi-car-front"></i> Add New Driver
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="Input.EventId" class="form-label">Event (Optional)</label>
+                        <select asp-for="Input.EventId" class="form-select">
+                            <option value="">General (for all events)</option>
+                            @foreach (var evt in Model.Events)
+                            {
+                                <option value="@evt.Id">@evt.Title - @evt.EventDate.ToString("MMM dd, yyyy")</option>
+                            }
+                        </select>
+                        <small class="text-muted">Leave blank for general driver available for all events</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.VehicleType" class="form-label">
+                            Vehicle Type <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="Input.VehicleType" class="form-select" required>
+                            <option value="">Select...</option>
+                            <option value="@VehicleType.Sedan">Car</option>
+                            <option value="@VehicleType.Van">Van</option>
+                            <option value="@VehicleType.SUV">SUV</option>
+                            <option value="@VehicleType.Van">Truck</option>
+                            <option value="@VehicleType.Mini">Other</option>
+                        </select>
+                        <span asp-validation-for="Input.VehicleType" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Capacity" class="form-label">
+                            Passenger Capacity <span class="text-danger">*</span>
+                        </label>
+                        <input type="number" asp-for="Input.Capacity" class="form-control" min="1" max="15" required />
+                        <span asp-validation-for="Input.Capacity" class="text-danger"></span>
+                        <small class="text-muted">How many passengers can this driver take?</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" asp-for="Input.HasAccessibility" class="form-check-input" />
+                            <label class="form-check-label" asp-for="Input.HasAccessibility">
+                                Wheelchair accessible
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.VehicleDescription" class="form-label">Vehicle Description (Optional)</label>
+                        <textarea asp-for="Input.VehicleDescription" class="form-control" rows="2" 
+                                  placeholder="e.g., Red Honda Civic"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.LicensePlate" class="form-label">License Plate (Optional)</label>
+                        <input type="text" asp-for="Input.LicensePlate" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.ContactPhone" class="form-label">Contact Phone (Optional)</label>
+                        <input type="tel" asp-for="Input.ContactPhone" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Create Driver
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

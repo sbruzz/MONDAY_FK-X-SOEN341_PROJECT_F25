@@ -26,11 +26,11 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <div class="nav-center mx-auto">
-                        <a class="nav-link-custom active" asp-area="" asp-page="/Index">Home</a>
-                        <a class="nav-link-custom" asp-area="" asp-page="/Events">Browse Events</a>
-                        <a class="nav-link-custom" asp-area="" asp-page="/About">About</a>
-                        <a class="nav-link-custom" asp-area="" asp-page="/FAQ">FAQ</a>
-                        <a class="nav-link-custom" asp-area="" asp-page="/Privacy">Privacy</a>
+                        <a class="nav-link-custom @(Context.Request.Path == "/" || Context.Request.Path == "/Index" ? "active" : "")" asp-area="" asp-page="/Index">Home</a>
+                        <a class="nav-link-custom @(Context.Request.Path.StartsWithSegments("/Events") ? "active" : "")" asp-area="" asp-page="/Events">Browse Events</a>
+                        <a class="nav-link-custom @(Context.Request.Path.StartsWithSegments("/About") ? "active" : "")" asp-area="" asp-page="/About">About</a>
+                        <a class="nav-link-custom @(Context.Request.Path.StartsWithSegments("/FAQ") ? "active" : "")" asp-area="" asp-page="/FAQ">FAQ</a>
+                        <a class="nav-link-custom @(Context.Request.Path.StartsWithSegments("/Privacy") ? "active" : "")" asp-area="" asp-page="/Privacy">Privacy</a>
                     </div>
                     <div class="nav-actions">
                         <a class="btn-login" asp-area="" asp-page="/Login">
