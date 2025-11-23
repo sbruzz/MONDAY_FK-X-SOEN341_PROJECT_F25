@@ -52,7 +52,9 @@ public static class FileHelper
             .Where(c => !invalidChars.Contains(c))
             .ToArray());
 
-        return safeName.Truncate(255, "");
+        if (safeName.Length > 255)
+            return safeName.Substring(0, 255);
+        return safeName;
     }
 
     /// <summary>

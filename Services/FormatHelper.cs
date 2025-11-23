@@ -25,7 +25,7 @@ public static class FormatHelper
     /// <returns>Formatted percentage string</returns>
     public static string FormatPercentage(double value, int decimals = 1)
     {
-        return $"{value * 100:F{decimals}}%";
+        return string.Format($"{{0:F{decimals}}}%", value * 100);
     }
 
     /// <summary>
