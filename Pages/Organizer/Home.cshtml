@@ -13,7 +13,8 @@
             <p class="lead text-muted">Here's what's happening with your events</p>
         </div>
         <div class="col-auto">
-            <a href="/Organizer/CreateEvent" class="btn btn-lg" style="background: linear-gradient(135deg, #d5bdaf 0%, #c9a999 100%); color: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(213, 189, 175, 0.3);">
+            <a href="/Organizer/CreateEvent" class="btn btn-lg"
+                style="background: linear-gradient(135deg, #d5bdaf 0%, #c9a999 100%); color: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(213, 189, 175, 0.3);">
                 <i class="bi bi-plus-circle"></i> Create Event
             </a>
         </div>
@@ -148,8 +149,9 @@
                                         </div>
                                         <div class="flex-grow-1">
                                             <div class="d-flex align-items-center justify-content-between mb-2">
-                                                <h6 class="mb-0">@evt.Title</h6>
-                                                <span class="badge" style="background: rgba(213, 189, 175, 0.2); color: #d5bdaf;">
+                                                <h6 class="mb-0">@(evt.Title.Length <= 90? evt.Title: evt.Title.Substring(0, 87)+"....")</h6>
+                                                <span class="badge"
+                                                    style="background: rgba(213, 189, 175, 0.2); color: #d5bdaf;">
                                                     @evt.Category
                                                 </span>
                                             </div>
@@ -158,7 +160,7 @@
                                                 @evt.EventDate.ToString("h:mm tt")
                                                 <span class="mx-2">•</span>
                                                 <i class="bi bi-geo-alt me-1"></i>
-                                                @evt.Location
+                                                @(evt.Location.Length <= 70? evt.Location: evt.Location.Substring(0, 67)+"....")
                                                 <span class="mx-2">•</span>
                                                 @if (daysUntil == 0)
                                                 {
@@ -177,13 +179,14 @@
                                                 <div class="flex-grow-1">
                                                     <div class="progress" style="height: 8px;">
                                                         <div class="progress-bar"
-                                                             style="width: @percentFull%; background: linear-gradient(90deg, #d5bdaf 0%, #c9a999 100%);">
+                                                            style="width: @percentFull%; background: linear-gradient(90deg, #d5bdaf 0%, #c9a999 100%);">
                                                         </div>
                                                     </div>
                                                     <small class="text-muted">@evt.TicketsIssued / @evt.Capacity tickets</small>
                                                 </div>
                                                 <div>
-                                                    <span class="badge @(evt.ApprovalStatus == ApprovalStatus.Approved ? "bg-success" : evt.ApprovalStatus == ApprovalStatus.Pending ? "bg-warning" : "bg-danger")">
+                                                    <span
+                                                        class="badge @(evt.ApprovalStatus == ApprovalStatus.Approved ? "bg-success" : evt.ApprovalStatus == ApprovalStatus.Pending ? "bg-warning" : "bg-danger")">
                                                         @evt.ApprovalStatus
                                                     </span>
                                                 </div>
@@ -234,7 +237,7 @@
                                                     <h6 class="mb-1">@ticket.User.Name</h6>
                                                     <p class="mb-0 text-muted small">
                                                         @(ticket.IsRedeemed ? "Checked in to" : "Claimed ticket for")
-                                                        <strong>@ticket.Event.Title</strong>
+                                                        <strong>@(ticket.Event.Title.Length <= 90? ticket.Event.Title: ticket.Event.Title.Substring(0, 87)+"....")</strong>
                                                     </p>
                                                 </div>
                                                 <small class="text-muted">@ticket.ClaimedAt.ToString("MMM dd, h:mm tt")</small>
@@ -265,13 +268,15 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="/Organizer/CreateEvent" class="btn btn-lg" style="background: linear-gradient(135deg, #d5bdaf 0%, #c9a999 100%); color: white; border-radius: 12px;">
+                        <a href="/Organizer/CreateEvent" class="btn btn-lg"
+                            style="background: linear-gradient(135deg, #d5bdaf 0%, #c9a999 100%); color: white; border-radius: 12px;">
                             <i class="bi bi-plus-circle"></i> Create Event
                         </a>
                         <a href="/Organizer/Events" class="btn btn-outline-primary btn-lg" style="border-radius: 12px;">
                             <i class="bi bi-list-ul"></i> My Events
                         </a>
-                        <a href="/Organizer/Events?filter=pending" class="btn btn-outline-warning btn-lg" style="border-radius: 12px;">
+                        <a href="/Organizer/Events?filter=pending" class="btn btn-outline-warning btn-lg"
+                            style="border-radius: 12px;">
                             <i class="bi bi-hourglass-split"></i> Pending Approval
                             @if (Model.PendingEventsCount > 0)
                             {
@@ -305,7 +310,8 @@
                                     <small class="text-muted">Full</small>
                                 </div>
                             </div>
-                            <a href="/Organizer/EventDetails?id=@Model.MostPopularEvent.Id" class="btn btn-sm btn-outline-secondary">
+                            <a href="/Organizer/EventDetails?id=@Model.MostPopularEvent.Id"
+                                class="btn btn-sm btn-outline-secondary">
                                 View Details
                             </a>
                         </div>
@@ -314,7 +320,8 @@
             }
 
             <!-- Tips & Guides -->
-            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(213, 189, 175, 0.1) 0%, rgba(201, 169, 153, 0.1) 100%);">
+            <div class="card border-0 shadow-sm"
+                style="background: linear-gradient(135deg, rgba(213, 189, 175, 0.1) 0%, rgba(201, 169, 153, 0.1) 100%);">
                 <div class="card-body">
                     <h6 class="mb-3"><i class="bi bi-lightbulb"></i> Tips for Success</h6>
                     <ul class="list-unstyled mb-0">
@@ -352,6 +359,21 @@
         .metric-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .display-5 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mb-0 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .me-1 {
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .metric-icon {

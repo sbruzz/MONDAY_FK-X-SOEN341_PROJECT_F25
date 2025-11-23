@@ -24,7 +24,8 @@
             <h1 class="display-4"><i class="bi bi-qr-code-scan"></i> Ticket Validation</h1>
             @if (Model.Event != null)
             {
-                <p class="lead">Scanning for: <strong>@Model.Event.Title</strong></p>
+                <p class="lead">Scanning for: <strong>@(Model.Event.Title.Length <= 90? Model.Event.Title:
+                                            Model.Event.Title.Substring(0, 87) + "....")</strong></p>
             }
         </div>
     </div>
@@ -55,8 +56,8 @@
                         <form method="post" enctype="multipart/form-data" asp-page-handler="ScanQR">
                             <div class="mb-3">
                                 <label for="qrImage" class="form-label">Select QR Code Image</label>
-                                <input type="file" class="form-control" id="qrImage" name="qrImage"
-                                       accept="image/*" required onchange="previewImage(event)" />
+                                <input type="file" class="form-control" id="qrImage" name="qrImage" accept="image/*"
+                                    required onchange="previewImage(event)" />
                                 <small class="text-muted">Supported formats: PNG, JPG, JPEG</small>
                             </div>
 
@@ -64,7 +65,8 @@
                             <div id="imagePreview" class="mb-3" style="display: none;">
                                 <label class="form-label">Preview:</label>
                                 <div class="border rounded p-2 text-center bg-light">
-                                    <img id="preview" src="" alt="QR Code Preview" style="max-width: 300px; max-height: 300px;">
+                                    <img id="preview" src="" alt="QR Code Preview"
+                                        style="max-width: 300px; max-height: 300px;">
                                 </div>
                             </div>
 
@@ -84,7 +86,7 @@
                         <form method="post" asp-page-handler="ValidateCode">
                             <div class="input-group">
                                 <input type="text" class="form-control" name="ticketCode"
-                                       placeholder="Enter ticket unique code" required />
+                                    placeholder="Enter ticket unique code" required />
                                 <button type="submit" class="btn btn-outline-secondary">
                                     <i class="bi bi-key"></i> Validate
                                 </button>
@@ -170,8 +172,8 @@
                         <div class="progress" style="height: 25px;">
                             @{
                                 var checkInRate = Model.Event.TicketsIssued > 0
-                                    ? (Model.CheckedInCount * 100.0 / Model.Event.TicketsIssued)
-                                    : 0;
+                                ? (Model.CheckedInCount * 100.0 / Model.Event.TicketsIssued)
+                                : 0;
                             }
                             <div class="progress-bar bg-success" style="width: @checkInRate%">
                                 @checkInRate.ToString("F1")% Checked In
@@ -223,8 +225,18 @@
     }
 </div>
 
+@section Styles {
+    <style>
+        .breadcrumb-item {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+}
+
 @section Scripts {
     <script>
+
         function previewImage(event) {
             const preview = document.getElementById('preview');
             const previewContainer = document.getElementById('imagePreview');
@@ -232,7 +244,7 @@
 
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     preview.src = e.target.result;
                     previewContainer.style.display = 'block';
                 };

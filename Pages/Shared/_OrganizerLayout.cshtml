@@ -16,11 +16,13 @@
             userName = user.Name;
         }
         eventsCount = await DbContext.Events.CountAsync(e => e.OrganizerId == userId.Value);
-        pendingCount = await DbContext.Events.CountAsync(e => e.OrganizerId == userId.Value && e.ApprovalStatus == ApprovalStatus.Pending);
+        pendingCount = await DbContext.Events.CountAsync(e => e.OrganizerId == userId.Value && e.ApprovalStatus ==
+        ApprovalStatus.Pending);
     }
 }
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -270,13 +272,15 @@
             padding: 0.375rem 0.75rem;
         }
 
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             border-radius: 16px;
             border: 1px solid var(--border);
             padding: 0.625rem 1rem;
         }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 0.2rem rgba(144, 180, 148, 0.25);
         }
@@ -295,6 +299,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Organizer Header -->
     <header class="organizer-header">
@@ -304,15 +309,18 @@
                 <span>CampusEvents</span>
             </a>
             <nav class="header-nav">
-                <a href="/Organizer/Home" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Home") ? "active" : "")">
+                <a href="/Organizer/Home"
+                    class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Home") ? "active" : "")">
                     <i class="bi bi-house-door"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="/Organizer/CreateEvent" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/CreateEvent") ? "active" : "")">
+                <a href="/Organizer/CreateEvent"
+                    class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/CreateEvent") ? "active" : "")">
                     <i class="bi bi-plus-circle"></i>
                     <span>Create Event</span>
                 </a>
-                <a href="/Organizer/Events" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Events") && !Context.Request.Path.StartsWithSegments("/Organizer/EventDetails") ? "active" : "")">
+                <a href="/Organizer/Events"
+                    class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Events") && !Context.Request.Path.StartsWithSegments("/Organizer/EventDetails") ? "active" : "")">
                     <i class="bi bi-calendar2-event"></i>
                     <span>My Events</span>
                     @if (eventsCount > 0)
@@ -320,7 +328,8 @@
                         <span class="badge">@eventsCount</span>
                     }
                 </a>
-                <a href="/Organizer/Rooms" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Rooms") ? "active" : "")">
+                <a href="/Organizer/Rooms"
+                    class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Rooms") ? "active" : "")">
                     <i class="bi bi-door-open"></i>
                     <span>Rooms</span>
                 </a>
@@ -335,7 +344,7 @@
             <div class="header-user">
                 <div class="user-avatar">@userName.Substring(0, 1).ToUpper()</div>
                 <div>
-                    <div class="user-name">@userName</div>
+                    <div class="user-name">@(userName.Length <= 45? userName: userName.Substring(0, 42)+"...")</div>
                     <div class="role-badge">Organizer</div>
                 </div>
             </div>
@@ -356,41 +365,59 @@
             <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
                 <!-- Brand Column -->
                 <div>
-                    <h3 style="font-size: 1.5rem; font-weight: 800; color: #3d3d3d; margin-bottom: 1rem;">CampusEvents</h3>
-                    <p style="color: #6b6b6b; line-height: 1.6; margin-bottom: 1.5rem;">The complete platform for discovering, organizing, and managing campus events.</p>
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: #3d3d3d; margin-bottom: 1rem;">CampusEvents
+                    </h3>
+                    <p style="color: #6b6b6b; line-height: 1.6; margin-bottom: 1.5rem;">The complete platform for
+                        discovering, organizing, and managing campus events.</p>
                 </div>
 
                 <!-- Product Column -->
                 <div>
-                    <h4 style="font-size: 0.875rem; font-weight: 700; color: #3d3d3d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;">Product</h4>
+                    <h4
+                        style="font-size: 0.875rem; font-weight: 700; color: #3d3d3d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;">
+                        Product</h4>
                     <ul style="list-style: none; padding: 0; margin: 0;">
-                        <li style="margin-bottom: 0.75rem;"><a href="/Index" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">Home</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="/About" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">About Us</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="/FAQ" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">FAQ</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="/Index"
+                                style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">Home</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="/About"
+                                style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">About Us</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="/FAQ"
+                                style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">FAQ</a></li>
                     </ul>
                 </div>
 
                 <!-- Legal Column -->
                 <div>
-                    <h4 style="font-size: 0.875rem; font-weight: 700; color: #3d3d3d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;">Legal</h4>
+                    <h4
+                        style="font-size: 0.875rem; font-weight: 700; color: #3d3d3d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;">
+                        Legal</h4>
                     <ul style="list-style: none; padding: 0; margin: 0;">
-                        <li style="margin-bottom: 0.75rem;"><a href="/Privacy" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">Privacy Policy</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="/Privacy"
+                                style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">Privacy
+                                Policy</a></li>
                     </ul>
                 </div>
 
                 <!-- Resources Column -->
                 <div>
-                    <h4 style="font-size: 0.875rem; font-weight: 700; color: #3d3d3d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;">Resources</h4>
+                    <h4
+                        style="font-size: 0.875rem; font-weight: 700; color: #3d3d3d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;">
+                        Resources</h4>
                     <ul style="list-style: none; padding: 0; margin: 0;">
-                        <li style="margin-bottom: 0.75rem;"><a href="/Organizer/Home" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">Dashboard</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="/Organizer/CreateEvent" style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">Create Event</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="/Organizer/Home"
+                                style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">Dashboard</a>
+                        </li>
+                        <li style="margin-bottom: 0.75rem;"><a href="/Organizer/CreateEvent"
+                                style="color: #6b6b6b; text-decoration: none; transition: color 0.3s;">Create Event</a>
+                        </li>
                     </ul>
                 </div>
             </div>
 
             <!-- Bottom Bar -->
             <div style="border-top: 1px solid #d6ccc2; padding-top: 2rem; text-align: center;">
-                <p style="margin: 0; color: #6b6b6b; font-size: 0.875rem;">&copy; 2025 CampusEvents. All rights reserved.</p>
+                <p style="margin: 0; color: #6b6b6b; font-size: 0.875rem;">&copy; 2025 CampusEvents. All rights
+                    reserved.</p>
             </div>
         </div>
     </footer>
@@ -399,4 +426,5 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>
