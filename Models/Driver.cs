@@ -104,4 +104,113 @@ public class Driver
     /// Carpool offers created by this driver
     /// </summary>
     public ICollection<CarpoolOffer> CarpoolOffers { get; set; } = new List<CarpoolOffer>();
+
+    // Backward compatibility computed properties (not mapped to database)
+
+    /// <summary>
+    /// Alias for DriverType (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public DriverType Type
+    {
+        get => DriverType;
+        set => DriverType = value;
+    }
+
+    /// <summary>
+    /// Computed property for backward compatibility
+    /// Returns true if Status is Active
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public bool IsActive
+    {
+        get => Status == DriverStatus.Active;
+        set => Status = value ? DriverStatus.Active : DriverStatus.Suspended;
+    }
+
+    /// <summary>
+    /// Computed property for backward compatibility
+    /// Returns true if SecurityFlags contains "flagged" or "suspended"
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public bool IsMarkedByAdmin
+    {
+        get => SecurityFlags.Contains("flagged") || SecurityFlags.Contains("suspended");
+        set
+        {
+            if (value && !IsMarkedByAdmin)
+            {
+                SecurityFlags = string.IsNullOrEmpty(SecurityFlags) ? "flagged" : SecurityFlags + ",flagged";
+            }
+            else if (!value && IsMarkedByAdmin)
+            {
+                SecurityFlags = SecurityFlags.Replace(",flagged", "").Replace("flagged,", "").Replace("flagged", "")
+                    .Replace(",suspended", "").Replace("suspended,", "").Replace("suspended", "");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Computed collection of all passengers from all carpool offers (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public ICollection<CarpoolPassenger> Passengers => CarpoolOffers.SelectMany(o => o.Passengers).ToList();
+
+    /// <summary>
+    /// Legacy EventId property (for backward compatibility)
+    /// Returns the first active carpool offer's EventId if available
+    /// Setting this is ignored in the new architecture
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public int? EventId
+    {
+        get => CarpoolOffers.FirstOrDefault()?.EventId;
+        set { /* Ignored - EventId is set on CarpoolOffer */ }
+    }
+
+    /// <summary>
+    /// Legacy Event property (for backward compatibility)
+    /// Returns the first active carpool offer's Event if available
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public Event? Event => CarpoolOffers.FirstOrDefault()?.Event;
+
+    /// <summary>
+    /// Legacy OrganizerId property (not used in new architecture)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public int? OrganizerId { get; set; }
+
+    /// <summary>
+    /// Legacy HasAccessibility property (for backward compatibility)
+    /// Returns true if AccessibilityFeatures is not empty
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public bool HasAccessibility
+    {
+        get => !string.IsNullOrEmpty(AccessibilityFeatures);
+        set
+        {
+            if (value && string.IsNullOrEmpty(AccessibilityFeatures))
+            {
+                AccessibilityFeatures = "wheelchair_accessible";
+            }
+            else if (!value)
+            {
+                AccessibilityFeatures = string.Empty;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Legacy VehicleDescription property (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public string? VehicleDescription { get; set; }
+
+    /// <summary>
+    /// Legacy ContactPhone property (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public string? ContactPhone { get; set; }
 }

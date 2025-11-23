@@ -86,4 +86,37 @@ public class Room
     /// Rental bookings for this room
     /// </summary>
     public ICollection<RoomRental> Rentals { get; set; } = new List<RoomRental>();
+
+    // Backward compatibility
+
+    /// <summary>
+    /// Alias for Address (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public string Location
+    {
+        get => Address;
+        set => Address = value;
+    }
+
+    /// <summary>
+    /// Alias for RoomInfo (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public string? Description
+    {
+        get => RoomInfo;
+        set => RoomInfo = value;
+    }
+
+    /// <summary>
+    /// Computed property for backward compatibility
+    /// Returns true if Status is Enabled
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public bool IsEnabled
+    {
+        get => Status == RoomStatus.Enabled;
+        set => Status = value ? RoomStatus.Enabled : RoomStatus.Disabled;
+    }
 }

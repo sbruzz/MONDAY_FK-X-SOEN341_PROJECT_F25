@@ -60,4 +60,58 @@ public class CarpoolPassenger
     /// User who is the passenger
     /// </summary>
     public User Passenger { get; set; } = null!;
+
+    // Backward compatibility
+
+    /// <summary>
+    /// Alias for Passenger (for backward compatibility with old UI code)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public User User => Passenger;
+
+    /// <summary>
+    /// Alias for PassengerId (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public int UserId
+    {
+        get => PassengerId;
+        set => PassengerId = value;
+    }
+
+    /// <summary>
+    /// Legacy EventId from the associated offer (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public int EventId
+    {
+        get => Offer?.EventId ?? 0;
+        set { /* Ignored - EventId is set on CarpoolOffer */ }
+    }
+
+    /// <summary>
+    /// Legacy DriverId from the associated offer (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public int DriverId
+    {
+        get => Offer?.DriverId ?? 0;
+        set { /* Ignored - DriverId is set on CarpoolOffer */ }
+    }
+
+    /// <summary>
+    /// Alias for JoinedAt (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public DateTime AssignedAt
+    {
+        get => JoinedAt;
+        set => JoinedAt = value;
+    }
+
+    /// <summary>
+    /// Legacy Driver property from the associated offer (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public Driver? Driver => Offer?.Driver;
 }

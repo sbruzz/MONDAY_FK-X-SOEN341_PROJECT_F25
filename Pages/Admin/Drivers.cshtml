@@ -1,308 +1,331 @@
 @page
-@model CampusEvents.Pages.Admin.DriversModel
+@model DriversModel
 @{
-    ViewData["Title"] = "Manage Drivers";
+    ViewData["Title"] = "Driver Management";
     Layout = "_AdminLayout";
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-car-front-fill"></i> Driver Management</h1>
+        <h1><i class="bi bi-car-front"></i> Driver Management</h1>
         <a href="/Admin/Home" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
     </div>
 
-    @if (TempData["SuccessMessage"] != null)
+    @if (!string.IsNullOrEmpty(Model.Message))
     {
-        <div class="alert alert-success alert-dismissible fade show">
-            @TempData["SuccessMessage"]
+        <div class="alert @(Model.IsSuccess ? "alert-success" : "alert-danger") alert-dismissible fade show" role="alert">
+            @Model.Message
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show">
-            @TempData["ErrorMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filter Drivers</h5>
         </div>
-    }
-
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Active Drivers</h5>
-                    <h2>@Model.Drivers.Count(d => d.Status == CampusEvents.Models.DriverStatus.Active)</h2>
+        <div class="card-body">
+            <form method="get">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="typeFilter" class="form-label">Type</label>
+                        <select class="form-select" id="typeFilter" name="typeFilter">
+                            <option value="All" selected="@(string.IsNullOrEmpty(Model.TypeFilter) || Model.TypeFilter == "All")">All Types</option>
+                            <option value="Student" selected="@(Model.TypeFilter == "Student")">Student</option>
+                            <option value="Organizer" selected="@(Model.TypeFilter == "Organizer")">Organizer</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="statusFilter" class="form-label">Status</label>
+                        <select class="form-select" id="statusFilter" name="statusFilter">
+                            <option value="All" selected="@(string.IsNullOrEmpty(Model.StatusFilter) || Model.StatusFilter == "All")">All Statuses</option>
+                            <option value="Active" selected="@(Model.StatusFilter == "Active")">Active</option>
+                            <option value="Marked" selected="@(Model.StatusFilter == "Marked")">Marked for Review</option>
+                            <option value="Inactive" selected="@(Model.StatusFilter == "Inactive")">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="bi bi-search"></i> Apply Filters
+                        </button>
+                        <a href="/Admin/Drivers" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Clear
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-dark">
-                <div class="card-body">
-                    <h5 class="card-title">Pending Approval</h5>
-                    <h2>@Model.Drivers.Count(d => d.Status == CampusEvents.Models.DriverStatus.Pending)</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-danger text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Suspended</h5>
-                    <h2>@Model.Drivers.Count(d => d.Status == CampusEvents.Models.DriverStatus.Suspended)</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Flagged</h5>
-                    <h2>@Model.Drivers.Count(d => d.SecurityFlags.Contains("flagged") || d.SecurityFlags.Contains("suspended"))</h2>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
-
-    <!-- Filter Tabs -->
-    <ul class="nav nav-tabs mb-3">
-        <li class="nav-item">
-            <a class="nav-link @(Model.StatusFilter == null ? "active" : "")" href="?status=all">
-                All (@Model.Drivers.Count)
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(Model.StatusFilter == "Pending" ? "active" : "")" href="?status=Pending">
-                Pending (@Model.Drivers.Count(d => d.Status == CampusEvents.Models.DriverStatus.Pending))
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(Model.StatusFilter == "Active" ? "active" : "")" href="?status=Active">
-                Active (@Model.Drivers.Count(d => d.Status == CampusEvents.Models.DriverStatus.Active))
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(Model.StatusFilter == "Suspended" ? "active" : "")" href="?status=Suspended">
-                Suspended (@Model.Drivers.Count(d => d.Status == CampusEvents.Models.DriverStatus.Suspended))
-            </a>
-        </li>
-    </ul>
 
     <!-- Drivers Table -->
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Driver</th>
-                            <th>Type</th>
-                            <th>Vehicle</th>
-                            <th>Capacity</th>
-                            <th>Status</th>
-                            <th>Offers</th>
-                            <th>Security</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var driver in Model.Drivers)
-                        {
-                            <tr>
-                                <td>
-                                    <strong>@driver.User.Name</strong><br />
-                                    <small class="text-muted">@driver.User.Email</small><br />
-                                    <small class="text-muted">Registered: @driver.CreatedAt.ToString("MMM dd, yyyy")</small>
-                                </td>
-                                <td>
-                                    <span class="badge bg-@(driver.DriverType == CampusEvents.Models.DriverType.Student ? "primary" : "secondary")">
-                                        @driver.DriverType
-                                    </span>
-                                </td>
-                                <td>
-                                    @driver.VehicleType<br />
-                                    @if (!string.IsNullOrEmpty(driver.LicensePlate))
-                                    {
-                                        <small class="text-muted">@driver.LicensePlate</small>
-                                    }
-                                </td>
-                                <td>@driver.Capacity</td>
-                                <td>
-                                    <span class="badge bg-@(driver.Status == CampusEvents.Models.DriverStatus.Active ? "success" : driver.Status == CampusEvents.Models.DriverStatus.Pending ? "warning" : "danger")">
-                                        @driver.Status
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-info">@driver.CarpoolOffers.Count offers</span><br />
-                                    <small class="text-muted">
-                                        @driver.CarpoolOffers.Count(o => o.Status == CampusEvents.Models.CarpoolOfferStatus.Active) active
-                                    </small>
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(driver.SecurityFlags))
-                                    {
-                                        <span class="badge bg-warning text-dark">
-                                            <i class="bi bi-flag-fill"></i> Flagged
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">-</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (driver.Status == CampusEvents.Models.DriverStatus.Pending)
-                                    {
-                                        <form method="post" asp-page-handler="Approve" class="d-inline">
-                                            <input type="hidden" name="driverId" value="@driver.Id" />
-                                            <button type="submit" class="btn btn-sm btn-success">Approve</button>
-                                        </form>
-                                    }
-                                    else if (driver.Status == CampusEvents.Models.DriverStatus.Active)
-                                    {
-                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#suspendModal-@driver.Id">
-                                            Suspend
-                                        </button>
-                                    }
-                                    else if (driver.Status == CampusEvents.Models.DriverStatus.Suspended)
-                                    {
-                                        <form method="post" asp-page-handler="Unsuspend" class="d-inline">
-                                            <input type="hidden" name="driverId" value="@driver.Id" />
-                                            <button type="submit" class="btn btn-sm btn-success">Unsuspend</button>
-                                        </form>
-                                    }
-
-                                    <!-- Suspend Modal -->
-                                    <div class="modal fade" id="suspendModal-@driver.Id" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form method="post" asp-page-handler="Suspend">
-                                                    <input type="hidden" name="driverId" value="@driver.Id" />
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Suspend Driver</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p>Suspend <strong>@driver.User.Name</strong>?</p>
-                                                        <p class="text-muted">This will cancel all active carpool offers.</p>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Reason for Suspension</label>
-                                                            <textarea name="reason" class="form-control" rows="3" required></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                        <button type="submit" class="btn btn-danger">Suspend Driver</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Passenger Management -->
-    @if (Model.AllPassengers.Any())
+    @if (Model.Drivers.Any())
     {
-        <div class="card mt-4">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0"><i class="bi bi-people"></i> Passenger Management (@Model.AllPassengers.Count)</h5>
-            </div>
+        <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover table-sm">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Passenger</th>
-                                <th>Event</th>
-                                <th>Current Driver</th>
-                                <th>Pickup Location</th>
+                                <th>ID</th>
+                                <th>Driver</th>
+                                <th>Type</th>
+                                <th>Vehicle</th>
+                                <th>Capacity</th>
+                                <th>Passengers</th>
                                 <th>Status</th>
-                                <th>Joined</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var passenger in Model.AllPassengers.Where(p => p.Status == CampusEvents.Models.PassengerStatus.Confirmed || p.Status == CampusEvents.Models.PassengerStatus.Pending).Take(20))
+                            @foreach (var driver in Model.Drivers)
                             {
-                                <tr>
+                                var passengerCount = driver.Passengers?.Count ?? 0;
+                                var isOverloaded = passengerCount > driver.Capacity;
+                                <tr class="@(driver.IsMarkedByAdmin ? "table-danger" : isOverloaded ? "table-warning" : "")">
+                                    <td>@driver.Id</td>
                                     <td>
-                                        <strong>@passenger.Passenger.Name</strong><br />
-                                        <small class="text-muted">@passenger.Passenger.Email</small>
+                                        <strong>@driver.User.Name</strong><br>
+                                        <small class="text-muted">@driver.User.Email</small>
                                     </td>
                                     <td>
-                                        @passenger.Offer.Event.Title<br />
-                                        <small class="text-muted">@passenger.Offer.DepartureTime.ToString("MMM dd, HH:mm")</small>
+                                        @if (driver.Type == DriverType.Student)
+                                        {
+                                            <span class="badge bg-info">Student</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Organizer</span>
+                                        }
                                     </td>
                                     <td>
-                                        @passenger.Offer.Driver.User.Name<br />
-                                        <small class="text-muted">@passenger.Offer.Driver.VehicleType - @passenger.Offer.SeatsAvailable seats left</small>
+                                        @driver.VehicleType
+                                        @if (driver.HasAccessibility)
+                                        {
+                                            <span class="badge bg-secondary">Accessible</span>
+                                        }
                                     </td>
-                                    <td>@passenger.PickupLocation</td>
                                     <td>
-                                        <span class="badge bg-@(passenger.Status == CampusEvents.Models.PassengerStatus.Confirmed ? "success" : "warning")">
-                                            @passenger.Status
+                                        <span class="@(isOverloaded ? "text-danger fw-bold" : "")">
+                                            @passengerCount / @driver.Capacity
                                         </span>
+                                        @if (isOverloaded)
+                                        {
+                                            <br><small class="text-danger">⚠️ Overloaded!</small>
+                                        }
                                     </td>
                                     <td>
-                                        <small>@passenger.JoinedAt.ToString("MMM dd")</small>
+                                        @if (driver.Passengers != null && driver.Passengers.Any())
+                                        {
+                                            <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#passengersModal@(driver.Id)">
+                                                View (@passengerCount)
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">None</span>
+                                        }
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#reassignModal-@passenger.Id">
-                                            <i class="bi bi-arrow-left-right"></i> Reassign
-                                        </button>
-
-                                        <!-- Reassign Modal -->
-                                        <div class="modal fade" id="reassignModal-@passenger.Id" tabindex="-1">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <form method="post" asp-page-handler="ReassignPassenger">
-                                                        <input type="hidden" name="passengerId" value="@passenger.Id" />
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Reassign Passenger</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Reassign <strong>@passenger.Passenger.Name</strong> from current ride?</p>
-                                                            <div class="alert alert-info">
-                                                                <strong>Current Ride:</strong> @passenger.Offer.Driver.User.Name (@passenger.Offer.Driver.VehicleType)<br />
-                                                                <strong>Event:</strong> @passenger.Offer.Event.Title<br />
-                                                                <strong>Departure:</strong> @passenger.Offer.DepartureTime.ToString("MMM dd, yyyy HH:mm")
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">New Carpool Offer ID <span class="text-danger">*</span></label>
-                                                                <input type="number" name="newOfferId" class="form-control" required placeholder="Enter carpool offer ID" />
-                                                                <div class="form-text">
-                                                                    Note: The new offer must be for the same event (@passenger.Offer.Event.Title)
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn btn-primary">Reassign Passenger</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
+                                        @if (driver.IsMarkedByAdmin)
+                                        {
+                                            <span class="badge bg-danger">Marked</span>
+                                        }
+                                        else if (!driver.IsActive)
+                                        {
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            @if (driver.IsMarkedByAdmin)
+                                            {
+                                                <form method="post" asp-page-handler="UnmarkDriver" class="d-inline">
+                                                    <input type="hidden" name="id" value="@driver.Id" />
+                                                    <button type="submit" class="btn btn-success" title="Unmark">
+                                                        <i class="bi bi-check-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form method="post" asp-page-handler="MarkDriver" class="d-inline">
+                                                    <input type="hidden" name="id" value="@driver.Id" />
+                                                    <button type="submit" class="btn btn-warning" title="Mark for Review">
+                                                        <i class="bi bi-flag"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            <button type="button" class="btn btn-primary" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#reassignModal@(driver.Id)"
+                                                    title="Reassign Passengers">
+                                                <i class="bi bi-arrow-left-right"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
+
+                                <!-- Passengers Modal -->
+                                <div class="modal fade" id="passengersModal@(driver.Id)" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Passengers for @driver.User.Name</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                @if (driver.Passengers != null && driver.Passengers.Any())
+                                                {
+                                                    <ul class="list-group">
+                                                        @foreach (var passenger in driver.Passengers)
+                                                        {
+                                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                                <div>
+                                                                    <strong>@passenger.User.Name</strong><br>
+                                                                    <small class="text-muted">@passenger.User.Email</small>
+                                                                </div>
+                                                                <form method="post" asp-page-handler="RemovePassenger" class="d-inline">
+                                                                    <input type="hidden" name="passengerId" value="@passenger.Id" />
+                                                                    <button type="submit" class="btn btn-sm btn-danger" 
+                                                                            onclick="return confirm('Remove @passenger.User.Name from carpool?');">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                }
+                                                else
+                                                {
+                                                    <p class="text-muted">No passengers assigned.</p>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Reassign Modal -->
+                                <div class="modal fade" id="reassignModal@(driver.Id)" tabindex="-1">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Reassign Passengers</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                @if (driver.Passengers != null && driver.Passengers.Any())
+                                                {
+                                                    <p class="text-muted mb-3">Select a new driver for each passenger. Changes require confirmation.</p>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Passenger</th>
+                                                                    <th>Current Driver</th>
+                                                                    <th>New Driver</th>
+                                                                    <th>Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var passenger in driver.Passengers)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            <strong>@passenger.User.Name</strong><br>
+                                                                            <small>@passenger.User.Email</small>
+                                                                        </td>
+                                                                        <td>@driver.User.Name</td>
+                                                                        <td>
+                                                                            <select class="form-select form-select-sm" id="newDriver@(passenger.Id)">
+                                                                                <option value="">Select driver...</option>
+                                                                                @foreach (var otherDriver in Model.Drivers.Where(d => d.Id != driver.Id && d.IsActive && !d.IsMarkedByAdmin))
+                                                                                {
+                                                                                    var otherPassengerCount = otherDriver.Passengers?.Count ?? 0;
+                                                                                    var available = otherPassengerCount < otherDriver.Capacity;
+                                                                                    <option value="@otherDriver.Id" disabled="@(!available)">
+                                                                                        @otherDriver.User.Name (@otherPassengerCount/@otherDriver.Capacity)
+                                                                                        @if (!available)
+                                                                                        {
+                                                                                            <text> - Full</text>
+                                                                                        }
+                                                                                    </option>
+                                                                                }
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <form method="post" asp-page-handler="ReassignPassenger" class="d-inline">
+                                                                                <input type="hidden" name="passengerId" value="@passenger.Id" />
+                                                                                <input type="hidden" name="newDriverId" id="newDriverId@(passenger.Id)" value="" />
+                                                                                <button type="submit" class="btn btn-sm btn-primary reassign-btn" 
+                                                                                        data-passenger-id="@passenger.Id"
+                                                                                        onclick="return confirm('Reassign @passenger.User.Name?');">
+                                                                                    <i class="bi bi-arrow-right"></i>
+                                                                                </button>
+                                                                            </form>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <p class="text-muted">No passengers to reassign.</p>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             }
                         </tbody>
                     </table>
                 </div>
-                @if (Model.AllPassengers.Count(p => p.Status == CampusEvents.Models.PassengerStatus.Confirmed || p.Status == CampusEvents.Models.PassengerStatus.Pending) > 20)
-                {
-                    <p class="text-muted text-center mt-3 mb-0">
-                        Showing first 20 active passengers. Total: @Model.AllPassengers.Count(p => p.Status == CampusEvents.Models.PassengerStatus.Confirmed || p.Status == CampusEvents.Models.PassengerStatus.Pending)
-                    </p>
-                }
             </div>
+        </div>
+
+        <div class="mt-3">
+            <p class="text-muted">Total: <strong>@Model.Drivers.Count</strong> driver(s)</p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h5><i class="bi bi-info-circle"></i> No drivers found</h5>
+            <p class="mb-0">No drivers match your current filters.</p>
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        // Update hidden input when driver selection changes
+        document.querySelectorAll('[id^="newDriver"]').forEach(select => {
+            select.addEventListener('change', function() {
+                const passengerId = this.id.replace('newDriver', '');
+                const hiddenInput = document.getElementById('newDriverId' + passengerId);
+                if (hiddenInput) {
+                    hiddenInput.value = this.value;
+                }
+            });
+        });
+
+        // Disable reassign button if no driver selected
+        document.querySelectorAll('.reassign-btn').forEach(btn => {
+            const select = document.getElementById('newDriver' + btn.dataset.passengerId);
+            if (select) {
+                select.addEventListener('change', function() {
+                    btn.disabled = !this.value || this.options[this.selectedIndex].disabled;
+                });
+                btn.disabled = !select.value || select.options[select.selectedIndex]?.disabled;
+            }
+        });
+    </script>
+}
+
