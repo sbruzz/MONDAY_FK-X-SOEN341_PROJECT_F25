@@ -48,7 +48,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="email" asp-for="Email" required placeholder="your.email@concordia.ca">
+                    <input type="text" class="form-control" id="email" asp-for="Email" required placeholder="your.email@concordia.ca">
                 </div>
                 <div class="mb-4">
                     <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
@@ -84,8 +84,7 @@
                 </div>
                 <div class="mb-4">
                     <label for="phone" class="form-label">Phone Number</label>
-                    <input type="tel" class="form-control" id="phone" asp-for="PhoneNumber" 
-                           pattern="[0-9]{10}"
+                    <input type="text" class="form-control" id="phone" asp-for="PhoneNumber" 
                            title="Phone number must be exactly 10 digits (no spaces or special characters)"
                            placeholder="e.g., 5141234567">
                     <div class="form-text">Enter 10 digits only (e.g., 5141234567)</div>

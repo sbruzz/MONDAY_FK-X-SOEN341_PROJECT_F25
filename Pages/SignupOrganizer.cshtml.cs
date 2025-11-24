@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using CampusEvents.Data;
 using CampusEvents.Models;
 using BCrypt.Net;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace CampusEvents.Pages;
 
@@ -62,6 +64,18 @@ public class SignupOrganizerModel : PageModel
             return Page();
         }
 
+        if (!IsValidEmail(Email))
+        {
+            ErrorMessage = "This is not a valid email address";
+            return Page();
+        }
+
+        if (!Regex.IsMatch(PhoneNumber, @"^\d{10}$"))
+        {
+            ErrorMessage = "This is not a valid phone number";
+            return Page();
+        }
+
         // Handle new organization creation
         int finalOrganizationId;
         if (OrganizationId == null || OrganizationId == 0)
@@ -107,5 +121,18 @@ public class SignupOrganizerModel : PageModel
         // Redirect to a pending approval page or login
         TempData["Message"] = "Your organizer account has been created! Please wait for admin approval before you can log in.";
         return RedirectToPage("/Login");
+    }
+    public bool IsValidEmail(string emailaddress)
+    {
+        try
+        {
+            MailAddress m = new MailAddress(emailaddress);
+
+            return true;
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
     }
 }
