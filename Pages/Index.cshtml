@@ -119,15 +119,15 @@
                     </div>
                     <div class="col-md-4">
                         <label for="category" class="form-label">Category</label>
-                        <select id="category" name="Category" class="form-select form-select-lg">
-                            <option value="All" selected="@(string.IsNullOrEmpty(Model.Category) || Model.Category == "All")">All Categories</option>
-                            <option value="Academic" selected="@(Model.Category == "Academic")">Academic</option>
-                            <option value="Social" selected="@(Model.Category == "Social")">Social</option>
-                            <option value="Sports" selected="@(Model.Category == "Sports")">Sports</option>
-                            <option value="Cultural" selected="@(Model.Category == "Cultural")">Cultural</option>
-                            <option value="Career" selected="@(Model.Category == "Career")">Career</option>
-                            <option value="Workshop" selected="@(Model.Category == "Workshop")">Workshop</option>
-                            <option value="Other" selected="@(Model.Category == "Other")">Other</option>
+                        <select id="category" name="CategoryFilter" class="form-select form-select-lg">
+                            <option value="All" selected="@(string.IsNullOrEmpty(Model.CategoryFilter) || Model.CategoryFilter == "All")">All Categories</option>
+                            <option value="Academic" selected="@(Model.CategoryFilter == "Academic")">Academic</option>
+                            <option value="Social" selected="@(Model.CategoryFilter == "Social")">Social</option>
+                            <option value="Sports" selected="@(Model.CategoryFilter == "Sports")">Sports</option>
+                            <option value="Cultural" selected="@(Model.CategoryFilter == "Cultural")">Cultural</option>
+                            <option value="Career" selected="@(Model.CategoryFilter == "Career")">Career</option>
+                            <option value="Workshop" selected="@(Model.CategoryFilter == "Workshop")">Workshop</option>
+                            <option value="Other" selected="@(Model.CategoryFilter == "Other")">Other</option>
                         </select>
                     </div>
                     <div class="col-md-2">
@@ -197,7 +197,7 @@
             {
                 <div class="upcoming-events">
                     <h3 class="mb-4" style="font-size: 1.75rem; font-weight: 700;">
-                        @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) || !string.IsNullOrWhiteSpace(Model.Category))
+                        @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) || !string.IsNullOrWhiteSpace(Model.CategoryFilter))
                         {
                             <span>Search Results</span>
                         }
@@ -245,7 +245,7 @@
                     </div>
                 </div>
             }
-            else if (!string.IsNullOrWhiteSpace(Model.SearchTerm) || !string.IsNullOrWhiteSpace(Model.Category))
+            else if (!string.IsNullOrWhiteSpace(Model.SearchTerm) || !string.IsNullOrWhiteSpace(Model.CategoryFilter))
             {
                 <div class="alert alert-info text-center">
                     <h5>No events found matching your search criteria</h5>

@@ -25,15 +25,15 @@
         </div>
         <div class="filter-group">
             <label class="filter-label">Category</label>
-            <select name="Category" class="filter-input">
-                <option value="All" selected="@(string.IsNullOrEmpty(Model.Category) || Model.Category == "All")">All Categories</option>
-                <option value="Academic" selected="@(Model.Category == "Academic")">Academic</option>
-                <option value="Social" selected="@(Model.Category == "Social")">Social</option>
-                <option value="Sports" selected="@(Model.Category == "Sports")">Sports</option>
-                <option value="Cultural" selected="@(Model.Category == "Cultural")">Cultural</option>
-                <option value="Career" selected="@(Model.Category == "Career")">Career</option>
-                <option value="Workshop" selected="@(Model.Category == "Workshop")">Workshop</option>
-                <option value="Other" selected="@(Model.Category == "Other")">Other</option>
+            <select name="CategoryFilter" class="filter-input">
+                <option value="All" selected="@(string.IsNullOrEmpty(Model.CategoryFilter) || Model.CategoryFilter == "All")">All Categories</option>
+                <option value="Academic" selected="@(Model.CategoryFilter == "Academic")">Academic</option>
+                <option value="Social" selected="@(Model.CategoryFilter == "Social")">Social</option>
+                <option value="Sports" selected="@(Model.CategoryFilter == "Sports")">Sports</option>
+                <option value="Cultural" selected="@(Model.CategoryFilter == "Cultural")">Cultural</option>
+                <option value="Career" selected="@(Model.CategoryFilter == "Career")">Career</option>
+                <option value="Workshop" selected="@(Model.CategoryFilter == "Workshop")">Workshop</option>
+                <option value="Other" selected="@(Model.CategoryFilter == "Other")">Other</option>
             </select>
         </div>
         <div class="filter-group">
@@ -65,7 +65,7 @@
 <div class="events-container">
     <div class="events-header">
         <h2>
-            @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) || !string.IsNullOrWhiteSpace(Model.Category))
+            @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) || !string.IsNullOrWhiteSpace(Model.CategoryFilter))
             {
                 <span>Search Results</span>
             }

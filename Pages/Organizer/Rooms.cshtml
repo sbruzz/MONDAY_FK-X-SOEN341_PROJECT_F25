@@ -230,6 +230,108 @@
             }
         </div>
     </div>
+
+    <!-- All Rentals Details -->
+    <div class="card mt-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0"><i class="bi bi-calendar-check"></i> All Rentals - Detailed View</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.MyRooms.Any(r => r.Rentals.Any()))
+            {
+                @foreach (var room in Model.MyRooms.Where(r => r.Rentals.Any()))
+                {
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2">
+                            <i class="bi bi-door-open"></i> <strong>@room.Name</strong>
+                            <small class="text-muted">(@room.Address)</small>
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Renter</th>
+                                        <th>Date & Time</th>
+                                        <th>Purpose</th>
+                                        <th>Status</th>
+                                        <th>Attendees</th>
+                                        <th>Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var rental in room.Rentals.OrderBy(r => r.StartTime))
+                                    {
+                                        <tr class="@(rental.Status == CampusEvents.Models.RentalStatus.Pending ? "table-warning" : "")">
+                                            <td>
+                                                <strong>@rental.Renter.Name</strong><br />
+                                                <small class="text-muted">@rental.Renter.Email</small>
+                                            </td>
+                                            <td>
+                                                <strong>@rental.StartTime.ToString("MMM dd, yyyy")</strong><br />
+                                                <small>@rental.StartTime.ToString("h:mm tt") - @rental.EndTime.ToString("h:mm tt")</small><br />
+                                                <small class="text-muted">(@((rental.EndTime - rental.StartTime).TotalHours.ToString("F1")) hours)</small>
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(rental.Purpose))
+                                                {
+                                                    @rental.Purpose
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (rental.Status == CampusEvents.Models.RentalStatus.Approved)
+                                                {
+                                                    <span class="badge bg-success">Approved</span>
+                                                }
+                                                else if (rental.Status == CampusEvents.Models.RentalStatus.Pending)
+                                                {
+                                                    <span class="badge bg-warning text-dark">Pending</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Rejected</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (rental.ExpectedAttendees.HasValue && rental.ExpectedAttendees > 0)
+                                                {
+                                                    @rental.ExpectedAttendees
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (rental.TotalCost.HasValue && rental.TotalCost > 0)
+                                                {
+                                                    <span class="text-success">$@rental.TotalCost.Value.ToString("F2")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Free</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center py-4">
+                    <i class="bi bi-calendar-x" style="font-size: 2rem; color: var(--text-light);"></i>
+                    <p class="text-muted mt-2 mb-0">No rentals yet</p>
+                </div>
+            }
+        </div>
+    </div>
 </div>
 
 <!-- Create Room Modal -->

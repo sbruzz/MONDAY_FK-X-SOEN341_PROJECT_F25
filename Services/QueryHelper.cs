@@ -47,11 +47,11 @@ public static class QueryHelper
     /// <param name="query">Event query</param>
     /// <param name="category">Category to filter by</param>
     /// <returns>Filtered query</returns>
-    public static IQueryable<Event> FilterByCategory(this IQueryable<Event> query, string? category)
+    public static IQueryable<Event> FilterByCategory(this IQueryable<Event> query, EventCategory? category)
     {
-        if (!string.IsNullOrWhiteSpace(category))
+        if (category.HasValue)
         {
-            return query.Where(e => e.Category.ToLower() == category.ToLower());
+            return query.Where(e => e.Category == category.Value);
         }
         return query;
     }

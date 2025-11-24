@@ -62,7 +62,10 @@ public class EventsModel : PageModel
         // Filter by category
         if (!string.IsNullOrWhiteSpace(CategoryFilter) && CategoryFilter != "All")
         {
-            query = query.Where(e => e.Category == CategoryFilter);
+            if (Enum.TryParse<EventCategory>(CategoryFilter, out var category))
+            {
+                query = query.Where(e => e.Category == category);
+            }
         }
 
         // Get total count before pagination
@@ -149,8 +152,35 @@ public class EventsModel : PageModel
         return RedirectToPage();
     }
 
-    public void OnPostDownloadStudentsWithTicketsCSV(int id)
+    public async Task<IActionResult> OnPostDownloadStudentsWithTicketsCSVAsync(int id)
     {
-        DbCSVCommunicator.extractToCSV(id);
+        var evt = await _context.Events.FindAsync(id);
+        if (evt == null)
+        {
+            Message = "Event not found.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        // Get tickets for this event
+        var tickets = await _context.Tickets
+            .Include(t => t.User)
+            .Where(t => t.EventId == id)
+            .ToListAsync();
+
+        // Build CSV content
+        var csvBuilder = new System.Text.StringBuilder();
+        csvBuilder.AppendLine("User ID,Name,Email,Student ID,Ticket Code,Claimed At,Is Redeemed");
+
+        foreach (var ticket in tickets)
+        {
+            csvBuilder.AppendLine($"{ticket.UserId},{ticket.User.Name},{ticket.User.Email},{ticket.User.StudentId ?? "N/A"},{ticket.UniqueCode},{ticket.ClaimedAt:yyyy-MM-dd HH:mm:ss},{ticket.IsRedeemed}");
+        }
+
+        // Return as downloadable file
+        var bytes = System.Text.Encoding.UTF8.GetBytes(csvBuilder.ToString());
+        var fileName = $"Event_{id}_{evt.Title.Replace(" ", "_")}_Attendees_{DateTime.Now:yyyyMMdd}.csv";
+
+        return File(bytes, "text/csv", fileName);
     }
 }

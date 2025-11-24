@@ -25,7 +25,7 @@ public class StudentHomeModel : PageModel
     public string? SearchTerm { get; set; }
 
     [BindProperty(SupportsGet = true)]
-    public string? Category { get; set; }
+    public string? CategoryFilter { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -70,9 +70,12 @@ public class StudentHomeModel : PageModel
         }
 
         // Apply category filter
-        if (!string.IsNullOrWhiteSpace(Category) && Category != "All")
+        if (!string.IsNullOrWhiteSpace(CategoryFilter) && CategoryFilter != "All")
         {
-            query = query.Where(e => e.Category == Category);
+            if (Enum.TryParse<EventCategory>(CategoryFilter, out var category))
+            {
+                query = query.Where(e => e.Category == category);
+            }
         }
 
         // Get upcoming events

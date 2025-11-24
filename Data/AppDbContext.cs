@@ -121,11 +121,12 @@ public class AppDbContext : DbContext
 
         // ===== Carpool System Configuration (US.04) =====
 
-        // Configure Driver-User relationship (one-to-one)
+        // Configure Driver-User relationship (one-to-many: User can have multiple Drivers)
+        // Organizers can add multiple drivers, students limited to one (enforced in business logic)
         modelBuilder.Entity<Driver>()
             .HasOne(d => d.User)
-            .WithOne(u => u.DriverProfile)
-            .HasForeignKey<Driver>(d => d.UserId)
+            .WithMany(u => u.Drivers)
+            .HasForeignKey(d => d.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Configure CarpoolOffer-Driver relationship

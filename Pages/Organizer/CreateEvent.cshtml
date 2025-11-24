@@ -57,15 +57,8 @@
                             <label asp-for="Input.Category" class="form-label">
                                 Category <span class="text-danger">*</span>
                             </label>
-                            <select asp-for="Input.Category" class="form-select" required>
+                            <select asp-for="Input.Category" asp-items="@Html.GetEnumSelectList<EventCategory>()" class="form-select" required>
                                 <option value="">Select a category...</option>
-                                <option value="Academic">Academic</option>
-                                <option value="Social">Social</option>
-                                <option value="Sports">Sports</option>
-                                <option value="Cultural">Cultural</option>
-                                <option value="Career">Career</option>
-                                <option value="Workshop">Workshop</option>
-                                <option value="Other">Other</option>
                             </select>
                             <span asp-validation-for="Input.Category" class="text-danger"></span>
                         </div>

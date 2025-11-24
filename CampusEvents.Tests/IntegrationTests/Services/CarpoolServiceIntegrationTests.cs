@@ -97,7 +97,7 @@ public class CarpoolServiceIntegrationTests : IDisposable
             Location = "Test Location",
             Capacity = 100,
             TicketType = TicketType.Free,
-            Category = "Test",
+            Category = EventCategory.Other,
             OrganizerId = organizer.Id,
             ApprovalStatus = ApprovalStatus.Approved
         };
@@ -177,7 +177,7 @@ public class CarpoolServiceIntegrationTests : IDisposable
             Location = "Test Location",
             Capacity = 100,
             TicketType = TicketType.Free,
-            Category = "Test",
+            Category = EventCategory.Other,
             OrganizerId = organizer.Id,
             ApprovalStatus = ApprovalStatus.Approved
         };

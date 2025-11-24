@@ -121,7 +121,8 @@ public class DriversModel : PageModel
             return Page();
         }
 
-        // Create a driver entry linked to the organizer
+        // Organizers can add multiple drivers (different vehicles/people)
+        // Create new driver profile
         var driver = new Driver
         {
             UserId = userId.Value,
@@ -139,9 +140,36 @@ public class DriversModel : PageModel
         _context.Drivers.Add(driver);
         await _context.SaveChangesAsync();
 
-        Message = "Driver created successfully!";
-        IsSuccess = true;
+        Message = "Driver added successfully!";
 
+        // If an event was selected, create a carpool offer for it
+        if (Input.EventId.HasValue)
+        {
+            // Check if offer already exists for this event
+            var existingOffer = driver.CarpoolOffers.FirstOrDefault(o => o.EventId == Input.EventId.Value);
+
+            if (existingOffer == null)
+            {
+                var eventData = await _context.Events.FindAsync(Input.EventId.Value);
+                var carpoolOffer = new CarpoolOffer
+                {
+                    EventId = Input.EventId.Value,
+                    DriverId = driver.Id,
+                    SeatsAvailable = driver.Capacity,
+                    DepartureInfo = $"Driving to {eventData?.Location ?? "event"}",
+                    DepartureTime = eventData?.EventDate.AddHours(-1) ?? DateTime.UtcNow,
+                    Status = CarpoolOfferStatus.Active,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _context.CarpoolOffers.Add(carpoolOffer);
+                await _context.SaveChangesAsync();
+
+                Message += " Carpool offer created for the selected event.";
+            }
+        }
+
+        IsSuccess = true;
         return RedirectToPage();
     }
 

@@ -409,7 +409,20 @@ namespace CampusEvents.Pages.Student
             };
 
             _context.CarpoolOffers.Add(carpoolOffer);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR creating carpool offer: {ex.Message}");
+                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                Console.WriteLine($"Driver ID: {driver.Id}, Event ID: {id}");
+
+                ModelState.AddModelError("", $"Failed to register as driver: {ex.InnerException?.Message ?? ex.Message}");
+                return await OnGetAsync(id);
+            }
 
             // Different messages based on approval status
             if (user.Role == UserRole.Organizer)

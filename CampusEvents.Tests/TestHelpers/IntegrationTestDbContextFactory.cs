@@ -90,7 +90,7 @@ public static class IntegrationTestDbContextFactory
             Capacity = 100,
             TicketType = TicketType.Free,
             Price = 0,
-            Category = "Test",
+            Category = EventCategory.Other,
             OrganizerId = 2,
             ApprovalStatus = ApprovalStatus.Approved,
             CreatedAt = DateTime.UtcNow
