@@ -63,28 +63,30 @@
     </div>
 
     <!-- Filter Tabs -->
-    <ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-            <a class="nav-link @(Model.StatusFilter == "all" ? "active" : "")" href="?status=all">
-                All Events (@Model.Events.Count)
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(Model.StatusFilter == "pending" ? "active" : "")" href="?status=pending">
-                Pending (@Model.PendingEvents)
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(Model.StatusFilter == "approved" ? "active" : "")" href="?status=approved">
-                Approved (@Model.ApprovedEvents)
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(Model.StatusFilter == "rejected" ? "active" : "")" href="?status=rejected">
-                Rejected (@Model.RejectedEvents)
-            </a>
-        </li>
-    </ul>
+    <div class="tab-scroll mb-4">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link @(Model.StatusFilter == "all" ? "active" : "")" href="?status=all">
+                    All Events (@Model.Events.Count)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(Model.StatusFilter == "pending" ? "active" : "")" href="?status=pending">
+                    Pending (@Model.PendingEvents)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(Model.StatusFilter == "approved" ? "active" : "")" href="?status=approved">
+                    Approved (@Model.ApprovedEvents)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(Model.StatusFilter == "rejected" ? "active" : "")" href="?status=rejected">
+                    Rejected (@Model.RejectedEvents)
+                </a>
+            </li>
+        </ul>
+    </div>
 
     <!-- Events List -->
     @if (!Model.Events.Any())
@@ -242,3 +244,40 @@
         </div>
     }
 </div>
+
+@section Styles {
+    <style>
+        /* Responsive tab scrolling */
+        .tab-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-scroll .nav-tabs {
+            flex-wrap: nowrap;
+            gap: 0.25rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .tab-scroll .nav-link {
+            white-space: nowrap;
+        }
+
+        .tab-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .tab-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .tab-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        .tab-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+}

@@ -129,6 +129,27 @@
             </div>
             <form method="post">
                 <div class="modal-body">
+                    <!-- Responsibility Warning -->
+                    <div class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Driver Responsibility Notice
+                        </h6>
+                        <p class="mb-2 small">
+                            By registering as a driver, you acknowledge and accept full responsibility for:
+                        </p>
+                        <ul class="mb-2 small">
+                            <li>Possessing a <strong>valid driver's license</strong></li>
+                            <li>Maintaining current <strong>vehicle insurance</strong></li>
+                            <li>Ensuring your vehicle is safe and roadworthy</li>
+                            <li>Following all traffic laws and regulations</li>
+                            <li>The safety and well-being of all passengers</li>
+                        </ul>
+                        <p class="mb-0 small">
+                            <strong>Note:</strong> The organization and platform are not liable for any incidents during carpool operations.
+                        </p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
                     <div class="mb-3">
                         <label asp-for="Input.EventId" class="form-label">Event (Optional)</label>
                         <select asp-for="Input.EventId" class="form-select">

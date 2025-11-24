@@ -33,23 +33,25 @@
     else
     {
         <!-- Filter Tabs -->
-        <ul class="nav nav-tabs mb-4">
-            <li class="nav-item">
-                <a class="nav-link @(Model.Filter == "upcoming" ? "active" : "")" href="?filter=upcoming">
-                    Upcoming (@Model.UpcomingCount)
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @(Model.Filter == "past" ? "active" : "")" href="?filter=past">
-                    Past Events (@Model.PastCount)
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @(Model.Filter == "all" ? "active" : "")" href="?filter=all">
-                    All (@(@Model.UpcomingCount+@Model.PastCount))
-                </a>
-            </li>
-        </ul>
+        <div class="tab-scroll mb-4">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link @(Model.Filter == "upcoming" ? "active" : "")" href="?filter=upcoming">
+                        Upcoming (@Model.UpcomingCount)
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Model.Filter == "past" ? "active" : "")" href="?filter=past">
+                        Past Events (@Model.PastCount)
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Model.Filter == "all" ? "active" : "")" href="?filter=all">
+                        All (@(@Model.UpcomingCount+@Model.PastCount))
+                    </a>
+                </li>
+            </ul>
+        </div>
 
         <div class="row">
             @foreach (var ticket in Model.Tickets)
@@ -125,14 +127,21 @@
                                     </div>
                                 </div>
 
-                                <!-- QR Code -->
+                                <!-- QR Code (pre-generated in page model) -->
                                 <div class="col-md-5 text-center">
                                     <div class="bg-light p-3 rounded">
                                         <p class="small text-muted mb-2">Scan to Check In</p>
-                                        <img src="data:image/png;base64,@ticket.QrCodeImage"
-                                             alt="Ticket QR Code"
-                                             class="img-fluid"
-                                             style="max-width: 200px; border: 2px solid #dee2e6; border-radius: 8px;">
+                                        @if (Model.TicketQRCodes.ContainsKey(ticket.Id))
+                                        {
+                                            <img src="data:image/png;base64,@Model.TicketQRCodes[ticket.Id]"
+                                                 alt="Ticket QR Code"
+                                                 class="img-fluid"
+                                                 style="max-width: 200px; border: 2px solid #dee2e6; border-radius: 8px;">
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-warning">QR Code not available</div>
+                                        }
                                         <p class="small text-muted mt-2 mb-0">
                                             Code: <code>@ticket.UniqueCode.Substring(0, 8)...</code>
                                         </p>
@@ -161,6 +170,43 @@
         </div>
     }
 </div>
+
+@section Styles {
+    <style>
+        /* Responsive tab scrolling */
+        .tab-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-scroll .nav-tabs {
+            flex-wrap: nowrap;
+            gap: 0.25rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .tab-scroll .nav-link {
+            white-space: nowrap;
+        }
+
+        .tab-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .tab-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .tab-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        .tab-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+}
 
 @section Scripts {
     <script>

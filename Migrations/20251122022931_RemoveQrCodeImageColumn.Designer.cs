@@ -3,6 +3,7 @@ using System;
 using CampusEvents.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusEvents.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251122022931_RemoveQrCodeImageColumn")]
+    partial class RemoveQrCodeImageColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -60,7 +63,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("CarpoolOffers", (string)null);
+                    b.ToTable("CarpoolOffers");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.CarpoolPassenger", b =>
@@ -93,7 +96,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("PassengerId");
 
-                    b.ToTable("CarpoolPassengers", (string)null);
+                    b.ToTable("CarpoolPassengers");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Driver", b =>
@@ -112,9 +115,6 @@ namespace CampusEvents.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("DriverLicenseNumber")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("DriverType")
                         .HasColumnType("INTEGER");
 
@@ -123,9 +123,6 @@ namespace CampusEvents.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LicensePlate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Province")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SecurityFlags")
@@ -146,7 +143,7 @@ namespace CampusEvents.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Drivers", (string)null);
+                    b.ToTable("Drivers");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Event", b =>
@@ -204,7 +201,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("OrganizerId");
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Organization", b =>
@@ -225,7 +222,7 @@ namespace CampusEvents.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizations", (string)null);
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Room", b =>
@@ -274,7 +271,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("OrganizerId");
 
-                    b.ToTable("Rooms", (string)null);
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.RoomRental", b =>
@@ -319,7 +316,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("RoomId", "StartTime", "EndTime");
 
-                    b.ToTable("RoomRentals", (string)null);
+                    b.ToTable("RoomRentals");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.SavedEvent", b =>
@@ -337,7 +334,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("SavedEvents", (string)null);
+                    b.ToTable("SavedEvents");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Ticket", b =>
@@ -374,7 +371,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tickets", (string)null);
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.User", b =>
@@ -436,7 +433,7 @@ namespace CampusEvents.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.CarpoolOffer", b =>

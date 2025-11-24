@@ -55,15 +55,15 @@ public class RentalsModel : PageModel
 
         // Load available rooms (enabled only)
         AvailableRooms = await _context.Rooms
-            .Where(r => r.IsEnabled)
+            .Where(r => r.Status == RoomStatus.Enabled)
             .OrderBy(r => r.Name)
             .ToListAsync();
 
         // Load user's rentals
         MyRentals = await _context.RoomRentals
             .Include(r => r.Room)
-            .Include(r => r.Event)
-            .Where(r => r.UserId == userId.Value)
+            .Include(r => r.Renter)
+            .Where(r => r.RenterId == userId.Value)
             .OrderByDescending(r => r.StartTime)
             .ToListAsync();
 
@@ -81,11 +81,11 @@ public class RentalsModel : PageModel
         if (!ModelState.IsValid)
         {
             AvailableRooms = await _context.Rooms
-                .Where(r => r.IsEnabled)
+                .Where(r => r.Status == RoomStatus.Enabled)
                 .ToListAsync();
             MyRentals = await _context.RoomRentals
                 .Include(r => r.Room)
-                .Where(r => r.UserId == userId.Value)
+                .Where(r => r.RenterId == userId.Value)
                 .ToListAsync();
             return Page();
         }
@@ -94,10 +94,10 @@ public class RentalsModel : PageModel
         if (RentalInput.EndTime <= RentalInput.StartTime)
         {
             ModelState.AddModelError("RentalInput.EndTime", "End time must be after start time.");
-            AvailableRooms = await _context.Rooms.Where(r => r.IsEnabled).ToListAsync();
+            AvailableRooms = await _context.Rooms.Where(r => r.Status == RoomStatus.Enabled).ToListAsync();
             MyRentals = await _context.RoomRentals
                 .Include(r => r.Room)
-                .Where(r => r.UserId == userId.Value)
+                .Where(r => r.RenterId == userId.Value)
                 .ToListAsync();
             return Page();
         }
@@ -131,12 +131,14 @@ public class RentalsModel : PageModel
         var rental = new RoomRental
         {
             RoomId = RentalInput.RoomId,
-            UserId = userId.Value,
-            EventId = RentalInput.EventId,
+            RenterId = userId.Value,
             StartTime = RentalInput.StartTime,
             EndTime = RentalInput.EndTime,
-            Purpose = RentalInput.Purpose,
+            Purpose = RentalInput.Purpose ?? "",
             Status = RentalStatus.Approved,
+            AdminNotes = "",
+            ExpectedAttendees = 0,
+            TotalCost = 0m,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -157,7 +159,7 @@ public class RentalsModel : PageModel
         }
 
         var rental = await _context.RoomRentals
-            .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId.Value);
+            .FirstOrDefaultAsync(r => r.Id == id && r.RenterId == userId.Value);
 
         if (rental == null)
         {

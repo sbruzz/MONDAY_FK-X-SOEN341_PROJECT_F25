@@ -24,6 +24,13 @@ public class EventsModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? CategoryFilter { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public int CurrentPage { get; set; } = 1;
+
+    public int TotalPages { get; set; }
+    public int PageSize { get; set; } = 10;
+    public int TotalEvents { get; set; }
+
     [TempData]
     public string? Message { get; set; }
 
@@ -59,9 +66,20 @@ public class EventsModel : PageModel
             query = query.Where(e => e.Category == CategoryFilter);
         }
 
+        // Get total count before pagination
+        TotalEvents = await query.CountAsync();
+        TotalPages = (int)Math.Ceiling(TotalEvents / (double)PageSize);
+
+        // Ensure current page is valid
+        if (CurrentPage < 1) CurrentPage = 1;
+        if (CurrentPage > TotalPages && TotalPages > 0) CurrentPage = TotalPages;
+
+        // Apply pagination
         Events = await query
             .OrderBy(e => e.ApprovalStatus)
             .ThenByDescending(e => e.CreatedAt)
+            .Skip((CurrentPage - 1) * PageSize)
+            .Take(PageSize)
             .ToListAsync();
 
         return Page();
