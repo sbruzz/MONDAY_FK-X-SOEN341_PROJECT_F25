@@ -45,7 +45,20 @@ public class Driver
     public int UserId { get; set; }
 
     /// <summary>
-    /// License plate number (optional)
+    /// Driver's license number (ENCRYPTED)
+    /// Required for driver verification
+    /// </summary>
+    public string? DriverLicenseNumber { get; set; }
+
+    /// <summary>
+    /// Province/Territory code for license validation
+    /// Two-letter code: ON, QC, BC, AB, SK, MB, NS, NB, PE, NL, YT, NT, NU
+    /// </summary>
+    public string? Province { get; set; }
+
+    /// <summary>
+    /// License plate number (ENCRYPTED)
+    /// Optional vehicle identifier
     /// </summary>
     public string? LicensePlate { get; set; }
 

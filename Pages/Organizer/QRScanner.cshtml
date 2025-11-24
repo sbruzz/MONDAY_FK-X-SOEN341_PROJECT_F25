@@ -42,38 +42,39 @@
         <div class="row">
             <!-- Left Column - Scanner -->
             <div class="col-lg-7">
+                <!-- Camera Scanner -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="bi bi-upload"></i> Upload QR Code</h5>
+                        <h5 class="mb-0"><i class="bi bi-camera"></i> Scan QR Code</h5>
                     </div>
                     <div class="card-body">
                         <p class="text-muted">
-                            Upload a QR code image from a ticket to validate and check-in attendees.
-                            For this prototype, you can upload a saved QR code image file.
+                            Use your device's camera to scan ticket QR codes for instant validation.
                         </p>
 
-                        <form method="post" enctype="multipart/form-data" asp-page-handler="ScanQR">
-                            <div class="mb-3">
-                                <label for="qrImage" class="form-label">Select QR Code Image</label>
-                                <input type="file" class="form-control" id="qrImage" name="qrImage"
-                                       accept="image/*" required onchange="previewImage(event)" />
-                                <small class="text-muted">Supported formats: PNG, JPG, JPEG</small>
-                            </div>
+                        <!-- Camera Scanner Container -->
+                        <div id="qr-reader" style="width: 100%;"></div>
+                        <div id="qr-reader-results" class="mt-3"></div>
 
-                            <!-- Image Preview -->
-                            <div id="imagePreview" class="mb-3" style="display: none;">
-                                <label class="form-label">Preview:</label>
-                                <div class="border rounded p-2 text-center bg-light">
-                                    <img id="preview" src="" alt="QR Code Preview" style="max-width: 300px; max-height: 300px;">
-                                </div>
-                            </div>
+                        <!-- Scanner Controls -->
+                        <div class="mt-3 d-grid gap-2">
+                            <button id="start-scan-btn" class="btn btn-success btn-lg" onclick="startScanner()">
+                                <i class="bi bi-camera-fill"></i> Start Camera
+                            </button>
+                            <button id="stop-scan-btn" class="btn btn-danger" onclick="stopScanner()" style="display: none;">
+                                <i class="bi bi-stop-circle"></i> Stop Camera
+                            </button>
+                        </div>
 
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-check-circle"></i> Validate QR Code
-                                </button>
-                            </div>
-                        </form>
+                        <!-- Alternative: File Upload -->
+                        <hr class="my-4">
+                        <p class="text-muted small">
+                            <strong>Alternative:</strong> Upload QR code image
+                        </p>
+                        <div class="mb-3">
+                            <input type="file" class="form-control" id="qr-file-input" accept="image/*" onchange="handleFileUpload(event)">
+                            <small class="text-muted">Select a QR code image from your device</small>
+                        </div>
 
                         <!-- Alternative: Manual Code Entry -->
                         <hr class="my-4">
@@ -81,10 +82,10 @@
                             <strong>Alternative:</strong> Enter ticket code manually
                         </p>
 
-                        <form method="post" asp-page-handler="ValidateCode">
+                        <form method="post" asp-page-handler="ValidateCode" id="validate-form">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="ticketCode"
-                                       placeholder="Enter ticket unique code" required />
+                                <input type="text" class="form-control" name="ticketCode" id="ticketCode"
+                                       placeholder="Enter ticket unique code or paste from QR" required />
                                 <button type="submit" class="btn btn-outline-secondary">
                                     <i class="bi bi-key"></i> Validate
                                 </button>
@@ -224,22 +225,193 @@
 </div>
 
 @section Scripts {
-    <script>
-        function previewImage(event) {
-            const preview = document.getElementById('preview');
-            const previewContainer = document.getElementById('imagePreview');
-            const file = event.target.files[0];
+    <!-- html5-qrcode library for QR scanning (bundled locally) -->
+    <script src="~/lib/html5-qrcode.min.js"></script>
 
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    previewContainer.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                previewContainer.style.display = 'none';
+    <script>
+        let html5QrcodeScanner = null;
+        let lastScannedCode = null;
+        let lastScanTime = 0;
+        const SCAN_COOLDOWN_MS = 3000; // Prevent duplicate scans within 3 seconds
+
+        function startScanner() {
+            const startBtn = document.getElementById('start-scan-btn');
+            const stopBtn = document.getElementById('stop-scan-btn');
+
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'block';
+
+            html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-reader",
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 },
+                    aspectRatio: 1.0,
+                    rememberLastUsedCamera: true
+                },
+                /* verbose= */ false
+            );
+
+            html5QrcodeScanner.render(onScanSuccess, onScanError);
+        }
+
+        function stopScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear().catch(error => {
+                    console.error("Failed to clear scanner", error);
+                });
+                html5QrcodeScanner = null;
+            }
+
+            const startBtn = document.getElementById('start-scan-btn');
+            const stopBtn = document.getElementById('stop-scan-btn');
+
+            startBtn.style.display = 'block';
+            stopBtn.style.display = 'none';
+
+            document.getElementById('qr-reader-results').innerHTML = '';
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            const now = Date.now();
+
+            // Rate limiting: prevent duplicate scans
+            if (decodedText === lastScannedCode && (now - lastScanTime) < SCAN_COOLDOWN_MS) {
+                return;
+            }
+
+            // Client-side validation: ensure payload is well-formed signed token
+            try {
+                const token = JSON.parse(decodedText.trim());
+                if (!token.Payload || !token.Signature) {
+                    throw new Error('Missing Payload or Signature');
+                }
+            } catch (e) {
+                document.getElementById('qr-reader-results').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-x-circle"></i> <strong>Invalid QR Code:</strong> Not a valid signed ticket token.
+                        <br><small>This may be an old or forged ticket. Please contact support if you believe this is an error.</small>
+                    </div>
+                `;
+                return; // Don't submit malformed codes to server
+            }
+
+            lastScannedCode = decodedText;
+            lastScanTime = now;
+
+            // Display scanned code
+            document.getElementById('qr-reader-results').innerHTML = `
+                <div class="alert alert-info">
+                    <i class="bi bi-qr-code"></i> <strong>Code Scanned:</strong> ${decodedText.substring(0, 20)}...
+                    <br><small>Validating ticket...</small>
+                </div>
+            `;
+
+            // Auto-fill the manual entry field
+            document.getElementById('ticketCode').value = decodedText;
+
+            // Auto-submit the form for validation
+            setTimeout(() => {
+                document.getElementById('validate-form').submit();
+            }, 500);
+        }
+
+        function onScanError(error) {
+            // Ignore scanning errors (they're common while scanning)
+            // Only log actual errors, not "No QR code found" messages
+            if (!error.includes("NotFoundException")) {
+                console.warn(`QR Scan Error: ${error}`);
             }
         }
+
+        // Handle file upload for QR code decoding
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            // Check if html5-qrcode is available
+            if (typeof Html5Qrcode === 'undefined') {
+                alert('QR code scanner library not available. Please use manual entry.');
+                return;
+            }
+
+            const html5QrCode = new Html5Qrcode("qr-reader");
+
+            document.getElementById('qr-reader-results').innerHTML = `
+                <div class="alert alert-info">
+                    <i class="bi bi-hourglass-split"></i> Decoding QR code from image...
+                </div>
+            `;
+
+            html5QrCode.scanFile(file, true)
+                .then(decodedText => {
+                    // Validate and process the decoded text (same as camera scan)
+                    try {
+                        const token = JSON.parse(decodedText.trim());
+                        if (!token.Payload || !token.Signature) {
+                            throw new Error('Missing Payload or Signature');
+                        }
+
+                        document.getElementById('qr-reader-results').innerHTML = `
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle"></i> <strong>QR Code Decoded Successfully!</strong>
+                                <br><small>Validating ticket...</small>
+                            </div>
+                        `;
+
+                        // Auto-fill and submit
+                        document.getElementById('ticketCode').value = decodedText;
+                        setTimeout(() => {
+                            document.getElementById('validate-form').submit();
+                        }, 500);
+
+                    } catch (e) {
+                        document.getElementById('qr-reader-results').innerHTML = `
+                            <div class="alert alert-danger">
+                                <i class="bi bi-x-circle"></i> <strong>Invalid QR Code:</strong> Not a valid signed ticket token.
+                                <br><small>This may be an old or forged ticket.</small>
+                            </div>
+                        `;
+                    }
+
+                    // Clear the file input
+                    event.target.value = '';
+                })
+                .catch(err => {
+                    document.getElementById('qr-reader-results').innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle"></i> <strong>Failed to decode QR code from image.</strong>
+                            <br><small>${err}</small>
+                        </div>
+                    `;
+                    event.target.value = '';
+                });
+        }
+
+        // Auto-start scanner on page load for better UX
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if html5-qrcode library loaded successfully
+            if (typeof Html5QrcodeScanner === 'undefined') {
+                document.getElementById('qr-reader').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>QR Scanner Unavailable</strong><br>
+                        The QR code scanning library failed to load. This may be due to network issues or blocked CDN access.
+                        <br><br>
+                        <strong>Please use manual code entry below.</strong>
+                    </div>
+                `;
+                document.getElementById('start-scan-btn').disabled = true;
+                return;
+            }
+
+            // Only auto-start if there's no result message (fresh page load)
+            const resultMessage = '@Html.Raw(Model.ResultMessage ?? "")';
+            if (!resultMessage) {
+                setTimeout(startScanner, 500);
+            }
+        });
     </script>
 }

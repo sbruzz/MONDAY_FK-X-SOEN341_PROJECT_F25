@@ -3,16 +3,25 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using CampusEvents.Data;
 using CampusEvents.Models;
+using CampusEvents.Services;
 
 namespace CampusEvents.Pages.Organizer
 {
     public class QRScannerModel : PageModel
     {
         private readonly AppDbContext _context;
+        private readonly TicketSigningService _signingService;
 
-        public QRScannerModel(AppDbContext context)
+        // NOTE: In-memory rate limiting won't work across multiple app instances.
+        // For production multi-instance deployments, move to a shared store (Redis, database, etc.)
+        private static readonly Dictionary<string, DateTime> _scanAttempts = new();
+        private static readonly TimeSpan RATE_LIMIT_WINDOW = TimeSpan.FromSeconds(2);
+        private const int MAX_ATTEMPTS_PER_WINDOW = 1;
+
+        public QRScannerModel(AppDbContext context, TicketSigningService signingService)
         {
             _context = context;
+            _signingService = signingService;
         }
 
         public Event? Event { get; set; }
@@ -55,47 +64,65 @@ namespace CampusEvents.Pages.Organizer
             return Page();
         }
 
-        public async Task<IActionResult> OnPostScanQRAsync(int eventId, IFormFile qrImage)
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
-            {
-                return RedirectToPage("/Login");
-            }
-
-            // Load event
-            Event = await _context.Events
-                .FirstOrDefaultAsync(e => e.Id == eventId);
-
-            if (Event == null || Event.OrganizerId != userId.Value)
-            {
-                return RedirectToPage("/Organizer/Events");
-            }
-
-            if (qrImage == null || qrImage.Length == 0)
-            {
-                ResultMessage = "Please upload a QR code image.";
-                IsSuccess = false;
-                await LoadEventStats(eventId);
-                return Page();
-            }
-
-            // For prototype purposes, we'll use a simplified approach
-            // In a real app, you would decode the QR code from the image
-            // For now, we'll prompt for manual code entry
-            ResultMessage = "QR code upload received. For this prototype, please use manual code entry below or provide the ticket unique code.";
-            IsSuccess = false;
-
-            await LoadEventStats(eventId);
-            return Page();
-        }
-
         public async Task<IActionResult> OnPostValidateCodeAsync(int eventId, string ticketCode)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
             {
                 return RedirectToPage("/Login");
+            }
+
+            // Server-side rate limiting to prevent abuse/replay attacks
+            // Track by both user+code AND IP address for defense in depth
+            var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            var userCodeKey = $"user:{userId}:{ticketCode}";
+            var ipKey = $"ip:{clientIp}";
+            var now = DateTime.UtcNow;
+            bool rateLimitExceeded = false;
+
+            lock (_scanAttempts)
+            {
+                // Clean up old entries
+                var expiredKeys = _scanAttempts
+                    .Where(kvp => now - kvp.Value > RATE_LIMIT_WINDOW)
+                    .Select(kvp => kvp.Key)
+                    .ToList();
+                foreach (var key in expiredKeys)
+                {
+                    _scanAttempts.Remove(key);
+                }
+
+                // Check rate limit for user+code combination
+                if (_scanAttempts.TryGetValue(userCodeKey, out var lastUserAttempt))
+                {
+                    if (now - lastUserAttempt < RATE_LIMIT_WINDOW)
+                    {
+                        rateLimitExceeded = true;
+                    }
+                }
+
+                // Also check rate limit by IP address (prevents rapid scanning from same device)
+                if (_scanAttempts.TryGetValue(ipKey, out var lastIpAttempt))
+                {
+                    if (now - lastIpAttempt < RATE_LIMIT_WINDOW)
+                    {
+                        rateLimitExceeded = true;
+                    }
+                }
+
+                if (!rateLimitExceeded)
+                {
+                    _scanAttempts[userCodeKey] = now;
+                    _scanAttempts[ipKey] = now;
+                }
+            }
+
+            if (rateLimitExceeded)
+            {
+                ResultMessage = "Rate limit exceeded. Please wait a moment before scanning again.";
+                IsSuccess = false;
+                await LoadEventStats(eventId);
+                return Page();
             }
 
             // Load event
@@ -115,24 +142,36 @@ namespace CampusEvents.Pages.Organizer
                 return Page();
             }
 
-            // Find ticket by unique code
-            ValidatedTicket = await _context.Tickets
-                .Include(t => t.User)
-                .Include(t => t.Event)
-                .FirstOrDefaultAsync(t => t.UniqueCode == ticketCode.Trim());
-
-            if (ValidatedTicket == null)
+            // Verify HMAC signature and token validity
+            var validationResult = _signingService.VerifyTicket(ticketCode.Trim());
+            if (validationResult == null || !validationResult.IsValid)
             {
-                ResultMessage = "Invalid ticket code. Ticket not found.";
+                ResultMessage = $"Invalid or tampered ticket: {validationResult?.ErrorMessage ?? "Verification failed"}";
                 IsSuccess = false;
                 await LoadEventStats(eventId);
                 return Page();
             }
 
+            var payload = validationResult.Payload!;
+
             // Verify ticket is for this event
-            if (ValidatedTicket.EventId != eventId)
+            if (payload.EventId != eventId)
             {
-                ResultMessage = $"This ticket is for a different event: {ValidatedTicket.Event.Title}";
+                ResultMessage = "This ticket is for a different event.";
+                IsSuccess = false;
+                await LoadEventStats(eventId);
+                return Page();
+            }
+
+            // Find ticket by ID and UniqueCode (double verification prevents replay after signature passes)
+            ValidatedTicket = await _context.Tickets
+                .Include(t => t.User)
+                .Include(t => t.Event)
+                .FirstOrDefaultAsync(t => t.Id == payload.TicketId && t.UniqueCode == payload.UniqueCode && t.EventId == eventId);
+
+            if (ValidatedTicket == null)
+            {
+                ResultMessage = "Ticket not found or data mismatch. This may indicate a forged or altered ticket.";
                 IsSuccess = false;
                 await LoadEventStats(eventId);
                 return Page();

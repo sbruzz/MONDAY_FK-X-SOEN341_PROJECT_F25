@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using CampusEvents.Data;
 using CampusEvents.Models;
+using CampusEvents.Services;
 
 namespace CampusEvents.Pages.Admin;
 
 public class DriversModel : PageModel
 {
     private readonly AppDbContext _context;
+    private readonly EncryptionService _encryptionService;
 
-    public DriversModel(AppDbContext context)
+    public DriversModel(AppDbContext context, EncryptionService encryptionService)
     {
         _context = context;
+        _encryptionService = encryptionService;
     }
 
     public List<Driver> Drivers { get; set; } = new();
@@ -66,7 +69,11 @@ public class DriversModel : PageModel
         // Filter by status
         if (!string.IsNullOrWhiteSpace(StatusFilter) && StatusFilter != "All")
         {
-            if (StatusFilter == "Active")
+            if (StatusFilter == "Pending")
+            {
+                query = query.Where(d => d.Status == DriverStatus.Pending);
+            }
+            else if (StatusFilter == "Active")
             {
                 query = query.Where(d => d.Status == DriverStatus.Active && !d.SecurityFlags.Contains("flagged") && !d.SecurityFlags.Contains("suspended"));
             }
@@ -204,6 +211,142 @@ public class DriversModel : PageModel
         Message = $"Passenger has been removed from carpool.";
         IsSuccess = true;
         return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostActivateDriverAsync(int id)
+    {
+        var driver = await _context.Drivers
+            .Include(d => d.User)
+            .FirstOrDefaultAsync(d => d.Id == id);
+        if (driver == null)
+        {
+            Message = "Driver not found.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        driver.IsActive = true;
+        await _context.SaveChangesAsync();
+
+        Message = $"Driver {driver.User.Name} has been activated.";
+        IsSuccess = true;
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostDeactivateDriverAsync(int id)
+    {
+        var driver = await _context.Drivers
+            .Include(d => d.User)
+            .FirstOrDefaultAsync(d => d.Id == id);
+        if (driver == null)
+        {
+            Message = "Driver not found.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        driver.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        Message = $"Driver {driver.User.Name} has been deactivated.";
+        IsSuccess = true;
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostApproveDriverAsync(int id)
+    {
+        var driver = await _context.Drivers
+            .Include(d => d.User)
+            .FirstOrDefaultAsync(d => d.Id == id);
+        if (driver == null)
+        {
+            Message = "Driver not found.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        driver.Status = DriverStatus.Active;
+        driver.SecurityFlags = string.IsNullOrEmpty(driver.SecurityFlags)
+            ? "verified"
+            : driver.SecurityFlags + ",verified";
+
+        await _context.SaveChangesAsync();
+
+        Message = $"Driver {driver.User.Name} has been approved and activated.";
+        IsSuccess = true;
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostDenyDriverAsync(int id)
+    {
+        var driver = await _context.Drivers
+            .Include(d => d.User)
+            .Include(d => d.CarpoolOffers)
+                .ThenInclude(o => o.Passengers)
+            .FirstOrDefaultAsync(d => d.Id == id);
+        if (driver == null)
+        {
+            Message = "Driver not found.";
+            IsSuccess = false;
+            return RedirectToPage();
+        }
+
+        driver.Status = DriverStatus.Suspended;
+        driver.SecurityFlags = string.IsNullOrEmpty(driver.SecurityFlags)
+            ? "denied"
+            : driver.SecurityFlags + ",denied";
+
+        // Remove all passengers from this driver's carpool offers
+        foreach (var offer in driver.CarpoolOffers)
+        {
+            var passengers = await _context.CarpoolPassengers
+                .Where(p => p.OfferId == offer.Id)
+                .ToListAsync();
+            _context.CarpoolPassengers.RemoveRange(passengers);
+            offer.Status = CarpoolOfferStatus.Cancelled;
+        }
+
+        await _context.SaveChangesAsync();
+
+        Message = $"Driver {driver.User.Name} has been denied and suspended.";
+        IsSuccess = true;
+        return RedirectToPage();
+    }
+
+    /// <summary>
+    /// Gets the decrypted driver's license number for display (admin only)
+    /// </summary>
+    public string GetDecryptedLicenseNumber(Driver driver)
+    {
+        if (string.IsNullOrEmpty(driver.DriverLicenseNumber))
+            return "N/A";
+
+        try
+        {
+            return _encryptionService.DecryptLicenseNumber(driver.DriverLicenseNumber);
+        }
+        catch
+        {
+            return "[Decryption Error]";
+        }
+    }
+
+    /// <summary>
+    /// Gets the decrypted license plate for display (admin only)
+    /// </summary>
+    public string GetDecryptedLicensePlate(Driver driver)
+    {
+        if (string.IsNullOrEmpty(driver.LicensePlate))
+            return "N/A";
+
+        try
+        {
+            return _encryptionService.DecryptLicensePlate(driver.LicensePlate);
+        }
+        catch
+        {
+            return "[Decryption Error]";
+        }
     }
 }
 

@@ -20,17 +20,13 @@ public class Ticket
     /// Foreign key to User table - the user who claimed/purchased this ticket
     /// </summary>
     public int UserId { get; set; }
-    
+
     /// <summary>
-    /// Unique code for the ticket (used for QR code generation)
+    /// Canonical source of truth for ticket verification.
+    /// QR codes are generated on-demand from this value.
     /// </summary>
     public required string UniqueCode { get; set; }
-    
-    /// <summary>
-    /// Base64 encoded QR code image for event entry validation
-    /// </summary>
-    public string? QrCodeImage { get; set; }
-    
+
     /// <summary>
     /// Timestamp when the ticket was claimed/purchased
     /// </summary>
