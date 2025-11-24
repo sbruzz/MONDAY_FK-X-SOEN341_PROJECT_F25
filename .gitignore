@@ -51,6 +51,7 @@ Thumbs.db
 *.temp
 .fake
 .env
+
 # Node modules
 node_modules/
 package.json

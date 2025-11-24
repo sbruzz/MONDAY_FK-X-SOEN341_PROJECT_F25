@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="CampusEvents.Tests/**" />
-    <EmbeddedResource Remove="CampusEvents.Tests/**" />
-    <None Remove="CampusEvents.Tests/**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
@@ -22,6 +16,13 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.9" />
     <PackageReference Include="QRCoder" Version="1.6.0" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="CampusEvents.Tests/**" />
+    <Content Remove="CampusEvents.Tests/**" />
+    <EmbeddedResource Remove="CampusEvents.Tests/**" />
+    <None Remove="CampusEvents.Tests/**" />
   </ItemGroup>
 
 </Project>
