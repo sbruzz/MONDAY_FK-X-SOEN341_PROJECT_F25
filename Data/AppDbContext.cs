@@ -72,6 +72,14 @@ public class AppDbContext : DbContext
     /// Database set for RoomRental entities
     /// </summary>
     public DbSet<RoomRental> RoomRentals { get; set; }
+
+    // Notification system entities
+
+    /// <summary>
+    /// Database set for Notification entities
+    /// </summary>
+    public DbSet<Notification> Notifications { get; set; }
+
     /// <summary>
     /// Configures the model relationships, constraints, and indexes
     /// Called by Entity Framework when creating the database model
@@ -183,6 +191,19 @@ public class AppDbContext : DbContext
         // Index for preventing double booking (overlapping rentals)
         modelBuilder.Entity<RoomRental>()
             .HasIndex(rr => new { rr.RoomId, rr.StartTime, rr.EndTime });
+
+        // ===== Notification System Configuration =====
+
+        // Configure Notification-User relationship
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.User)
+            .WithMany(u => u.Notifications)
+            .HasForeignKey(n => n.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Index for fetching unread notifications efficiently
+        modelBuilder.Entity<Notification>()
+            .HasIndex(n => new { n.UserId, n.IsRead, n.CreatedAt });
     }
-    
+
 }

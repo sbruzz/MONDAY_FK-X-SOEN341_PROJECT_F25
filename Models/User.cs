@@ -170,4 +170,9 @@ public class User
     /// Rooms managed by this user (for organizers)
     /// </summary>
     public ICollection<Room> ManagedRooms { get; set; } = new List<Room>();
+
+    /// <summary>
+    /// Notifications received by this user
+    /// </summary>
+    public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 }

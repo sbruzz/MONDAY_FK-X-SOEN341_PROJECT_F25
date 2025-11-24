@@ -5,83 +5,65 @@
     Layout = "_StudentLayout";
 }
 
+<!-- Hero Section with Filters -->
+<section class="filter-hero">
+    <div class="hero-content-wrapper">
+        <div class="page-header-content">
+            <h1 class="page-title">Browse All Events</h1>
+            <p class="page-subtitle">Discover and filter campus events to find what interests you</p>
+        </div>
+
+        <!-- Integrated Filter Bar -->
+        <form method="get" class="filter-form">
+            <div class="filter-bar">
+                <div class="search-group">
+                    <i class="bi bi-search filter-icon"></i>
+                    <input type="text" name="searchTerm" value="@Model.SearchTerm"
+                           class="filter-search" placeholder="Search events...">
+                </div>
+
+                <select name="category" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="Academic" selected="@(Model.Category == EventCategory.Academic)">Academic</option>
+                    <option value="Career" selected="@(Model.Category == EventCategory.Career)">Career</option>
+                    <option value="Competition" selected="@(Model.Category == EventCategory.Competition)">Competition</option>
+                    <option value="Concert" selected="@(Model.Category == EventCategory.Concert)">Concert</option>
+                    <option value="Cultural" selected="@(Model.Category == EventCategory.Cultural)">Cultural</option>
+                    <option value="Social" selected="@(Model.Category == EventCategory.Social)">Social</option>
+                    <option value="Sports" selected="@(Model.Category == EventCategory.Sports)">Sports</option>
+                    <option value="Workshop" selected="@(Model.Category == EventCategory.Workshop)">Workshop</option>
+                    <option value="Other" selected="@(Model.Category == EventCategory.Other)">Other</option>
+                </select>
+
+                <select name="organization" class="filter-select">
+                    <option value="">All Organizations</option>
+                    @foreach (var org in Model.Organizations)
+                    {
+                        <option value="@org.Id" selected="@(Model.OrganizationId == org.Id)">@org.Name</option>
+                    }
+                </select>
+
+                <select name="dateFilter" class="filter-select">
+                    <option value="all" selected="@(Model.DateFilter == "all")">All Dates</option>
+                    <option value="today" selected="@(Model.DateFilter == "today")">Today</option>
+                    <option value="week" selected="@(Model.DateFilter == "week")">This Week</option>
+                    <option value="month" selected="@(Model.DateFilter == "month")">This Month</option>
+                </select>
+
+                <button type="submit" class="filter-apply-btn">
+                    <i class="bi bi-check-circle"></i>
+                    Apply
+                </button>
+
+                <a href="/Student/Events" class="filter-clear-btn">
+                    <i class="bi bi-x-circle"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+
 <div class="container mt-4 content-container">
-    <div class="row mb-4">
-        <div class="col page-header">
-            <h1 class="display-4">Discover Campus Events</h1>
-            <p class="lead">Find and attend amazing events happening on campus</p>
-        </div>
-    </div>
-
-    <!-- Filters Section -->
-    <div class="card mb-4 filter-card">
-        <div class="card-header filter-card-header">
-            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filter Events</h5>
-        </div>
-        <div class="card-body filter-card-body">
-            <form method="get" id="filterForm">
-                <div class="row g-3">
-                    <!-- Search -->
-                    <div class="col-md-4">
-                        <label for="searchTerm" class="form-label">Search</label>
-                        <input type="text" class="custom-input" id="searchTerm" name="searchTerm"
-                               value="@Model.SearchTerm" placeholder="Search events...">
-                    </div>
-
-                    <!-- Category Filter -->
-                    <div class="col-md-3">
-                        <label for="category" class="form-label">Category</label>
-                        <select class="custom-select" id="category" name="category">
-                            <option value="">All Categories</option>
-                            <option value="Academic" selected="@(Model.Category == EventCategory.Academic)">Academic</option>
-                            <option value="Career" selected="@(Model.Category == EventCategory.Career)">Career</option>
-                            <option value="Competition" selected="@(Model.Category == EventCategory.Competition)">Competition</option>
-                            <option value="Concert" selected="@(Model.Category == EventCategory.Concert)">Concert</option>
-                            <option value="Cultural" selected="@(Model.Category == EventCategory.Cultural)">Cultural</option>
-                            <option value="Social" selected="@(Model.Category == EventCategory.Social)">Social</option>
-                            <option value="Sports" selected="@(Model.Category == EventCategory.Sports)">Sports</option>
-                            <option value="Workshop" selected="@(Model.Category == EventCategory.Workshop)">Workshop</option>
-                            <option value="Other" selected="@(Model.Category == EventCategory.Other)">Other</option>
-                        </select>
-                    </div>
-
-                    <!-- Organization Filter -->
-                    <div class="col-md-3">
-                        <label for="organization" class="form-label">Organization</label>
-                        <select class="custom-select" id="organization" name="organization">
-                            <option value="">All Organizations</option>
-                            @foreach (var org in Model.Organizations)
-                            {
-                                <option value="@org.Id" selected="@(Model.OrganizationId == org.Id)">@org.Name</option>
-                            }
-                        </select>
-                    </div>
-
-                    <!-- Date Filter -->
-                    <div class="col-md-2">
-                        <label for="dateFilter" class="form-label">Date</label>
-                        <select class="custom-select" id="dateFilter" name="dateFilter">
-                            <option value="all" selected="@(Model.DateFilter == "all")">All Dates</option>
-                            <option value="today" selected="@(Model.DateFilter == "today")">Today</option>
-                            <option value="week" selected="@(Model.DateFilter == "week")">This Week</option>
-                            <option value="month" selected="@(Model.DateFilter == "month")">This Month</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row mt-3">
-                    <div class="col">
-                        <button type="submit" class="btn btn-primary-custom">
-                            <i class="bi bi-search"></i> Apply Filters
-                        </button>
-                        <a href="/Student/Events" class="btn btn-outline-custom">
-                            <i class="bi bi-x-circle"></i> Clear Filters
-                        </a>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- Results Summary -->
     <div class="row mb-3">

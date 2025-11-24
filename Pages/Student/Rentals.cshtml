@@ -172,7 +172,8 @@
                         <label asp-for="RentalInput.StartTime" class="form-label">
                             Start Time <span class="text-danger">*</span>
                         </label>
-                        <input type="datetime-local" asp-for="RentalInput.StartTime" class="form-control" required />
+                        <input type="datetime-local" asp-for="RentalInput.StartTime" class="form-control"
+                               id="startTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required />
                         <span asp-validation-for="RentalInput.StartTime" class="text-danger"></span>
                     </div>
 
@@ -180,7 +181,8 @@
                         <label asp-for="RentalInput.EndTime" class="form-label">
                             End Time <span class="text-danger">*</span>
                         </label>
-                        <input type="datetime-local" asp-for="RentalInput.EndTime" class="form-control" required />
+                        <input type="datetime-local" asp-for="RentalInput.EndTime" class="form-control"
+                               id="endTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required />
                         <span asp-validation-for="RentalInput.EndTime" class="text-danger"></span>
                     </div>
 
@@ -201,5 +203,39 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Initialize datetime-local inputs with today's date and time
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            // Round to next hour
+            now.setHours(now.getHours() + 1);
+            now.setMinutes(0);
+
+            const startTime = document.getElementById('startTime');
+            const endTime = document.getElementById('endTime');
+
+            if (startTime && !startTime.value) {
+                startTime.value = now.toISOString().slice(0, 16);
+            }
+
+            if (endTime && !endTime.value) {
+                const endDate = new Date(now);
+                endDate.setHours(endDate.getHours() + 2);
+                endTime.value = endDate.toISOString().slice(0, 16);
+            }
+
+            // Update end time min when start time changes
+            startTime?.addEventListener('change', function() {
+                const start = new Date(this.value);
+                start.setHours(start.getHours() + 1);
+                endTime.min = start.toISOString().slice(0, 16);
+
+                // If end time is before new min, update it
+                if (endTime.value && new Date(endTime.value) < start) {
+                    endTime.value = start.toISOString().slice(0, 16);
+                }
+            });
+        });
+    </script>
 }
 

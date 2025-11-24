@@ -33,6 +33,9 @@ builder.Services.AddScoped<CarpoolService>();
 builder.Services.AddScoped<RoomRentalService>();
 builder.Services.AddScoped<ProximityService>();
 
+// Register notification service
+builder.Services.AddScoped<NotificationService>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

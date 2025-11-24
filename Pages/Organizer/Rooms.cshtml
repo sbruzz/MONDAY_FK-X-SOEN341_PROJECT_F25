@@ -104,14 +104,14 @@
                                         }
                                     </td>
                                     <td>
-                                        <div class="btn-group btn-group-sm">
+                                        <div class="d-flex gap-2">
                                             <form method="post" asp-page-handler="ApproveRental" class="d-inline">
                                                 <input type="hidden" name="rentalId" value="@rental.Id" />
-                                                <button type="submit" class="btn btn-success" title="Approve">
+                                                <button type="submit" class="btn btn-sm btn-success" style="border-radius: 20px; padding: 0.5rem 1rem;" title="Approve">
                                                     <i class="bi bi-check-circle"></i>
                                                 </button>
                                             </form>
-                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal-@rental.Id" title="Reject">
+                                            <button type="button" class="btn btn-sm btn-danger" style="border-radius: 20px; padding: 0.5rem 1rem;" data-bs-toggle="modal" data-bs-target="#rejectModal-@rental.Id" title="Reject">
                                                 <i class="bi bi-x-circle"></i>
                                             </button>
                                         </div>
