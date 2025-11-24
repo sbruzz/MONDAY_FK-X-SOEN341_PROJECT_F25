@@ -51,6 +51,12 @@ public class LoginModel : PageModel
             return Page();
         }
 
+        if (user.ApprovalStatus == ApprovalStatus.Rejected)
+        {
+            TempData["Error"] = "Your account has been rejected. Please contact the administrator.";
+            return Page();
+        }
+
         // Check if organizer/admin needs approval
         if ((user.Role == UserRole.Organizer || user.Role == UserRole.Admin)
             && user.ApprovalStatus != ApprovalStatus.Approved)

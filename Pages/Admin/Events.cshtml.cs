@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using CampusEvents.Data;
 using CampusEvents.Models;
+using System.Text;
 
 namespace CampusEvents.Pages.Admin;
 
@@ -131,8 +132,43 @@ public class EventsModel : PageModel
         return RedirectToPage();
     }
 
-    public void OnPostDownloadStudentsWithTicketsCSV(int id)
+    public async Task<IActionResult> OnPostDownloadStudentsWithTicketsCSV(int id, String name)
     {
-        DbCSVCommunicator.extractToCSV(id);
+        var userId = HttpContext.Session.GetInt32("UserId");
+        if (userId == null)
+        {
+            return RedirectToPage("/Login");
+        }
+
+        // Load all tickets for this event
+        var tickets = await _context.Tickets
+            .Include(t => t.User)
+            .Where(t => t.EventId == id)
+            .OrderBy(t => t.ClaimedAt)
+            .ToListAsync();
+
+        // Generate CSV content with UTF-8 BOM for better Excel compatibility
+        var csv = new StringBuilder();
+
+        // CSV Header - using shorter date format to prevent ##### in Excel
+        csv.AppendLine("UserID");
+
+        
+        // CSV Rows
+        foreach (var ticket in tickets)
+        {
+            csv.AppendLine($"{ticket.UserId}");
+        }
+
+        // Add UTF-8 BOM for Excel compatibility
+        var preamble = Encoding.UTF8.GetPreamble();
+        var csvBytes = Encoding.UTF8.GetBytes(csv.ToString());
+        var bytesWithBOM = new byte[preamble.Length + csvBytes.Length];
+        Buffer.BlockCopy(preamble, 0, bytesWithBOM, 0, preamble.Length);
+        Buffer.BlockCopy(csvBytes, 0, bytesWithBOM, preamble.Length, csvBytes.Length);
+
+        var fileName = $"{name}.csv";
+
+        return File(bytesWithBOM, "text/csv", fileName);
     }
 }

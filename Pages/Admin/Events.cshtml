@@ -153,12 +153,14 @@
                                     }
                                 </button>
                             </form>
-                            <form method="post" asp-page-handler="DownloadStudentsWithTicketsCSV" asp-route-id="@evt.Id"
-                                class="mt-2">
+                            <form method="post" asp-page-handler="DownloadStudentsWithTicketsCSV" id="exportCSV" class="mt-2">
+                                <input type="hidden" name="id" value="@evt.Id" />
+                                <input type="hidden" name="name" value="@evt.Title"/>
                                 <button type="submit" class="btn btn-outline-primary w-100">
                                     <i class="bi bi-download"></i> Download CSV
                                 </button>
                             </form>
+                            
                         </div>
                     </div>
                 </div>

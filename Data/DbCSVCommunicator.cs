@@ -252,7 +252,6 @@ public class DbCSVCommunicator
         {
             DataForCSV = DataForCSV.Remove(0, 1);
         }
-        ;
 
         string CSVFilePath = EventId + ".csv";
 

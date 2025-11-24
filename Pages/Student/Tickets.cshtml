@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    @if (!Model.Tickets.Any())
+    @if ((@Model.UpcomingCount+@Model.PastCount)== 0)
     {
         <div class="row">
             <div class="col-md-8 offset-md-2">
@@ -46,7 +46,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link @(Model.Filter == "all" ? "active" : "")" href="?filter=all">
-                    All (@Model.Tickets.Count)
+                    All (@(@Model.UpcomingCount+@Model.PastCount))
                 </a>
             </li>
         </ul>
