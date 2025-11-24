@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using CampusEvents.Data;
 using CampusEvents.Models;
+using CampusEvents.Services;
 using QRCoder;
 
 namespace CampusEvents.Pages.Student
@@ -11,11 +12,19 @@ namespace CampusEvents.Pages.Student
     {
         private readonly AppDbContext _context;
         private readonly ILogger<EventDetailsModel> _logger;
+        private readonly EncryptionService _encryptionService;
+        private readonly LicenseValidationService _licenseValidationService;
 
-        public EventDetailsModel(AppDbContext context, ILogger<EventDetailsModel> logger)
+        public EventDetailsModel(
+            AppDbContext context,
+            ILogger<EventDetailsModel> logger,
+            EncryptionService encryptionService,
+            LicenseValidationService licenseValidationService)
         {
             _context = context;
             _logger = logger;
+            _encryptionService = encryptionService;
+            _licenseValidationService = licenseValidationService;
         }
 
         public Event? Event { get; set; }
@@ -41,6 +50,8 @@ namespace CampusEvents.Pages.Student
             public int Capacity { get; set; }
             public bool HasAccessibility { get; set; }
             public string? VehicleDescription { get; set; }
+            public string? Province { get; set; }
+            public string? DriverLicenseNumber { get; set; }
             public string? LicensePlate { get; set; }
             public string? ContactPhone { get; set; }
         }
@@ -74,16 +85,24 @@ namespace CampusEvents.Pages.Student
 
             // Check carpool status
             IsDriver = await _context.Drivers
-                .AnyAsync(d => d.UserId == userId.Value && d.EventId == id && d.IsActive);
-            
+                .Include(d => d.CarpoolOffers)
+                .AnyAsync(d => d.UserId == userId.Value
+                    && d.CarpoolOffers.Any(o => o.EventId == id)
+                    && d.Status == DriverStatus.Active);
+
             IsPassenger = await _context.CarpoolPassengers
-                .AnyAsync(p => p.UserId == userId.Value && p.EventId == id);
+                .Include(p => p.Offer)
+                .AnyAsync(p => p.PassengerId == userId.Value && p.Offer.EventId == id);
 
             // Load available drivers for this event
             AvailableDrivers = await _context.Drivers
                 .Include(d => d.User)
-                .Include(d => d.Passengers)
-                .Where(d => d.EventId == id && d.IsActive && !d.IsMarkedByAdmin)
+                .Include(d => d.CarpoolOffers.Where(o => o.EventId == id))
+                    .ThenInclude(o => o.Passengers)
+                .Where(d => d.CarpoolOffers.Any(o => o.EventId == id)
+                    && d.Status == DriverStatus.Active
+                    && !d.SecurityFlags.Contains("flagged")
+                    && !d.SecurityFlags.Contains("suspended"))
                 .ToListAsync();
 
             // Show driver prompt if: has ticket, not already driver/passenger, event has location
@@ -282,36 +301,103 @@ namespace CampusEvents.Pages.Student
                 return await OnGetAsync(id);
             }
 
-            // Check if already a driver
-            var existingDriver = await _context.Drivers
-                .FirstOrDefaultAsync(d => d.UserId == userId.Value && d.EventId == id);
-            
-            if (existingDriver != null)
+            // Validate required fields
+            if (string.IsNullOrWhiteSpace(DriverInput.Province) ||
+                string.IsNullOrWhiteSpace(DriverInput.DriverLicenseNumber) ||
+                string.IsNullOrWhiteSpace(DriverInput.LicensePlate))
             {
-                Message = "You are already registered as a driver for this event.";
-                IsSuccess = false;
-                return RedirectToPage(new { id });
+                ModelState.AddModelError("", "Province, driver's license number, and license plate are required.");
+                return await OnGetAsync(id);
             }
 
-            var driver = new Driver
+            // Validate driver's license format
+            var licenseValidation = _licenseValidationService.ValidateDriverLicense(
+                DriverInput.DriverLicenseNumber,
+                DriverInput.Province);
+
+            if (!licenseValidation.IsValid)
             {
-                UserId = userId.Value,
+                ModelState.AddModelError("DriverInput.DriverLicenseNumber", licenseValidation.ErrorMessage ?? "Invalid license format");
+                return await OnGetAsync(id);
+            }
+
+            // Validate license plate format
+            var plateValidation = _licenseValidationService.ValidateLicensePlate(
+                DriverInput.LicensePlate,
+                DriverInput.Province);
+
+            if (!plateValidation.IsValid)
+            {
+                ModelState.AddModelError("DriverInput.LicensePlate", plateValidation.ErrorMessage ?? "Invalid plate format");
+                return await OnGetAsync(id);
+            }
+
+            // Check if user already has a driver record
+            var existingDriver = await _context.Drivers
+                .Include(d => d.CarpoolOffers)
+                .FirstOrDefaultAsync(d => d.UserId == userId.Value);
+
+            Driver driver;
+
+            if (existingDriver != null)
+            {
+                // Check if already registered for THIS event
+                if (existingDriver.CarpoolOffers.Any(o => o.EventId == id))
+                {
+                    Message = "You are already registered as a driver for this event.";
+                    IsSuccess = false;
+                    return RedirectToPage(new { id });
+                }
+
+                // User is a driver for other events, reuse their driver profile
+                driver = existingDriver;
+            }
+            else
+            {
+                // Encrypt sensitive data
+                var encryptedLicenseNumber = _encryptionService.EncryptLicenseNumber(DriverInput.DriverLicenseNumber);
+                var encryptedLicensePlate = _encryptionService.EncryptLicensePlate(DriverInput.LicensePlate);
+
+                // Create new driver profile
+                driver = new Driver
+                {
+                    UserId = userId.Value,
+                    DriverType = DriverType.Student,
+                    VehicleType = DriverInput.VehicleType,
+                    Capacity = DriverInput.Capacity,
+                    Province = DriverInput.Province.ToUpperInvariant(),
+                    DriverLicenseNumber = encryptedLicenseNumber,
+                    LicensePlate = encryptedLicensePlate,
+                    Status = DriverStatus.Pending, // Requires admin approval
+                    AccessibilityFeatures = DriverInput.HasAccessibility ? "wheelchair_accessible" : string.Empty,
+                    SecurityFlags = string.Empty,
+                    History = string.Empty,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _context.Drivers.Add(driver);
+                await _context.SaveChangesAsync();
+            }
+
+            // Get the event to use its date/location
+            var eventData = await _context.Events.FindAsync(id);
+
+            // Create carpool offer for this event
+            var carpoolOffer = new CarpoolOffer
+            {
                 EventId = id,
-                Type = DriverType.Student,
-                VehicleType = DriverInput.VehicleType,
-                Capacity = DriverInput.Capacity,
-                HasAccessibility = DriverInput.HasAccessibility,
-                VehicleDescription = DriverInput.VehicleDescription,
-                LicensePlate = DriverInput.LicensePlate,
-                ContactPhone = DriverInput.ContactPhone ?? "",
-                IsActive = true,
+                DriverId = driver.Id,
+                SeatsAvailable = driver.Capacity,
+                DepartureInfo = $"Driving to {eventData?.Location ?? "event"}",
+                DepartureTime = eventData?.EventDate.AddHours(-1) ?? DateTime.UtcNow,
+                Status = CarpoolOfferStatus.Active,
                 CreatedAt = DateTime.UtcNow
             };
 
-            _context.Drivers.Add(driver);
+            _context.CarpoolOffers.Add(carpoolOffer);
             await _context.SaveChangesAsync();
 
-            Message = "You are now registered as a driver! Students can request to ride with you.";
+            Message = "Driver registration submitted! Your application is pending admin approval. You'll be able to offer rides once approved.";
             IsSuccess = true;
             return RedirectToPage(new { id });
         }
@@ -326,8 +412,9 @@ namespace CampusEvents.Pages.Student
 
             // Check if already a passenger
             var existingPassenger = await _context.CarpoolPassengers
-                .FirstOrDefaultAsync(p => p.UserId == userId.Value && p.EventId == id);
-            
+                .Include(p => p.Offer)
+                .FirstOrDefaultAsync(p => p.PassengerId == userId.Value && p.Offer.EventId == id);
+
             if (existingPassenger != null)
             {
                 Message = "You are already assigned to a driver for this event.";
@@ -335,19 +422,21 @@ namespace CampusEvents.Pages.Student
                 return RedirectToPage(new { id });
             }
 
-            // Check driver capacity
-            var driver = await _context.Drivers
-                .Include(d => d.Passengers)
-                .FirstOrDefaultAsync(d => d.Id == driverId && d.EventId == id);
-            
-            if (driver == null)
+            // Find the carpool offer for this driver and event
+            var carpoolOffer = await _context.CarpoolOffers
+                .Include(o => o.Driver)
+                    .ThenInclude(d => d.User)
+                .Include(o => o.Passengers)
+                .FirstOrDefaultAsync(o => o.DriverId == driverId && o.EventId == id);
+
+            if (carpoolOffer == null)
             {
-                Message = "Driver not found.";
+                Message = "Driver not found or no longer offering rides for this event.";
                 IsSuccess = false;
                 return RedirectToPage(new { id });
             }
 
-            if (driver.Passengers.Count >= driver.Capacity)
+            if (carpoolOffer.Passengers.Count >= carpoolOffer.Driver.Capacity)
             {
                 Message = "This driver has reached their capacity.";
                 IsSuccess = false;
@@ -356,16 +445,24 @@ namespace CampusEvents.Pages.Student
 
             var passenger = new CarpoolPassenger
             {
-                DriverId = driverId,
-                UserId = userId.Value,
-                EventId = id,
-                AssignedAt = DateTime.UtcNow
+                OfferId = carpoolOffer.Id,
+                PassengerId = userId.Value,
+                Status = PassengerStatus.Confirmed,
+                JoinedAt = DateTime.UtcNow
             };
 
             _context.CarpoolPassengers.Add(passenger);
+
+            // Update seats available
+            carpoolOffer.SeatsAvailable--;
+            if (carpoolOffer.SeatsAvailable <= 0)
+            {
+                carpoolOffer.Status = CarpoolOfferStatus.Full;
+            }
+
             await _context.SaveChangesAsync();
 
-            Message = $"You are now riding with {driver.User.Name}!";
+            Message = $"You are now riding with {carpoolOffer.Driver.User.Name}!";
             IsSuccess = true;
             return RedirectToPage(new { id });
         }

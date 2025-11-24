@@ -24,6 +24,10 @@ builder.Services.AddTransient<DbCSVCommunicator>();
 // Register ticket signing service (singleton for performance)
 builder.Services.AddSingleton<TicketSigningService>();
 
+// Register security services (singleton for performance)
+builder.Services.AddSingleton<EncryptionService>();
+builder.Services.AddSingleton<LicenseValidationService>();
+
 // Register US.04 services (Carpool and Room Rental)
 builder.Services.AddScoped<CarpoolService>();
 builder.Services.AddScoped<RoomRentalService>();

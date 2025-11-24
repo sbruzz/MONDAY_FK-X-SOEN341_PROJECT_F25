@@ -127,28 +127,25 @@ public class DbCSVCommunicator
             Console.WriteLine($"✅ Events created (6 events, 1 pending approval) - Linked to {existingOrganizers.Count} existing organizers");
         }
 
-        // Seed drivers
-        if (!_context.Drivers.Any(d => d.Id >= 701 && d.Id <= 703))
+        // Seed drivers - all pending approval (Alice excluded for testing registration flow)
+        if (!_context.Drivers.Any(d => d.Id >= 702 && d.Id <= 703))
         {
             _context.Drivers.AddRange(
-                new Driver { Id = 701, UserId = 501, Capacity = 4, VehicleType = VehicleType.Sedan, DriverType = DriverType.Student, LicensePlate = "ABC123", Status = DriverStatus.Active, AccessibilityFeatures = "Wheelchair Accessible", SecurityFlags = "", History = "", CreatedAt = DateTime.UtcNow.AddDays(-15) },
-                new Driver { Id = 702, UserId = 502, Capacity = 6, VehicleType = VehicleType.SUV, DriverType = DriverType.Student, LicensePlate = "XYZ789", Status = DriverStatus.Active, SecurityFlags = "", History = "", CreatedAt = DateTime.UtcNow.AddDays(-10) },
+                new Driver { Id = 702, UserId = 502, Capacity = 6, VehicleType = VehicleType.SUV, DriverType = DriverType.Student, LicensePlate = "XYZ789", Status = DriverStatus.Pending, SecurityFlags = "", History = "", CreatedAt = DateTime.UtcNow.AddDays(-10) },
                 new Driver { Id = 703, UserId = 503, Capacity = 3, VehicleType = VehicleType.Mini, DriverType = DriverType.Student, Status = DriverStatus.Pending, SecurityFlags = "", History = "", CreatedAt = DateTime.UtcNow.AddDays(-2) }
             );
             _context.SaveChanges();
-            Console.WriteLine("✅ Drivers created (2 active, 1 pending)");
+            Console.WriteLine("✅ Drivers created (2 pending approval - Alice excluded for testing)");
         }
 
-        // Seed carpool offers
-        if (!_context.CarpoolOffers.Any(co => co.Id >= 601 && co.Id <= 603))
+        // Seed carpool offers (only for Bob's driver, not Alice)
+        if (!_context.CarpoolOffers.Any(co => co.Id == 602))
         {
             _context.CarpoolOffers.AddRange(
-                new CarpoolOffer { Id = 601, EventId = 801, DriverId = 701, SeatsAvailable = 3, DepartureInfo = "Metro Snowdon", DepartureTime = DateTime.UtcNow.AddDays(7).AddHours(-1), Status = CarpoolOfferStatus.Active, Latitude = 45.4869, Longitude = -73.6278, CreatedAt = DateTime.UtcNow.AddDays(-5) },
-                new CarpoolOffer { Id = 602, EventId = 802, DriverId = 702, SeatsAvailable = 5, DepartureInfo = "Loyola Campus", DepartureTime = DateTime.UtcNow.AddDays(10).AddHours(-0.5), Status = CarpoolOfferStatus.Active, Latitude = 45.4586, Longitude = -73.6398, CreatedAt = DateTime.UtcNow.AddDays(-4) },
-                new CarpoolOffer { Id = 603, EventId = 804, DriverId = 701, SeatsAvailable = 2, DepartureInfo = "Guy-Concordia Metro", DepartureTime = DateTime.UtcNow.AddDays(21).AddHours(-1), Status = CarpoolOfferStatus.Active, Latitude = 45.4974, Longitude = -73.5779, CreatedAt = DateTime.UtcNow.AddDays(-3) }
+                new CarpoolOffer { Id = 602, EventId = 802, DriverId = 702, SeatsAvailable = 5, DepartureInfo = "Loyola Campus", DepartureTime = DateTime.UtcNow.AddDays(10).AddHours(-0.5), Status = CarpoolOfferStatus.Active, Latitude = 45.4586, Longitude = -73.6398, CreatedAt = DateTime.UtcNow.AddDays(-4) }
             );
             _context.SaveChanges();
-            Console.WriteLine("✅ Carpool offers created (3 active rides)");
+            Console.WriteLine("✅ Carpool offers created (1 active ride)");
         }
 
         // Seed rooms
