@@ -63,78 +63,210 @@
 
         /* Admin Header */
         .admin-header {
-            background: var(--card-bg);
-            border-bottom: 2px solid var(--border);
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+            border-bottom: 1px solid rgba(212, 117, 110, 0.12);
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(10px);
         }
 
         .header-container {
-            max-width: 1400px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 1rem 2rem;
+            padding: 1.25rem 1.5rem;
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .header-container::-webkit-scrollbar {
+            display: none;
         }
 
         .header-brand {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 1.25rem;
+            gap: 0.75rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-decoration: none;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .header-brand::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
+        }
+
+        .header-brand:hover::before {
+            width: 100%;
         }
 
         .header-brand:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
         }
 
         .header-brand i {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(212, 117, 110, 0.2));
         }
 
         .header-nav {
             display: flex;
             gap: 0.5rem;
-            flex: 1;
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow: visible;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            max-height: 500px;
+            display: block;
+        }
+
+        .mobile-nav .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .mobile-nav .nav-link:hover {
+            background: var(--bg);
+            color: var(--primary);
+        }
+
+        .mobile-nav .nav-link.active {
+            background: var(--primary);
+            color: white;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.75rem 1.25rem;
-            border-radius: 12px;
+            padding: 0.625rem 1rem;
+            border-radius: 14px;
             text-decoration: none;
-            color: var(--text-light);
+            color: var(--text);
             font-weight: 500;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            white-space: nowrap;
+            flex-shrink: 1;
+            font-size: 0.875rem;
+            background: transparent;
+            border: 1px solid transparent;
         }
 
         .nav-link:hover {
-            background: var(--bg);
+            background: linear-gradient(135deg, rgba(212, 117, 110, 0.08), rgba(232, 177, 126, 0.08));
             color: var(--primary);
+            transform: translateY(-1px);
+            border-color: rgba(212, 117, 110, 0.15);
+            box-shadow: 0 4px 12px rgba(212, 117, 110, 0.1);
         }
 
         .nav-link.active {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            box-shadow: 0 4px 16px rgba(212, 117, 110, 0.35);
+            border-color: transparent;
+        }
+
+        .nav-link.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 117, 110, 0.45);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover i {
+            transform: scale(1.1);
         }
 
         .nav-link .badge {
-            background: var(--danger);
+            background: linear-gradient(135deg, #dc3545, #c82333);
             color: white;
-            border-radius: 10px;
-            padding: 0.125rem 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
+            border-radius: 12px;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+            }
+            50% {
+                box-shadow: 0 2px 12px rgba(220, 53, 69, 0.5);
+            }
         }
 
         .header-user {
@@ -142,13 +274,22 @@
             align-items: center;
             gap: 0.75rem;
             padding: 0.5rem 1rem;
-            background: var(--bg);
-            border-radius: 30px;
+            background: linear-gradient(135deg, rgba(245, 235, 224, 0.6), rgba(255, 255, 255, 0.8));
+            border-radius: 50px;
+            flex-shrink: 1;
+            border: 1px solid rgba(212, 117, 110, 0.12);
+            box-shadow: 0 2px 12px rgba(212, 117, 110, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .header-user:hover {
+            box-shadow: 0 4px 16px rgba(212, 117, 110, 0.15);
+            transform: translateY(-1px);
         }
 
         .user-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
@@ -156,39 +297,76 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.875rem;
+            font-size: 0.95rem;
+            box-shadow: 0 3px 12px rgba(212, 117, 110, 0.25);
+            border: 2px solid white;
+            transition: transform 0.3s ease;
+        }
+
+        .header-user:hover .user-avatar {
+            transform: scale(1.08);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.125rem;
         }
 
         .user-name {
             font-weight: 600;
             color: var(--text);
+            font-size: 0.925rem;
+            line-height: 1.2;
         }
 
         .role-badge {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 8px;
-            font-size: 0.75rem;
+            padding: 0.2rem 0.75rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 8px rgba(212, 117, 110, 0.2);
+            width: fit-content;
         }
 
         .logout-btn {
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
+            padding: 0.5rem 1.25rem;
+            border-radius: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 1;
+            white-space: nowrap;
+            font-size: 0.875rem;
+            box-shadow: 0 2px 8px rgba(212, 117, 110, 0.1);
         }
 
         .logout-btn:hover {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 117, 110, 0.3);
+            border-color: transparent;
+        }
+
+        .logout-btn i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .logout-btn:hover i {
+            transform: translateX(3px);
         }
 
         /* Main Content */
@@ -197,18 +375,117 @@
         }
 
         /* Responsive */
-        @@media (max-width: 768px) {
+        @@media (max-width: 1200px) {
             .header-container {
-                flex-wrap: wrap;
+                padding: 1rem 1.5rem;
+                gap: 1rem;
             }
 
-            .header-nav {
-                overflow-x: auto;
-                width: 100%;
+            .nav-link {
+                padding: 0.75rem 0.875rem;
+                font-size: 0.875rem;
             }
 
             .nav-link span {
                 display: none;
+            }
+
+            .nav-link i {
+                margin: 0;
+                font-size: 1.15rem;
+            }
+
+            .header-user {
+                padding: 0.5rem 0.875rem;
+                gap: 0.625rem;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 0.875rem;
+            }
+
+            .logout-btn {
+                padding: 0.625rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .logout-btn span {
+                display: none;
+            }
+
+            .logout-btn i {
+                margin: 0;
+                font-size: 1.15rem;
+            }
+        }
+
+        @@media (max-width: 992px) {
+            .header-container {
+                gap: 0.75rem;
+                padding: 0.875rem 1rem;
+            }
+
+            .header-nav {
+                gap: 0.375rem;
+            }
+
+            .nav-link {
+                padding: 0.625rem 0.75rem;
+            }
+
+            .nav-link i {
+                font-size: 1.1rem;
+            }
+
+            .header-brand span {
+                display: none;
+            }
+
+            .header-brand i {
+                font-size: 1.6rem;
+            }
+
+            .header-brand::before {
+                display: none;
+            }
+        }
+
+        @@media (max-width: 1024px) {
+            .header-container {
+                flex-wrap: wrap;
+                gap: 1rem;
+                position: relative;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+                order: 2;
+            }
+
+            .header-user {
+                order: 3;
+            }
+
+            .logout-btn {
+                order: 4;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .header-brand span {
+                font-size: 1rem;
             }
         }
 
@@ -358,6 +635,9 @@
                 <i class="bi bi-shield-lock"></i>
                 <span>CampusEvents Admin</span>
             </a>
+            <button class="mobile-menu-toggle" type="button" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                <i class="bi bi-list" id="menuIcon"></i>
+            </button>
             <nav class="header-nav">
                 <a href="/Admin/Home" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Home") ? "active" : "")">
                     <i class="bi bi-speedometer2"></i>
@@ -384,12 +664,47 @@
                     <span>Organizations</span>
                 </a>
                 <a href="/Admin/Drivers" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Drivers") ? "active" : "")">
-                    <i class="bi bi-car-front-fill"></i>
+                    <i class="bi bi-car-front"></i>
                     <span>Drivers</span>
                 </a>
-                <a href="/Admin/Rooms" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Rooms") ? "active" : "")">
-                    <i class="bi bi-door-closed"></i>
-                    <span>Rooms</span>
+                <a href="/Admin/Rentals" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Rentals") ? "active" : "")">
+                    <i class="bi bi-door-open"></i>
+                    <span>Rentals</span>
+                </a>
+            </nav>
+            <!-- Mobile Navigation -->
+            <nav class="mobile-nav" id="mobileNav">
+                <a href="/Admin/Home" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Home") ? "active" : "")">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/Admin/Users" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Users") ? "active" : "")">
+                    <i class="bi bi-people"></i>
+                    <span>Users</span>
+                    @if (pendingUsers > 0)
+                    {
+                        <span class="badge">@pendingUsers</span>
+                    }
+                </a>
+                <a href="/Admin/Events" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Events") ? "active" : "")">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>Events</span>
+                    @if (pendingEvents > 0)
+                    {
+                        <span class="badge">@pendingEvents</span>
+                    }
+                </a>
+                <a href="/Admin/Organizations" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Organizations") ? "active" : "")">
+                    <i class="bi bi-building"></i>
+                    <span>Organizations</span>
+                </a>
+                <a href="/Admin/Drivers" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Drivers") ? "active" : "")">
+                    <i class="bi bi-car-front"></i>
+                    <span>Drivers</span>
+                </a>
+                <a href="/Admin/Rentals" class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Rentals") ? "active" : "")">
+                    <i class="bi bi-door-open"></i>
+                    <span>Rentals</span>
                 </a>
             </nav>
             <div class="header-user">
@@ -401,7 +716,7 @@
             </div>
             <a href="/Logout" class="logout-btn">
                 <i class="bi bi-box-arrow-right"></i>
-                Logout
+                <span>Logout</span>
             </a>
         </div>
     </header>
@@ -457,6 +772,34 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuIcon = document.getElementById('menuIcon');
+            mobileNav.classList.toggle('active');
+            if (mobileNav.classList.contains('active')) {
+                menuIcon.classList.remove('bi-list');
+                menuIcon.classList.add('bi-x');
+            } else {
+                menuIcon.classList.remove('bi-x');
+                menuIcon.classList.add('bi-list');
+            }
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            if (mobileNav && menuToggle && !mobileNav.contains(event.target) && !menuToggle.contains(event.target)) {
+                mobileNav.classList.remove('active');
+                const menuIcon = document.getElementById('menuIcon');
+                if (menuIcon) {
+                    menuIcon.classList.remove('bi-x');
+                    menuIcon.classList.add('bi-list');
+                }
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

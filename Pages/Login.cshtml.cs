@@ -28,9 +28,6 @@ public class LoginModel : PageModel
     [BindProperty]
     public string Role { get; set; } = "Student";
 
-    [BindProperty]
-    public string roletab { get; set; }
-
     public void OnGet()
     {
     }

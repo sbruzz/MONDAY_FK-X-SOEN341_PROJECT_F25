@@ -2,21 +2,38 @@ using Microsoft.Data.Sqlite;
 using CampusEvents.Models;
 using CampusEvents.Data;
 
-
+/// <summary>
+/// Service for database communication and CSV data operations
+/// Handles database seeding, CSV import/export, and data initialization
+/// </summary>
 public class DbCSVCommunicator
 {
-
     private readonly AppDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of DbCSVCommunicator
+    /// </summary>
+    /// <param name="context">Database context for data operations</param>
     public DbCSVCommunicator(AppDbContext context)
     {
         _context = context;
     }
 
     // Use relative path that works on all platforms (Windows, Mac, Linux)
+    /// <summary>
+    /// Database connection string location
+    /// </summary>
     static String DatabaseLocation = $"Data Source=campusevents.db";
+    
+    /// <summary>
+    /// Extracted database file path
+    /// </summary>
     static String dbPath = DatabaseLocation.Replace("Data Source=", "").Trim();
 
+    /// <summary>
+    /// Initializes and seeds the database with test data
+    /// Creates admin account and demo users/events if they don't exist
+    /// </summary>
     public void Test()
     {
         Console.WriteLine("DbMainTest Launched");

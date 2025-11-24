@@ -82,4 +82,34 @@ public class RoomRental
     /// User who is renting the room
     /// </summary>
     public User Renter { get; set; } = null!;
+
+    /// <summary>
+    /// Optional event ID if rental is for an event (legacy)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public int? EventId { get; set; }
+
+    /// <summary>
+    /// Optional event if rental is for an event (legacy)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public Event? Event { get; set; }
+
+    // Backward compatibility
+
+    /// <summary>
+    /// Alias for Renter (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public User User => Renter;
+
+    /// <summary>
+    /// Alias for RenterId (for backward compatibility)
+    /// </summary>
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public int UserId
+    {
+        get => RenterId;
+        set => RenterId = value;
+    }
 }

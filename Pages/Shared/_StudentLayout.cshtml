@@ -73,7 +73,8 @@
             padding: 1rem 2rem;
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 1rem;
+            flex-wrap: nowrap;
         }
 
         .header-brand {
@@ -85,6 +86,7 @@
             color: var(--primary);
             text-decoration: none;
             transition: transform 0.2s;
+            flex-shrink: 0;
         }
 
         .header-brand:hover {
@@ -99,19 +101,93 @@
             display: flex;
             gap: 0.5rem;
             flex: 1;
+            min-width: 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .header-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            max-height: 500px;
+            display: block;
+        }
+
+        .mobile-nav .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .mobile-nav .nav-link:hover {
+            background: var(--bg);
+            color: var(--primary);
+        }
+
+        .mobile-nav .nav-link.active {
+            background: var(--primary);
+            color: white;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.75rem 1.25rem;
+            padding: 0.75rem 1rem;
             border-radius: 12px;
             text-decoration: none;
             color: var(--text-light);
             font-weight: 500;
             transition: all 0.2s;
             position: relative;
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-size: 0.9rem;
         }
 
         .nav-link:hover {
@@ -140,6 +216,8 @@
             padding: 0.5rem 1rem;
             background: var(--bg);
             border-radius: 30px;
+            flex-shrink: 0;
+            min-width: fit-content;
         }
 
         .user-avatar {
@@ -171,6 +249,8 @@
             transition: all 0.2s;
             text-decoration: none;
             display: inline-block;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .logout-btn:hover {
@@ -184,18 +264,85 @@
         }
 
         /* Responsive */
-        @@media (max-width: 768px) {
+        @@media (max-width: 1200px) {
             .header-container {
-                flex-wrap: wrap;
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+
+            .nav-link {
+                padding: 0.625rem 0.875rem;
+                font-size: 0.85rem;
+            }
+
+            .header-user {
+                padding: 0.5rem 0.75rem;
+                gap: 0.5rem;
+            }
+
+            .user-name {
+                font-size: 0.9rem;
+            }
+
+            .logout-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @@media (max-width: 992px) {
+            .header-container {
+                gap: 0.5rem;
             }
 
             .header-nav {
-                overflow-x: auto;
-                width: 100%;
+                gap: 0.25rem;
+            }
+
+            .nav-link {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8rem;
             }
 
             .nav-link span {
+                font-size: 0.8rem;
+            }
+
+            .header-brand span {
+                font-size: 1rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .header-container {
+                flex-wrap: wrap;
+                gap: 1rem;
+                position: relative;
+            }
+
+            .header-nav {
                 display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+                order: 2;
+            }
+
+            .header-user {
+                order: 3;
+            }
+
+            .logout-btn {
+                order: 4;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .header-brand span {
+                font-size: 1rem;
             }
         }
 
@@ -319,6 +466,9 @@
                 <i class="bi bi-calendar-event"></i>
                 <span>CampusEvents</span>
             </a>
+            <button class="mobile-menu-toggle" type="button" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                <i class="bi bi-list" id="menuIcon"></i>
+            </button>
             <nav class="header-nav">
                 <a href="/Student/Home"
                     class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Home") ? "active" : "")">
@@ -348,15 +498,40 @@
                         <span class="badge">@savedCount</span>
                     }
                 </a>
-                <a href="/Student/Carpools"
-                    class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Carpool") || Context.Request.Path.StartsWithSegments("/Student/BecomeDriver") || Context.Request.Path.StartsWithSegments("/Student/OfferRide") ? "active" : "")">
-                    <i class="bi bi-car-front"></i>
-                    <span>Carpools</span>
-                </a>
-                <a href="/Student/Rooms"
-                    class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Room") ? "active" : "")">
+                <a href="/Student/Rentals" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Rentals") ? "active" : "")">
                     <i class="bi bi-door-open"></i>
-                    <span>Rooms</span>
+                    <span>Rentals</span>
+                </a>
+            </nav>
+            <!-- Mobile Navigation -->
+            <nav class="mobile-nav" id="mobileNav">
+                <a href="/Student/Home" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Home") ? "active" : "")">
+                    <i class="bi bi-house-door"></i>
+                    <span>Discover</span>
+                </a>
+                <a href="/Student/Events" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Events") && !Context.Request.Path.StartsWithSegments("/Student/EventDetails") ? "active" : "")">
+                    <i class="bi bi-search"></i>
+                    <span>Browse All</span>
+                </a>
+                <a href="/Student/Tickets" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Tickets") ? "active" : "")">
+                    <i class="bi bi-ticket-perforated"></i>
+                    <span>My Tickets</span>
+                    @if (ticketsCount > 0)
+                    {
+                        <span class="badge">@ticketsCount</span>
+                    }
+                </a>
+                <a href="/Student/Saved" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Saved") ? "active" : "")">
+                    <i class="bi bi-bookmark-heart"></i>
+                    <span>Saved</span>
+                    @if (savedCount > 0)
+                    {
+                        <span class="badge">@savedCount</span>
+                    }
+                </a>
+                <a href="/Student/Rentals" class="nav-link @(Context.Request.Path.StartsWithSegments("/Student/Rentals") ? "active" : "")">
+                    <i class="bi bi-door-open"></i>
+                    <span>Rentals</span>
                 </a>
             </nav>
             <div class="header-user">
@@ -439,6 +614,34 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuIcon = document.getElementById('menuIcon');
+            mobileNav.classList.toggle('active');
+            if (mobileNav.classList.contains('active')) {
+                menuIcon.classList.remove('bi-list');
+                menuIcon.classList.add('bi-x');
+            } else {
+                menuIcon.classList.remove('bi-x');
+                menuIcon.classList.add('bi-list');
+            }
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            if (mobileNav && menuToggle && !mobileNav.contains(event.target) && !menuToggle.contains(event.target)) {
+                mobileNav.classList.remove('active');
+                const menuIcon = document.getElementById('menuIcon');
+                if (menuIcon) {
+                    menuIcon.classList.remove('bi-x');
+                    menuIcon.classList.add('bi-list');
+                }
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 
