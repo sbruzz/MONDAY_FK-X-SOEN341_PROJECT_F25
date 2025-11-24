@@ -35,34 +35,7 @@
                 <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
             </form>
             <p class="text-center mb-0">
-                Don't have an account? <a href="#" id="show-signup">Sign up</a>
-            </p>
-        </div>
-
-        <!-- Signup Form (Hidden by default) -->
-        <div class="auth-section" id="signup-section" style="display: none;">
-            <form method="post" asp-page-handler="Signup" id="signup-form">
-                <input type="hidden" name="Role" id="signup-role" value="Student">
-                <div class="mb-3">
-                    <label for="signup-name" class="form-label">Full Name</label>
-                    <input type="text" class="form-control" id="signup-name" name="Name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="signup-email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="signup-email" name="Email" required>
-                </div>
-                <div class="mb-3">
-                    <label for="signup-password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="signup-password" name="Password" required>
-                </div>
-                <div class="mb-3">
-                    <label for="signup-confirm-password" class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control" id="signup-confirm-password" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100 mb-3" id="signup-btn">Sign Up as Student</button>
-            </form>
-            <p class="text-center mb-0">
-                Already have an account? <a href="#" id="show-login">Login</a>
+                Don't have an account? <a href="/Signup" id="show-signup">Sign up</a>
             </p>
         </div>
 
@@ -246,18 +219,6 @@
 </style>
 
 <script>
-    // Toggle between login and signup
-    document.getElementById('show-signup').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('login-section').style.display = 'none';
-        document.getElementById('signup-section').style.display = 'block';
-    });
-
-    document.getElementById('show-login').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('signup-section').style.display = 'none';
-        document.getElementById('login-section').style.display = 'block';
-    });
 
     // Update signup button text and hidden role field based on selected tab
     const tabs = document.querySelectorAll('input[name="role-tab"]');
