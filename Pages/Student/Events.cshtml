@@ -94,7 +94,7 @@
         <div class="col">
             <p class="results-summary">
                 Found <strong>@Model.Events.Count</strong> event(s)
-                @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.Category) ||
+                @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.Category.ToString()) ||
                                 Model.OrganizationId.HasValue || Model.DateFilter != "all")
                 {
                     <span>matching your filters</span>

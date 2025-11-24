@@ -29,7 +29,7 @@ public class LoginModel : PageModel
     public string Role { get; set; } = "Student";
 
     [BindProperty]
-    public string roletab { get; set; }
+    public string roletab { get; set; }= "Student";
 
     public void OnGet()
     {
