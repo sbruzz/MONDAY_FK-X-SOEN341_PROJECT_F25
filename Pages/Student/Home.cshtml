@@ -17,15 +17,17 @@
                 <i class="bi bi-search search-icon"></i>
                 <input type="text" name="SearchTerm" value="@Model.SearchTerm"
                        class="search-input" placeholder="Search events, locations, or organizations...">
-                <select name="CategoryFilter" class="search-select">
-                    <option value="All" selected="@(string.IsNullOrEmpty(Model.CategoryFilter) || Model.CategoryFilter == "All")">All Categories</option>
-                    <option value="Academic" selected="@(Model.CategoryFilter == "Academic")">Academic</option>
-                    <option value="Social" selected="@(Model.CategoryFilter == "Social")">Social</option>
-                    <option value="Sports" selected="@(Model.CategoryFilter == "Sports")">Sports</option>
-                    <option value="Cultural" selected="@(Model.CategoryFilter == "Cultural")">Cultural</option>
-                    <option value="Career" selected="@(Model.CategoryFilter == "Career")">Career</option>
-                    <option value="Workshop" selected="@(Model.CategoryFilter == "Workshop")">Workshop</option>
-                    <option value="Other" selected="@(Model.CategoryFilter == "Other")">Other</option>
+                <select name="CategoryFilter" class="search-select" asp-for="CategoryFilter">
+                    <option value="All">All Categories</option>
+                    <option value="Academic">Academic</option>
+                    <option value="Career">Career</option>
+                    <option value="Competition">Competition</option>
+                    <option value="Concert">Concert</option>
+                    <option value="Cultural">Cultural</option>
+                    <option value="Social">Social</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Workshop">Workshop</option>
+                    <option value="Other">Other</option>
                 </select>
                 <button type="submit" class="search-button">
                     <i class="bi bi-search"></i>

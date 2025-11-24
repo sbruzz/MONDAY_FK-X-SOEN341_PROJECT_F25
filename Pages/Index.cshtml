@@ -119,15 +119,17 @@
                     </div>
                     <div class="col-md-4">
                         <label for="category" class="form-label">Category</label>
-                        <select id="category" name="CategoryFilter" class="form-select form-select-lg">
-                            <option value="All" selected="@(string.IsNullOrEmpty(Model.CategoryFilter) || Model.CategoryFilter == "All")">All Categories</option>
-                            <option value="Academic" selected="@(Model.CategoryFilter == "Academic")">Academic</option>
-                            <option value="Social" selected="@(Model.CategoryFilter == "Social")">Social</option>
-                            <option value="Sports" selected="@(Model.CategoryFilter == "Sports")">Sports</option>
-                            <option value="Cultural" selected="@(Model.CategoryFilter == "Cultural")">Cultural</option>
-                            <option value="Career" selected="@(Model.CategoryFilter == "Career")">Career</option>
-                            <option value="Workshop" selected="@(Model.CategoryFilter == "Workshop")">Workshop</option>
-                            <option value="Other" selected="@(Model.CategoryFilter == "Other")">Other</option>
+                        <select id="category" name="CategoryFilter" class="form-select form-select-lg" asp-for="CategoryFilter">
+                            <option value="All">All Categories</option>
+                            <option value="Academic">Academic</option>
+                            <option value="Career">Career</option>
+                            <option value="Competition">Competition</option>
+                            <option value="Concert">Concert</option>
+                            <option value="Cultural">Cultural</option>
+                            <option value="Social">Social</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
                     <div class="col-md-2">
@@ -306,7 +308,27 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="user-visual">
-                        <div class="screenshot-placeholder">Student Dashboard Preview</div>
+                        <div class="screenshot-placeholder">
+                            <div class="dashboard-mockup">
+                                <div class="mockup-header" style="background: linear-gradient(135deg, #d5bdaf 0%, #c9a999 100%); padding: 1rem; border-radius: 12px 12px 0 0; color: white; font-weight: 700;">
+                                    <i class="bi bi-house-door"></i> Student Dashboard
+                                </div>
+                                <div class="mockup-content" style="padding: 2rem; background: white; border-radius: 0 0 12px 12px;">
+                                    <div class="mockup-feature" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                                        <i class="bi bi-ticket-perforated" style="font-size: 1.5rem; color: #d5bdaf;"></i>
+                                        <span style="color: #6b6b6b;">View Your Tickets</span>
+                                    </div>
+                                    <div class="mockup-feature" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                                        <i class="bi bi-bookmark-heart" style="font-size: 1.5rem; color: #d5bdaf;"></i>
+                                        <span style="color: #6b6b6b;">Saved Events</span>
+                                    </div>
+                                    <div class="mockup-feature" style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <i class="bi bi-calendar-check" style="font-size: 1.5rem; color: #d5bdaf;"></i>
+                                        <span style="color: #6b6b6b;">Event Calendar</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -356,7 +378,27 @@
                 </div>
                 <div class="col-lg-6 order-lg-1">
                     <div class="user-visual">
-                        <div class="screenshot-placeholder">Organizer Dashboard Preview</div>
+                        <div class="screenshot-placeholder">
+                            <div class="dashboard-mockup">
+                                <div class="mockup-header" style="background: linear-gradient(135deg, #c9a999 0%, #b39a8d 100%); padding: 1rem; border-radius: 12px 12px 0 0; color: white; font-weight: 700;">
+                                    <i class="bi bi-clipboard-data"></i> Organizer Dashboard
+                                </div>
+                                <div class="mockup-content" style="padding: 2rem; background: white; border-radius: 0 0 12px 12px;">
+                                    <div class="mockup-feature" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                                        <i class="bi bi-graph-up" style="font-size: 1.5rem; color: #c9a999;"></i>
+                                        <span style="color: #6b6b6b;">Real-time Analytics</span>
+                                    </div>
+                                    <div class="mockup-feature" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                                        <i class="bi bi-people" style="font-size: 1.5rem; color: #c9a999;"></i>
+                                        <span style="color: #6b6b6b;">Attendee Management</span>
+                                    </div>
+                                    <div class="mockup-feature" style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <i class="bi bi-qr-code-scan" style="font-size: 1.5rem; color: #c9a999;"></i>
+                                        <span style="color: #6b6b6b;">QR Scanner</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -406,7 +448,27 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="user-visual">
-                        <div class="screenshot-placeholder">Admin Dashboard Preview</div>
+                        <div class="screenshot-placeholder">
+                            <div class="dashboard-mockup">
+                                <div class="mockup-header" style="background: linear-gradient(135deg, #b39a8d 0%, #9d8a7e 100%); padding: 1rem; border-radius: 12px 12px 0 0; color: white; font-weight: 700;">
+                                    <i class="bi bi-shield-check"></i> Admin Dashboard
+                                </div>
+                                <div class="mockup-content" style="padding: 2rem; background: white; border-radius: 0 0 12px 12px;">
+                                    <div class="mockup-feature" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                                        <i class="bi bi-person-check" style="font-size: 1.5rem; color: #b39a8d;"></i>
+                                        <span style="color: #6b6b6b;">User Approvals</span>
+                                    </div>
+                                    <div class="mockup-feature" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                                        <i class="bi bi-flag" style="font-size: 1.5rem; color: #b39a8d;"></i>
+                                        <span style="color: #6b6b6b;">Event Moderation</span>
+                                    </div>
+                                    <div class="mockup-feature" style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <i class="bi bi-bar-chart" style="font-size: 1.5rem; color: #b39a8d;"></i>
+                                        <span style="color: #6b6b6b;">Platform Analytics</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
