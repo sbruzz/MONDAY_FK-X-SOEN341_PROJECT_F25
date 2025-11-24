@@ -41,10 +41,12 @@
                             selected="@(string.IsNullOrEmpty(Model.CategoryFilter) || Model.CategoryFilter == "All")">
                             All Categories</option>
                         <option value="Academic" selected="@(Model.CategoryFilter == "Academic")">Academic</option>
+                        <option value="Career" selected="@(Model.CategoryFilter == "Career")">Career</option>
+                        <option value="Competition" selected="@(Model.CategoryFilter == "Competition")">Competition</option>
+                        <option value="Concert" selected="@(Model.CategoryFilter == "Concert")">Concert</option>
+                        <option value="Cultural" selected="@(Model.CategoryFilter == "Cultural")">Cultural</option>
                         <option value="Social" selected="@(Model.CategoryFilter == "Social")">Social</option>
                         <option value="Sports" selected="@(Model.CategoryFilter == "Sports")">Sports</option>
-                        <option value="Cultural" selected="@(Model.CategoryFilter == "Cultural")">Cultural</option>
-                        <option value="Career" selected="@(Model.CategoryFilter == "Career")">Career</option>
                         <option value="Workshop" selected="@(Model.CategoryFilter == "Workshop")">Workshop</option>
                         <option value="Other" selected="@(Model.CategoryFilter == "Other")">Other</option>
                     </select>

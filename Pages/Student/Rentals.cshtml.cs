@@ -53,6 +53,13 @@ public class RentalsModel : PageModel
             return RedirectToPage("/Login");
         }
 
+        // Verify user is a student
+        var user = await _context.Users.FindAsync(userId.Value);
+        if (user == null || user.Role != UserRole.Student)
+        {
+            return RedirectToPage("/Index");
+        }
+
         // Load available rooms (enabled only)
         AvailableRooms = await _context.Rooms
             .Where(r => r.Status == RoomStatus.Enabled)
@@ -76,6 +83,13 @@ public class RentalsModel : PageModel
         if (userId == null)
         {
             return RedirectToPage("/Login");
+        }
+
+        // Verify user is a student
+        var user = await _context.Users.FindAsync(userId.Value);
+        if (user == null || user.Role != UserRole.Student)
+        {
+            return RedirectToPage("/Index");
         }
 
         if (!ModelState.IsValid)
@@ -103,10 +117,10 @@ public class RentalsModel : PageModel
         }
 
         // Check if room is available for the time slot
-        // Check for conflicting rentals (Rented or Disabled status)
+        // Check for conflicting rentals (Approved or Pending - exclude Rejected)
         var conflictingRentals = await _context.RoomRentals
-            .Where(r => r.RoomId == RentalInput.RoomId 
-                && (r.Status == RentalStatus.Approved || r.Status == RentalStatus.Rejected)
+            .Where(r => r.RoomId == RentalInput.RoomId
+                && (r.Status == RentalStatus.Approved || r.Status == RentalStatus.Pending)
                 && ((r.StartTime <= RentalInput.StartTime && r.EndTime > RentalInput.StartTime) ||
                     (r.StartTime < RentalInput.EndTime && r.EndTime >= RentalInput.EndTime) ||
                     (r.StartTime >= RentalInput.StartTime && r.EndTime <= RentalInput.EndTime)))
@@ -135,7 +149,7 @@ public class RentalsModel : PageModel
             StartTime = RentalInput.StartTime,
             EndTime = RentalInput.EndTime,
             Purpose = RentalInput.Purpose ?? "",
-            Status = RentalStatus.Approved,
+            Status = RentalStatus.Pending,
             AdminNotes = "",
             ExpectedAttendees = 0,
             TotalCost = 0m,
@@ -145,7 +159,7 @@ public class RentalsModel : PageModel
         _context.RoomRentals.Add(rental);
         await _context.SaveChangesAsync();
 
-        Message = "Room rental request submitted successfully!";
+        Message = "Room rental request submitted! Awaiting organizer approval.";
         IsSuccess = true;
         return RedirectToPage();
     }
@@ -156,6 +170,13 @@ public class RentalsModel : PageModel
         if (userId == null)
         {
             return RedirectToPage("/Login");
+        }
+
+        // Verify user is a student
+        var user = await _context.Users.FindAsync(userId.Value);
+        if (user == null || user.Role != UserRole.Student)
+        {
+            return RedirectToPage("/Index");
         }
 
         var rental = await _context.RoomRentals

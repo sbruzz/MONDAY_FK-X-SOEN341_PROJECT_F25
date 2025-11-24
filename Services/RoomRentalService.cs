@@ -11,10 +11,12 @@ namespace CampusEvents.Services;
 public class RoomRentalService
 {
     private readonly AppDbContext _context;
+    private readonly NotificationService? _notificationService;
 
-    public RoomRentalService(AppDbContext context)
+    public RoomRentalService(AppDbContext context, NotificationService? notificationService = null)
     {
         _context = context;
+        _notificationService = notificationService;
     }
 
     // ===== Room Management =====
@@ -282,6 +284,12 @@ public class RoomRentalService
         rental.Status = RentalStatus.Approved;
         await _context.SaveChangesAsync();
 
+        // Send notification to renter
+        if (_notificationService != null)
+        {
+            await _notificationService.NotifyRentalApprovedAsync(rentalId);
+        }
+
         return (true, "Rental approved successfully");
     }
 
@@ -308,6 +316,12 @@ public class RoomRentalService
         rental.Status = RentalStatus.Rejected;
         rental.AdminNotes = adminNotes;
         await _context.SaveChangesAsync();
+
+        // Send notification to renter
+        if (_notificationService != null)
+        {
+            await _notificationService.NotifyRentalRejectedAsync(rentalId, adminNotes);
+        }
 
         return (true, "Rental rejected");
     }
@@ -460,6 +474,12 @@ public class RoomRentalService
         }
 
         await _context.SaveChangesAsync();
+
+        // Send notifications to students with approved rentals for this room
+        if (_notificationService != null)
+        {
+            await _notificationService.NotifyRoomDisabledAsync(roomId);
+        }
 
         return (true, "Room disabled successfully. All pending rentals have been rejected.");
     }

@@ -1,6 +1,22 @@
 namespace CampusEvents.Models;
 
 /// <summary>
+/// Category/type of event
+/// </summary>
+public enum EventCategory
+{
+    Academic,
+    Career,
+    Competition,
+    Concert,
+    Cultural,
+    Social,
+    Sports,
+    Workshop,
+    Other
+}
+
+/// <summary>
 /// Type of ticket for an event
 /// </summary>
 public enum TicketType
@@ -9,7 +25,7 @@ public enum TicketType
     /// Free ticket - no payment required
     /// </summary>
     Free,
-    
+
     /// <summary>
     /// Paid ticket - requires payment
     /// </summary>
@@ -66,11 +82,11 @@ public class Event
     /// Price per ticket (only used if TicketType is Paid)
     /// </summary>
     public decimal Price { get; set; } = 0;
-    
+
     /// <summary>
-    /// Category/type of event (e.g., "Academic", "Social", "Sports")
+    /// Category/type of event
     /// </summary>
-    public required string Category { get; set; }
+    public EventCategory Category { get; set; }
     
     /// <summary>
     /// Foreign key to User table - the organizer who created this event

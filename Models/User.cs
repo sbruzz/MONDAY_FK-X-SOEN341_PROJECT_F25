@@ -137,9 +137,9 @@ public class User
     public Organization? Organization { get; set; }
     
     /// <summary>
-    /// Driver profile if user is registered as a driver
+    /// Driver profiles associated with this user (organizers can have multiple, students only one)
     /// </summary>
-    public Driver? DriverProfile { get; set; }
+    public ICollection<Driver> Drivers { get; set; } = new List<Driver>();
     
     /// <summary>
     /// Tickets claimed/purchased by this user
@@ -170,4 +170,9 @@ public class User
     /// Rooms managed by this user (for organizers)
     /// </summary>
     public ICollection<Room> ManagedRooms { get; set; } = new List<Room>();
+
+    /// <summary>
+    /// Notifications received by this user
+    /// </summary>
+    public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 }

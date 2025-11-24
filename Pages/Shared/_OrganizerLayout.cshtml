@@ -657,22 +657,12 @@
                     <i class="bi bi-door-open"></i>
                     <span>Rooms</span>
                 </a>
-                @if (pendingCount > 0)
-                {
-                    <div class="nav-link" style="pointer-events: none; opacity: 0.7;">
-                        <i class="bi bi-exclamation-circle"></i>
-                        <span>@pendingCount Pending</span>
-                    </div>
-                }
                 <a href="/Organizer/Drivers" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Drivers") ? "active" : "")">
                     <i class="bi bi-car-front"></i>
                     <span>Drivers</span>
                 </a>
-                <a href="/Organizer/Rentals" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Rentals") ? "active" : "")">
-                    <i class="bi bi-door-open"></i>
-                    <span>Rentals</span>
-                </a>
             </nav>
+            <partial name="_NotificationBell" />
             <!-- Mobile Navigation -->
             <nav class="mobile-nav" id="mobileNav">
                 <a href="/Organizer/Home" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Home") ? "active" : "")">
@@ -694,10 +684,6 @@
                 <a href="/Organizer/Drivers" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Drivers") ? "active" : "")">
                     <i class="bi bi-car-front"></i>
                     <span>Drivers</span>
-                </a>
-                <a href="/Organizer/Rentals" class="nav-link @(Context.Request.Path.StartsWithSegments("/Organizer/Rentals") ? "active" : "")">
-                    <i class="bi bi-door-open"></i>
-                    <span>Rentals</span>
                 </a>
             </nav>
             <div class="header-user">

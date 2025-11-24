@@ -3,6 +3,7 @@ using System;
 using CampusEvents.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusEvents.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251124165942_AllowMultipleDriversPerUser")]
+    partial class AllowMultipleDriversPerUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -160,8 +163,9 @@ namespace CampusEvents.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Category")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
@@ -203,52 +207,6 @@ namespace CampusEvents.Migrations
                     b.HasIndex("OrganizerId");
 
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("CampusEvents.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ActionUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("RelatedEntityId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RelatedEntityType")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId", "IsRead", "CreatedAt");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("CampusEvents.Models.Organization", b =>
@@ -550,17 +508,6 @@ namespace CampusEvents.Migrations
                     b.Navigation("Organizer");
                 });
 
-            modelBuilder.Entity("CampusEvents.Models.Notification", b =>
-                {
-                    b.HasOne("CampusEvents.Models.User", "User")
-                        .WithMany("Notifications")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("CampusEvents.Models.Room", b =>
                 {
                     b.HasOne("CampusEvents.Models.User", "Organizer")
@@ -674,8 +621,6 @@ namespace CampusEvents.Migrations
                     b.Navigation("Drivers");
 
                     b.Navigation("ManagedRooms");
-
-                    b.Navigation("Notifications");
 
                     b.Navigation("OrganizedEvents");
 

@@ -296,6 +296,13 @@ namespace CampusEvents.Pages.Student
                 return RedirectToPage("/Login");
             }
 
+            // Get user to determine their role for DriverType
+            var user = await _context.Users.FindAsync(userId.Value);
+            if (user == null)
+            {
+                return RedirectToPage("/Login");
+            }
+
             if (!ModelState.IsValid)
             {
                 return await OnGetAsync(id);
@@ -358,17 +365,24 @@ namespace CampusEvents.Pages.Student
                 var encryptedLicenseNumber = _encryptionService.EncryptLicenseNumber(DriverInput.DriverLicenseNumber);
                 var encryptedLicensePlate = _encryptionService.EncryptLicensePlate(DriverInput.LicensePlate);
 
+                // Determine DriverType based on user role
+                var driverType = user.Role == UserRole.Organizer ? DriverType.Organizer : DriverType.Student;
+
+                // Auto-approve organizers for their own events (they're already vetted)
+                // Students still need admin approval for safety
+                var driverStatus = user.Role == UserRole.Organizer ? DriverStatus.Active : DriverStatus.Pending;
+
                 // Create new driver profile
                 driver = new Driver
                 {
                     UserId = userId.Value,
-                    DriverType = DriverType.Student,
+                    DriverType = driverType,
                     VehicleType = DriverInput.VehicleType,
                     Capacity = DriverInput.Capacity,
                     Province = DriverInput.Province.ToUpperInvariant(),
                     DriverLicenseNumber = encryptedLicenseNumber,
                     LicensePlate = encryptedLicensePlate,
-                    Status = DriverStatus.Pending, // Requires admin approval
+                    Status = driverStatus,
                     AccessibilityFeatures = DriverInput.HasAccessibility ? "wheelchair_accessible" : string.Empty,
                     SecurityFlags = string.Empty,
                     History = string.Empty,
@@ -395,9 +409,30 @@ namespace CampusEvents.Pages.Student
             };
 
             _context.CarpoolOffers.Add(carpoolOffer);
-            await _context.SaveChangesAsync();
 
-            Message = "Driver registration submitted! Your application is pending admin approval. You'll be able to offer rides once approved.";
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR creating carpool offer: {ex.Message}");
+                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                Console.WriteLine($"Driver ID: {driver.Id}, Event ID: {id}");
+
+                ModelState.AddModelError("", $"Failed to register as driver: {ex.InnerException?.Message ?? ex.Message}");
+                return await OnGetAsync(id);
+            }
+
+            // Different messages based on approval status
+            if (user.Role == UserRole.Organizer)
+            {
+                Message = "Driver registration successful! You can now offer rides to students attending your event.";
+            }
+            else
+            {
+                Message = "Driver registration submitted! Your application is pending admin approval. You'll be able to offer rides once approved.";
+            }
             IsSuccess = true;
             return RedirectToPage(new { id });
         }

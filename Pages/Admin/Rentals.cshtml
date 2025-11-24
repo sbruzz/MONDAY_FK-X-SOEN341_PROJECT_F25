@@ -146,43 +146,29 @@
                                         }
                                     </td>
                                     <td>
-                                        <div class="btn-group btn-group-sm rental-actions" role="group" aria-label="Rental actions">
-                                            @if (rental.Status == RentalStatus.Pending)
-                                            {
-                                                <form method="post" asp-page-handler="ApproveRental">
-                                                    <input type="hidden" name="id" value="@rental.Id" />
-                                                    <button type="submit" class="btn btn-sm btn-success" title="Approve Rental">
-                                                        <i class="bi bi-check-circle"></i>
-                                                    </button>
-                                                </form>
-                                                <form method="post" asp-page-handler="RejectRental"
-                                                      onsubmit="return confirm('Reject this rental request?');">
-                                                    <input type="hidden" name="id" value="@rental.Id" />
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Reject Rental">
-                                                        <i class="bi bi-x-circle"></i>
-                                                    </button>
-                                                </form>
-                                            }
-                                            else if (rental.Status == RentalStatus.Approved)
-                                            {
-                                                <form method="post" asp-page-handler="DisableRental"
-                                                      onsubmit="return confirm('Disable this rental? The room will be unavailable for this time period.');">
-                                                    <input type="hidden" name="id" value="@rental.Id" />
-                                                    <button type="submit" class="btn btn-sm btn-warning" title="Disable Rental">
-                                                        <i class="bi bi-x-circle"></i>
-                                                    </button>
-                                                </form>
-                                            }
-                                            else if (rental.Status == RentalStatus.Rejected)
-                                            {
-                                                <form method="post" asp-page-handler="EnableRental">
-                                                    <input type="hidden" name="id" value="@rental.Id" />
-                                                    <button type="submit" class="btn btn-sm btn-success" title="Re-enable Rental">
-                                                        <i class="bi bi-check-circle"></i>
-                                                    </button>
-                                                </form>
-                                            }
-                                        </div>
+                                        @if (rental.Status == RentalStatus.Pending)
+                                        {
+                                            <span class="badge bg-secondary">Pending organizer approval</span>
+                                        }
+                                        else if (rental.Status == RentalStatus.Approved)
+                                        {
+                                            <form method="post" asp-page-handler="DisableRental"
+                                                  onsubmit="return confirm('Disable this rental? The room will be unavailable for this time period.');">
+                                                <input type="hidden" name="id" value="@rental.Id" />
+                                                <button type="submit" class="btn btn-sm btn-warning" title="Disable Rental" style="border-radius: 20px; padding: 0.5rem 1rem;">
+                                                    <i class="bi bi-x-circle"></i> Disable
+                                                </button>
+                                            </form>
+                                        }
+                                        else if (rental.Status == RentalStatus.Rejected)
+                                        {
+                                            <form method="post" asp-page-handler="EnableRental">
+                                                <input type="hidden" name="id" value="@rental.Id" />
+                                                <button type="submit" class="btn btn-sm btn-success" title="Re-enable Rental" style="border-radius: 20px; padding: 0.5rem 1rem;">
+                                                    <i class="bi bi-check-circle"></i> Re-enable
+                                                </button>
+                                            </form>
+                                        }
                                     </td>
                                 </tr>
                             }

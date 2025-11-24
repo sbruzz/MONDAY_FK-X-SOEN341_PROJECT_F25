@@ -23,7 +23,7 @@ namespace CampusEvents.Pages.Student
         public string? SearchTerm { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public string? Category { get; set; }
+        public EventCategory? Category { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public int? OrganizationId { get; set; }
@@ -74,9 +74,9 @@ namespace CampusEvents.Pages.Student
             }
 
             // Apply category filter
-            if (!string.IsNullOrWhiteSpace(Category))
+            if (Category.HasValue)
             {
-                query = query.Where(e => e.Category == Category);
+                query = query.Where(e => e.Category == Category.Value);
             }
 
             // Apply organization filter

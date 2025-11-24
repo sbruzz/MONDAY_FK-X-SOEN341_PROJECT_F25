@@ -33,7 +33,7 @@ namespace CampusEvents.Pages.Organizer
             public string Description { get; set; } = string.Empty;
 
             [Required(ErrorMessage = "Category is required")]
-            public string Category { get; set; } = string.Empty;
+            public EventCategory Category { get; set; }
 
             [Required(ErrorMessage = "Event date is required")]
             [DataType(DataType.Date)]

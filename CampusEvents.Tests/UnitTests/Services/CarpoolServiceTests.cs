@@ -334,7 +334,7 @@ public class CarpoolServiceTests : IDisposable
             Location = "Test Location",
             Capacity = 100,
             TicketType = TicketType.Free,
-            Category = "Test",
+            Category = EventCategory.Other,
             OrganizerId = 1,
             ApprovalStatus = ApprovalStatus.Approved
         };
@@ -383,7 +383,7 @@ public class CarpoolServiceTests : IDisposable
             Location = "Test Location",
             Capacity = 100,
             TicketType = TicketType.Free,
-            Category = "Test",
+            Category = EventCategory.Other,
             OrganizerId = 1,
             ApprovalStatus = ApprovalStatus.Approved
         };
@@ -462,7 +462,7 @@ public class CarpoolServiceTests : IDisposable
             Location = "Test Location",
             Capacity = 100,
             TicketType = TicketType.Free,
-            Category = "Test",
+            Category = EventCategory.Other,
             OrganizerId = 1,
             ApprovalStatus = ApprovalStatus.Approved
         };
@@ -523,7 +523,7 @@ public class CarpoolServiceTests : IDisposable
             Location = "Test Location",
             Capacity = 100,
             TicketType = TicketType.Free,
-            Category = "Test",
+            Category = EventCategory.Other,
             OrganizerId = 1,
             ApprovalStatus = ApprovalStatus.Approved
         };
@@ -585,7 +585,7 @@ public class CarpoolServiceTests : IDisposable
             Location = "Test Location",
             Capacity = 100,
             TicketType = TicketType.Free,
-            Category = "Test",
+            Category = EventCategory.Other,
             OrganizerId = 1,
             ApprovalStatus = ApprovalStatus.Approved
         };
@@ -632,7 +632,7 @@ public class CarpoolServiceTests : IDisposable
             Location = "Test Location",
             Capacity = 100,
             TicketType = TicketType.Free,
-            Category = "Test",
+            Category = EventCategory.Other,
             OrganizerId = 1,
             ApprovalStatus = ApprovalStatus.Approved
         };
@@ -681,7 +681,7 @@ public class CarpoolServiceTests : IDisposable
             Location = "Test Location",
             Capacity = 100,
             TicketType = TicketType.Free,
-            Category = "Test",
+            Category = EventCategory.Other,
             OrganizerId = 1,
             ApprovalStatus = ApprovalStatus.Approved
         };
@@ -735,7 +735,7 @@ public class CarpoolServiceTests : IDisposable
             Location = "Test Location",
             Capacity = 100,
             TicketType = TicketType.Free,
-            Category = "Test",
+            Category = EventCategory.Other,
             OrganizerId = 1,
             ApprovalStatus = ApprovalStatus.Approved
         };

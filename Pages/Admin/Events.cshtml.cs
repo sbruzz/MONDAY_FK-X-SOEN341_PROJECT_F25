@@ -63,7 +63,10 @@ public class EventsModel : PageModel
         // Filter by category
         if (!string.IsNullOrWhiteSpace(CategoryFilter) && CategoryFilter != "All")
         {
-            query = query.Where(e => e.Category == CategoryFilter);
+            if (Enum.TryParse<EventCategory>(CategoryFilter, out var category))
+            {
+                query = query.Where(e => e.Category == category);
+            }
         }
 
         // Get total count before pagination
@@ -169,13 +172,13 @@ public class EventsModel : PageModel
         var csv = new StringBuilder();
 
         // CSV Header - using shorter date format to prevent ##### in Excel
-        csv.AppendLine("UserID");
+        csv.AppendLine("User ID,Name");
 
         
         // CSV Rows
         foreach (var ticket in tickets)
         {
-            csv.AppendLine($"{ticket.UserId}");
+            csv.AppendLine($"{ticket.UserId},{ticket.User.Name}");
         }
 
         // Add UTF-8 BOM for Excel compatibility

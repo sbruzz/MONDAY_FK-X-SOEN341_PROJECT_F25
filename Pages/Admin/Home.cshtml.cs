@@ -98,6 +98,6 @@ public class AdminHomeModel : PageModel
 
 public class CategoryStat
 {
-    public string Category { get; set; } = string.Empty;
+    public EventCategory Category { get; set; }
     public int Count { get; set; }
 }

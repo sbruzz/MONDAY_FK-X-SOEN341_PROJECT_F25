@@ -84,6 +84,7 @@
                         </p>
 
                         <form method="post" asp-page-handler="ValidateCode" id="validate-form">
+                            <input type="hidden" name="eventId" value="@Model.Event.Id" />
                             <div class="input-group">
                                 <input type="text" class="form-control" name="ticketCode" id="ticketCode"
                                        placeholder="Enter ticket unique code or paste from QR" required />
