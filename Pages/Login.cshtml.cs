@@ -61,6 +61,8 @@ public class LoginModel : PageModel
             return Page();
         }
 
+
+        Console.Write(user.Role.ToString() +"::"+roletab);
         if (user.Role.ToString() != roletab)
         {
             TempData["Error"] = "Invalid Role";

@@ -60,7 +60,7 @@ public class DbCSVCommunicator
 
 
         // Seed comprehensive demo data
-        if (!_context.Users.Any(u => u.Id >= 551 && u.Id <= 565))
+        if (!_context.Users.Any(u => u.Id >= 501 && u.Id <= 515))
         {
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword("Demo@123");
 
