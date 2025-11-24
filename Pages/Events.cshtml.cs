@@ -30,6 +30,12 @@ public class EventsModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string DateFilter { get; set; } = "all";
 
+    [BindProperty(SupportsGet = true)]
+    public DateTime StartTime { get; set; } = new DateTime(2020, 1, 1);
+
+    [BindProperty(SupportsGet = true)]
+    public DateTime EndTime { get; set; } = new DateTime(2030, 1, 1);
+
     public async Task OnGetAsync()
     {
         // Load organizations for filter dropdown
@@ -65,26 +71,9 @@ public class EventsModel : PageModel
             query = query.Where(e => e.OrganizationId == OrganizationId.Value);
         }
 
-        // Apply date filter
-        var now = DateTime.UtcNow;
-        switch (DateFilter)
-        {
-            case "today":
-                var today = now.Date;
-                query = query.Where(e => e.EventDate.Date == today);
-                break;
-            case "week":
-                var weekEnd = now.AddDays(7);
-                query = query.Where(e => e.EventDate >= now && e.EventDate <= weekEnd);
-                break;
-            case "month":
-                var monthEnd = now.AddMonths(1);
-                query = query.Where(e => e.EventDate >= now && e.EventDate <= monthEnd);
-                break;
-            default: // "all"
-                query = query.Where(e => e.EventDate >= now); // Only future events
-                break;
-        }
+
+        query = query.Where(e => e.EventDate.Date >= StartTime && e.EventDate.Date <= EndTime);
+
 
         // Order by date and load events
         Events = await query
