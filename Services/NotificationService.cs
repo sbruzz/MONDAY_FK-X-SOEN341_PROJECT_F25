@@ -134,14 +134,24 @@ public class NotificationService
             .CountAsync();
     }
 
-    public async Task MarkAsReadAsync(int notificationId)
+    public async Task<bool> MarkAsReadAsync(int notificationId, int userId)
     {
         var notification = await _context.Notifications.FindAsync(notificationId);
-        if (notification != null && !notification.IsRead)
+
+        // Validate ownership
+        if (notification == null)
+            return false;
+
+        if (notification.UserId != userId)
+            throw new UnauthorizedAccessException("Cannot mark another user's notification as read");
+
+        if (!notification.IsRead)
         {
             notification.IsRead = true;
             await _context.SaveChangesAsync();
         }
+
+        return true;
     }
 
     public async Task MarkAllAsReadAsync(int userId)
@@ -158,14 +168,21 @@ public class NotificationService
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteNotificationAsync(int notificationId)
+    public async Task<bool> DeleteNotificationAsync(int notificationId, int userId)
     {
         var notification = await _context.Notifications.FindAsync(notificationId);
-        if (notification != null)
-        {
-            _context.Notifications.Remove(notification);
-            await _context.SaveChangesAsync();
-        }
+
+        // Validate ownership
+        if (notification == null)
+            return false;
+
+        if (notification.UserId != userId)
+            throw new UnauthorizedAccessException("Cannot delete another user's notification");
+
+        _context.Notifications.Remove(notification);
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
     public async Task DeleteOldNotificationsAsync(int userId, int daysOld = 30)

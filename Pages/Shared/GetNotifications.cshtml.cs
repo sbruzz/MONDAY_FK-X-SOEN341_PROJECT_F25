@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CampusEvents.Services;
 using CampusEvents.Models;
+using CampusEvents.Models.Requests;
 using System.Text.Json;
 
 namespace CampusEvents.Pages.Shared;
@@ -40,14 +41,24 @@ public class GetNotificationsModel : PageModel
         });
     }
 
-    public async Task<IActionResult> OnPostMarkReadAsync([FromBody] int notificationId)
+    public async Task<IActionResult> OnPostMarkReadAsync([FromBody] MarkNotificationReadRequest request)
     {
         var userId = HttpContext.Session.GetInt32("UserId");
         if (userId == null)
             return new JsonResult(new { error = "Not authenticated" }) { StatusCode = 401 };
 
-        await _notificationService.MarkAsReadAsync(notificationId);
-        return new JsonResult(new { success = true });
+        try
+        {
+            var success = await _notificationService.MarkAsReadAsync(request.Id, userId.Value);
+            if (!success)
+                return new JsonResult(new { error = "Notification not found" }) { StatusCode = 404 };
+
+            return new JsonResult(new { success = true });
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return new JsonResult(new { error = "Access denied" }) { StatusCode = 403 };
+        }
     }
 
     public async Task<IActionResult> OnPostMarkAllReadAsync()

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using CampusEvents.Data;
 using CampusEvents.Models;
+using CampusEvents.Services;
 using System.ComponentModel.DataAnnotations;
 
 namespace CampusEvents.Pages.Admin;
@@ -10,10 +11,12 @@ namespace CampusEvents.Pages.Admin;
 public class RentalsModel : PageModel
 {
     private readonly AppDbContext _context;
+    private readonly RoomRentalService _roomRentalService;
 
-    public RentalsModel(AppDbContext context)
+    public RentalsModel(AppDbContext context, RoomRentalService roomRentalService)
     {
         _context = context;
+        _roomRentalService = roomRentalService;
     }
 
     public List<Room> Rooms { get; set; } = new();
@@ -114,11 +117,12 @@ public class RentalsModel : PageModel
             return RedirectToPage();
         }
 
-        room.IsEnabled = !room.IsEnabled;
-        await _context.SaveChangesAsync();
+        var result = room.Status == RoomStatus.Enabled
+            ? await _roomRentalService.DisableRoomAsync(id, "Room disabled by administrator")
+            : await _roomRentalService.EnableRoomAsync(id);
 
-        Message = $"Room {(room.IsEnabled ? "enabled" : "disabled")} successfully.";
-        IsSuccess = true;
+        Message = result.Message;
+        IsSuccess = result.Success;
         return RedirectToPage();
     }
 
@@ -152,37 +156,40 @@ public class RentalsModel : PageModel
 
     public async Task<IActionResult> OnPostDisableRentalAsync(int id)
     {
-        var rental = await _context.RoomRentals.FindAsync(id);
-        if (rental == null)
+        var userId = HttpContext.Session.GetInt32("UserId");
+        if (userId == null)
         {
-            Message = "Rental not found.";
-            IsSuccess = false;
-            return RedirectToPage();
+            return RedirectToPage("/Login");
         }
 
-        rental.Status = RentalStatus.Rejected;
-        await _context.SaveChangesAsync();
+        var result = await _roomRentalService.RejectRentalAsync(
+            rentalId: id,
+            rejecterId: userId.Value,
+            adminNotes: "Rental disabled by administrator",
+            isAdmin: true
+        );
 
-        Message = "Rental has been disabled. The room will be unavailable for this time period.";
-        IsSuccess = true;
+        Message = result.Message;
+        IsSuccess = result.Success;
         return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostEnableRentalAsync(int id)
     {
-        var rental = await _context.RoomRentals.FindAsync(id);
-        if (rental == null)
+        var userId = HttpContext.Session.GetInt32("UserId");
+        if (userId == null)
         {
-            Message = "Rental not found.";
-            IsSuccess = false;
-            return RedirectToPage();
+            return RedirectToPage("/Login");
         }
 
-        rental.Status = RentalStatus.Approved;
-        await _context.SaveChangesAsync();
+        var result = await _roomRentalService.ApproveRentalAsync(
+            rentalId: id,
+            approverId: userId.Value,
+            isAdmin: true
+        );
 
-        Message = "Rental has been re-enabled.";
-        IsSuccess = true;
+        Message = result.Success ? "Rental has been approved." : result.Message;
+        IsSuccess = result.Success;
         return RedirectToPage();
     }
 
