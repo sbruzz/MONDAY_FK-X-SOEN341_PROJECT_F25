@@ -37,8 +37,7 @@ The Campus Events & Ticketing System frontend follows the **Razor Pages (MVPM)**
 
 ## High-Level Frontend Architecture
 
-![Frontend](https://github.com/user-attachments/assets/14b7cb07-174d-4cb2-a021-24f2a51ae3de)
-
+![alt text](Frontend.drawio.png)
 ---
 
 ## Frontend Component Breakdown
@@ -89,25 +88,8 @@ Pages/
 **Purpose**: Provide consistent page structure and navigation
 
 **Layout Hierarchy**:
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    _Layout.cshtml (Base)                     │
-│  - HTML document structure                                   │
-│  - Bootstrap CSS/JS includes                                  │
-│  - jQuery includes                                            │
-│  - Global navigation bar                                      │
-│  - Footer                                                     │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                  ┌────────────┼────────────┐
-                  ▼            ▼            ▼
-┌──────────────────┐  ┌──────────────┐  ┌──────────────┐
-│ _StudentLayout    │  │_OrganizerLayout│  │  _AdminLayout │
-│ - Student Nav     │  │ - Organizer Nav │  │ - Admin Nav   │
-│ - Student Menu    │  │ - Org Menu     │  │ - Admin Menu  │
-│ - Student Theme   │  │ - Org Theme    │  │ - Admin Theme │
-└──────────────────┘  └──────────────┘  └──────────────┘
-```
+
+![alt text](<Layout Heirarchy.drawio.png>)
 
 **Layout Components**:
 
@@ -427,34 +409,7 @@ function updateTicketList() {
 
 ### Navigation Flow
 
-```
-┌─────────────┐
-│   Landing   │
-│    Page     │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│   Login     │──────────────┐
-│   /Signup   │              │
-└──────┬──────┘              │
-       │                      │
-       ▼                      │
-┌─────────────┐               │
-│  Role-Based │               │
-│   Redirect  │               │
-└──────┬──────┘               │
-       │                      │
-   ┌───┴───┬──────────┐       │
-   ▼       ▼          ▼       │
-┌─────┐ ┌──────┐ ┌──────┐     │
-│Stud │ │Organ │ │Admin │     │
-│Home │ │Home  │ │Home  │     │
-└─────┘ └──────┘ └──────┘     │
-       │                      │
-       └──────────────────────┘
-         (Session Check)
-```
+![alt text](<Navigation Flow.drawio.png>)
 
 ### Session-Based Routing
 
