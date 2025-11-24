@@ -69,7 +69,7 @@ public class RentalsModel : PageModel
 
         // Load available rooms
         AvailableRooms = await _context.Rooms
-            .Where(r => r.IsEnabled)
+            .Where(r => r.Status == RoomStatus.Enabled)
             .OrderBy(r => r.Name)
             .ToListAsync();
 
@@ -90,7 +90,7 @@ public class RentalsModel : PageModel
                 .Include(r => r.Room)
                 .Where(r => r.RenterId == userId.Value)
                 .ToListAsync();
-            AvailableRooms = await _context.Rooms.Where(r => r.IsEnabled).ToListAsync();
+            AvailableRooms = await _context.Rooms.Where(r => r.Status == RoomStatus.Enabled).ToListAsync();
             return Page();
         }
 
@@ -98,7 +98,7 @@ public class RentalsModel : PageModel
         {
             ModelState.AddModelError("RentalInput.EndTime", "End time must be after start time.");
             MyRentals = await _context.RoomRentals.Include(r => r.Room).Where(r => r.RenterId == userId.Value).ToListAsync();
-            AvailableRooms = await _context.Rooms.Where(r => r.IsEnabled).ToListAsync();
+            AvailableRooms = await _context.Rooms.Where(r => r.Status == RoomStatus.Enabled).ToListAsync();
             return Page();
         }
 

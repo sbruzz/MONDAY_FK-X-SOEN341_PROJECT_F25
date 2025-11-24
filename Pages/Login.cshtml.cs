@@ -34,13 +34,31 @@ public class LoginModel : PageModel
 
     public async Task<IActionResult> OnPostLoginAsync()
     {
+        Console.WriteLine($"[LOGIN] Attempting login for email: {Email}");
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == Email);
 
-        if (user == null || !BCrypt.Net.BCrypt.Verify(Password, user.PasswordHash))
+        if (user == null)
         {
+            Console.WriteLine($"[LOGIN] User not found: {Email}");
+            TempData["Error"] = $"User not found: {Email}. Check CREDENTIALS.md for valid accounts.";
+            return Page();
+        }
+
+        Console.WriteLine($"[LOGIN] User found: {user.Name} (ID: {user.Id}, Role: {user.Role})");
+        Console.WriteLine($"[LOGIN] Password hash from DB: {user.PasswordHash?.Substring(0, 20)}...");
+        Console.WriteLine($"[LOGIN] Password entered: {Password}");
+
+        bool passwordMatch = BCrypt.Net.BCrypt.Verify(Password, user.PasswordHash);
+        Console.WriteLine($"[LOGIN] Password verification result: {passwordMatch}");
+
+        if (!passwordMatch)
+        {
+            Console.WriteLine($"[LOGIN] Password verification FAILED for {Email}");
             TempData["Error"] = "Invalid email or password";
             return Page();
         }
+
+        Console.WriteLine($"[LOGIN] Login successful for {Email}");
 
         // Check if organizer/admin needs approval
         if ((user.Role == UserRole.Organizer || user.Role == UserRole.Admin)

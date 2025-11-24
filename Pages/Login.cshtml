@@ -238,15 +238,17 @@
         });
     });
 
-    // Password confirmation validation
+    // Password confirmation validation (only if signup form exists)
     const signupForm = document.getElementById('signup-form');
-    signupForm.addEventListener('submit', function(e) {
-        const password = document.getElementById('signup-password').value;
-        const confirmPassword = document.getElementById('signup-confirm-password').value;
+    if (signupForm) {
+        signupForm.addEventListener('submit', function(e) {
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
 
-        if (password !== confirmPassword) {
-            e.preventDefault();
-            alert('Passwords do not match!');
-        }
-    });
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+            }
+        });
+    }
 </script>
