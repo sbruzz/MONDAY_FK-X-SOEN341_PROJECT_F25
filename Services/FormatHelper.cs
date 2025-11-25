@@ -1,9 +1,68 @@
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Utility class for formatting various data types for display
-/// Provides consistent formatting across the application
+/// Utility class for formatting various data types for display.
+/// Provides consistent formatting across the application for currency, percentages,
+/// file sizes, phone numbers, student IDs, capacity, lists, ordinals, and time spans.
 /// </summary>
+/// <remarks>
+/// This class provides static utility methods for formatting data in a user-friendly
+/// and consistent manner throughout the application. All formatting methods handle
+/// null/empty values gracefully and return appropriate default values.
+/// 
+/// Key Features:
+/// - Currency formatting with customizable currency symbol
+/// - Percentage formatting with configurable decimal places
+/// - File size formatting (B, KB, MB, GB, TB)
+/// - Phone number formatting (North American format)
+/// - Student ID formatting (9-digit format)
+/// - Capacity formatting (current/max and percentage)
+/// - List formatting with truncation support
+/// - Ordinal number formatting (1st, 2nd, 3rd, etc.)
+/// - Time span formatting (human-readable)
+/// 
+/// Formatting Standards:
+/// - Currency: $XX.XX format (2 decimal places)
+/// - Percentage: XX.X% format (configurable decimals)
+/// - File Size: Human-readable with appropriate unit (B, KB, MB, GB, TB)
+/// - Phone: (XXX) XXX-XXXX format (North American)
+/// - Student ID: XXX-XXX-XXX format (9 digits)
+/// - Capacity: "XX / YY" or "XX.X%" format
+/// 
+/// Null Handling:
+/// - All methods handle null/empty input gracefully
+/// - Return empty string or default value for null input
+/// - No exceptions thrown for invalid input
+/// 
+/// Example Usage:
+/// ```csharp
+/// // Currency
+/// var price = FormatHelper.FormatCurrency(25.50m); // "$25.50"
+/// 
+/// // Percentage
+/// var percent = FormatHelper.FormatPercentage(0.75, decimals: 1); // "75.0%"
+/// 
+/// // File size
+/// var size = FormatHelper.FormatFileSize(1048576); // "1 MB"
+/// 
+/// // Phone number
+/// var phone = FormatHelper.FormatPhoneNumber("5141234567"); // "(514) 123-4567"
+/// 
+/// // Student ID
+/// var studentId = FormatHelper.FormatStudentId("40294756"); // "402-947-56"
+/// 
+/// // Capacity
+/// var capacity = FormatHelper.FormatCapacity(50, 100); // "50 / 100"
+/// var capacityPercent = FormatHelper.FormatCapacityPercentage(50, 100); // "50.0%"
+/// 
+/// // Ordinal
+/// var ordinal = FormatHelper.FormatOrdinal(1); // "1st"
+/// var ordinal2 = FormatHelper.FormatOrdinal(22); // "22nd"
+/// 
+/// // Time span
+/// var duration = FormatHelper.FormatTimeSpan(TimeSpan.FromHours(2)); // "2 hours"
+/// ```
+/// </remarks>
 public static class FormatHelper
 {
     /// <summary>

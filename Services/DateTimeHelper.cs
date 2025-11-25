@@ -1,9 +1,60 @@
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Utility class for date and time operations
-/// Provides helper methods for formatting, parsing, and manipulating dates
+/// Utility class for date and time operations.
+/// Provides comprehensive helper methods for formatting, parsing, manipulating, and converting dates
+/// throughout the application.
 /// </summary>
+/// <remarks>
+/// This class provides static utility methods for working with DateTime values, ensuring
+/// consistent date/time formatting and manipulation across the entire application.
+/// 
+/// Key Features:
+/// - User-friendly date formatting
+/// - Relative time formatting ("2 hours ago")
+/// - Duration calculations
+/// - Date range validation
+/// - Timezone conversion
+/// - Day boundary operations (start/end of day)
+/// 
+/// Formatting Methods:
+/// - FormatForDisplay: Formats dates for user display with optional time
+/// - FormatRelativeTime: Formats dates as relative time ("2 hours ago")
+/// - FormatDuration: Formats time spans between dates
+/// 
+/// Validation Methods:
+/// - IsWithinRange: Checks if date is within a range
+/// - IsFutureDate: Checks if date is in the future
+/// 
+/// Utility Methods:
+/// - StartOfDay: Gets start of day (00:00:00)
+/// - EndOfDay: Gets end of day (23:59:59)
+/// - ToLocalTime: Converts UTC to local time
+/// 
+/// Timezone Handling:
+/// - Default timezone: Eastern Standard Time
+/// - Fallback to system local time if timezone not found
+/// - All database times stored in UTC
+/// - Converted to local time for display
+/// 
+/// Example Usage:
+/// ```csharp
+/// // Format for display
+/// var formatted = DateTimeHelper.FormatForDisplay(eventDate, includeTime: true);
+/// // Output: "March 15, 2025 at 2:30 PM"
+/// 
+/// // Relative time
+/// var relative = DateTimeHelper.FormatRelativeTime(DateTime.UtcNow.AddHours(-2));
+/// // Output: "2 hours ago"
+/// 
+/// // Duration
+/// var duration = DateTimeHelper.FormatDuration(startTime, endTime);
+/// // Output: "3 hours"
+/// 
+/// // Timezone conversion
+/// var localTime = DateTimeHelper.ToLocalTime(utcTime, "Eastern Standard Time");
+/// ```
+/// </remarks>
 public static class DateTimeHelper
 {
     /// <summary>

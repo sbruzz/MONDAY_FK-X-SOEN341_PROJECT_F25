@@ -1,9 +1,75 @@
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Utility class for password hashing and validation
-/// Provides secure password handling using BCrypt
+/// Utility class for password hashing and validation.
+/// Provides secure password handling using BCrypt with adaptive work factor for
+/// protection against brute-force attacks.
 /// </summary>
+/// <remarks>
+/// This class provides static utility methods for secure password management, including
+/// hashing, verification, strength validation, and random password generation.
+/// 
+/// Key Features:
+/// - BCrypt password hashing with adaptive work factor
+/// - Password verification against hashes
+/// - Password strength validation
+/// - Random secure password generation
+/// - Password rehashing detection
+/// 
+/// Security Features:
+/// - BCrypt adaptive work factor (default: 10, automatically adjusts)
+/// - Salt automatically generated for each password
+/// - Protection against rainbow table attacks
+/// - Protection against timing attacks
+/// - Slow hashing prevents brute-force attacks
+/// 
+/// Password Requirements:
+/// - Minimum length: 8 characters (from Constants.Validation.MinPasswordLength)
+/// - Maximum length: 128 characters (from Constants.Validation.MaxPasswordLength)
+/// - Must contain at least one letter
+/// - Must contain at least one number
+/// 
+/// Hashing Process:
+/// 1. Password validated for strength
+/// 2. BCrypt generates random salt
+/// 3. Password hashed with salt and work factor
+/// 4. Hash stored in database (includes salt and work factor)
+/// 
+/// Verification Process:
+/// 1. Extract salt and work factor from stored hash
+/// 2. Hash provided password with extracted salt
+/// 3. Compare hashes (constant-time comparison)
+/// 4. Return true if matches, false otherwise
+/// 
+/// Work Factor:
+/// - Default: 10 (2^10 = 1024 iterations)
+/// - Higher work factor = more secure but slower
+/// - Automatically increases as hardware improves
+/// - Can be increased for future-proofing
+/// 
+/// Example Usage:
+/// ```csharp
+/// // Hash password before storage
+/// var passwordHash = PasswordHelper.HashPassword("MySecurePassword123");
+/// user.PasswordHash = passwordHash;
+/// 
+/// // Verify password on login
+/// var isValid = PasswordHelper.VerifyPassword("MySecurePassword123", user.PasswordHash);
+/// 
+/// // Validate password strength
+/// var (isValid, errorMessage) = PasswordHelper.ValidatePasswordStrength("password");
+/// 
+/// // Generate random password
+/// var randomPassword = PasswordHelper.GenerateRandomPassword(length: 16);
+/// ```
+/// 
+/// Best Practices:
+/// - Always hash passwords before storage
+/// - Never store plain text passwords
+/// - Use strong passwords (letters + numbers)
+/// - Consider increasing work factor for high-security applications
+/// - Rehash passwords if work factor increases
+/// </remarks>
 public static class PasswordHelper
 {
     /// <summary>

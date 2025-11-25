@@ -3,9 +3,106 @@ using CampusEvents.Models;
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Utility class for common validation operations across the application
-/// Provides reusable validation methods for user inputs and business rules
+/// Utility class for common validation operations across the application.
+/// Provides comprehensive, reusable validation methods for user inputs, business rules,
+/// and data integrity checks.
 /// </summary>
+/// <remarks>
+/// This class provides static utility methods for validating various types of input
+/// and data throughout the application. All validation methods are designed to be
+/// consistent, reusable, and provide clear validation results.
+/// 
+/// Key Features:
+/// - Email format validation
+/// - Student ID validation (9-digit format)
+/// - String length validation
+/// - Date range validation
+/// - Future date validation
+/// - Capacity validation with bounds
+/// - Geographic coordinate validation (latitude/longitude)
+/// - Input sanitization (XSS prevention)
+/// 
+/// Validation Categories:
+/// 
+/// Email Validation:
+/// - Basic regex pattern matching
+/// - Case-insensitive
+/// - Handles null/empty gracefully
+/// 
+/// Student ID Validation:
+/// - 9-digit format (Concordia student IDs)
+/// - Numeric only
+/// - Exact length validation
+/// 
+/// String Validation:
+/// - Null/empty/whitespace checking
+/// - Minimum length validation
+/// - Maximum length validation (optional)
+/// 
+/// Date Validation:
+/// - Date range validation (end after start)
+/// - Future date validation
+/// - UTC timezone handling
+/// 
+/// Capacity Validation:
+/// - Positive number validation
+/// - Minimum/maximum bounds
+/// - Configurable limits
+/// 
+/// Coordinate Validation:
+/// - Latitude: -90 to 90 degrees
+/// - Longitude: -180 to 180 degrees
+/// - Both coordinates validated together
+/// 
+/// Input Sanitization:
+/// - Removes HTML tags (XSS prevention)
+/// - Removes control characters
+/// - Trims whitespace
+/// - Returns safe string for display
+/// 
+/// Security Considerations:
+/// - SanitizeInput removes potentially dangerous characters
+/// - Prevents XSS attacks through HTML tag removal
+/// - Validates input before processing
+/// - Never trusts user input
+/// 
+/// Example Usage:
+/// ```csharp
+/// // Email validation
+/// if (!ValidationHelper.IsValidEmail(email))
+///     return (false, "Invalid email format", null);
+/// 
+/// // Student ID validation
+/// if (!ValidationHelper.IsValidStudentId(studentId))
+///     return (false, "Invalid student ID format", null);
+/// 
+/// // String validation
+/// if (!ValidationHelper.IsValidString(title, minLength: 3, maxLength: 200))
+///     return (false, "Invalid title length", null);
+/// 
+/// // Date validation
+/// if (!ValidationHelper.IsFutureDate(eventDate))
+///     return (false, "Event date must be in the future", null);
+/// 
+/// // Capacity validation
+/// if (!ValidationHelper.IsValidCapacity(capacity, min: 1, max: 100))
+///     return (false, "Invalid capacity", null);
+/// 
+/// // Coordinate validation
+/// if (!ValidationHelper.IsValidCoordinates(latitude, longitude))
+///     return (false, "Invalid coordinates", null);
+/// 
+/// // Input sanitization
+/// var sanitized = ValidationHelper.SanitizeInput(userInput);
+/// ```
+/// 
+/// Best Practices:
+/// - Always validate input before processing
+/// - Use appropriate validation methods for each data type
+/// - Sanitize user input before display
+/// - Provide clear error messages
+/// - Validate on both client and server side
+/// </remarks>
 public static class ValidationHelper
 {
     /// <summary>
