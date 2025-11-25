@@ -5,14 +5,95 @@ using Microsoft.EntityFrameworkCore;
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Service for managing room rental system (US.04)
-/// Handles room creation, rental requests, and availability
+/// Service for managing the room rental system (User Story US.04).
+/// Provides comprehensive functionality for room management, rental requests,
+/// availability checking, and administrative operations.
 /// </summary>
+/// <remarks>
+/// This service encapsulates all business logic related to the room rental feature, including:
+/// 
+/// Room Management:
+/// - Room creation by organizers
+/// - Room updates and configuration
+/// - Room status management (Enabled, Disabled, Under Maintenance)
+/// - Availability window configuration
+/// 
+/// Rental Management:
+/// - Rental request creation
+/// - Approval/rejection workflows
+/// - Double booking prevention
+/// - Capacity validation
+/// - Cost calculation
+/// 
+/// Availability Checking:
+/// - Finding available rooms for time slots
+/// - Overlap detection for double booking prevention
+/// - Capacity-based filtering
+/// - Availability window validation
+/// 
+/// Administrative Functions:
+/// - Room enable/disable
+/// - Rental approval/rejection
+/// - Admin cancellation
+/// - Bulk rental management
+/// 
+/// Business Rules:
+/// - Only organizers can create rooms
+/// - Rentals require organizer/admin approval
+/// - No overlapping rentals for same room (Approved/Pending status)
+/// - Start time must be in the future
+/// - End time must be after start time
+/// - Expected attendees cannot exceed room capacity
+/// - Must be within room availability window (if specified)
+/// - Total cost calculated from hourly rate and duration
+/// 
+/// Double Booking Prevention:
+/// - Composite index on (RoomId, StartTime, EndTime) for efficient queries
+/// - Overlap detection checks for:
+///   - Start time within existing rental period
+///   - End time within existing rental period
+///   - Rental period completely contains existing rental
+/// - Re-checked on approval to prevent race conditions
+/// 
+/// Notification Integration:
+/// - Sends notifications on rental approval
+/// - Sends notifications on rental rejection
+/// - Sends notifications when room is disabled
+/// - Optional dependency (can be null)
+/// 
+/// Error Handling:
+/// - All methods return result tuples (bool Success, string Message, T? Result)
+/// - Descriptive error messages for all failure cases
+/// - Validation performed before database operations
+/// 
+/// Dependencies:
+/// - AppDbContext: Database access for all room rental entities
+/// - NotificationService: Optional, for sending notifications (can be null)
+/// 
+/// Lifetime:
+/// - Registered as Scoped service (one instance per HTTP request)
+/// </remarks>
 public class RoomRentalService
 {
+    /// <summary>
+    /// Database context for accessing room rental-related entities.
+    /// Used for querying and modifying Rooms and RoomRentals.
+    /// </summary>
     private readonly AppDbContext _context;
+    
+    /// <summary>
+    /// Optional notification service for sending rental-related notifications.
+    /// Can be null if notifications are not needed or not configured.
+    /// </summary>
     private readonly NotificationService? _notificationService;
 
+    /// <summary>
+    /// Initializes a new instance of RoomRentalService.
+    /// </summary>
+    /// <param name="context">Database context for room rental operations.
+    /// Injected via dependency injection in Program.cs.</param>
+    /// <param name="notificationService">Optional notification service for sending
+    /// notifications on rental state changes. Can be null if notifications are not needed.</param>
     public RoomRentalService(AppDbContext context, NotificationService? notificationService = null)
     {
         _context = context;

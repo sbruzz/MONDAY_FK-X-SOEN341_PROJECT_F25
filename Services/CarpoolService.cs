@@ -5,13 +5,65 @@ using Microsoft.EntityFrameworkCore;
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Service for managing carpool system (US.04)
-/// Handles driver registration, ride offers, and passenger assignments
+/// Service for managing the carpool system (User Story US.04).
+/// Provides comprehensive functionality for driver registration, carpool offer management,
+/// passenger assignments, and administrative operations.
 /// </summary>
+/// <remarks>
+/// This service encapsulates all business logic related to the carpool feature, including:
+/// 
+/// Driver Management:
+/// - Driver registration with validation
+/// - Driver profile updates
+/// - Admin approval/suspension workflows
+/// 
+/// Carpool Offer Management:
+/// - Creating carpool offers for events
+/// - Managing offer status (Active, Full, Cancelled)
+/// - Seat availability tracking
+/// 
+/// Passenger Management:
+/// - Joining carpool offers
+/// - Leaving carpools
+/// - Passenger status tracking
+/// 
+/// Administrative Functions:
+/// - Driver approval/suspension
+/// - Passenger reassignment
+/// - Flagged driver management
+/// 
+/// Business Rules:
+/// - Students can have at most one driver profile
+/// - Organizers can have multiple driver profiles
+/// - Drivers must be approved before creating offers
+/// - One active offer per driver per event
+/// - Seats available tracked and updated automatically
+/// - Offer status changes to "Full" when no seats remain
+/// 
+/// Error Handling:
+/// - All methods return result tuples (bool Success, string Message, T? Result)
+/// - Descriptive error messages for all failure cases
+/// - Validation performed before database operations
+/// 
+/// Dependencies:
+/// - AppDbContext: Database access for all carpool entities
+/// 
+/// Lifetime:
+/// - Registered as Scoped service (one instance per HTTP request)
+/// </remarks>
 public class CarpoolService
 {
+    /// <summary>
+    /// Database context for accessing carpool-related entities.
+    /// Used for querying and modifying Drivers, CarpoolOffers, and CarpoolPassengers.
+    /// </summary>
     private readonly AppDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of CarpoolService.
+    /// </summary>
+    /// <param name="context">Database context for carpool operations.
+    /// Injected via dependency injection in Program.cs.</param>
     public CarpoolService(AppDbContext context)
     {
         _context = context;
