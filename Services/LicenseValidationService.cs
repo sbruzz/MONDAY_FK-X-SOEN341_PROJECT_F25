@@ -3,9 +3,39 @@ using System.Text.RegularExpressions;
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Validates Canadian driver's license numbers and license plates
-/// Supports all Canadian provinces and territories
+/// Validates Canadian driver's license numbers and license plates.
+/// Supports all Canadian provinces and territories with province-specific format validation.
 /// </summary>
+/// <remarks>
+/// This service provides validation for Canadian driver's licenses and license plates
+/// across all 13 provinces and territories. Each province/territory has unique format
+/// requirements that are enforced through regex pattern matching.
+/// 
+/// Supported Provinces/Territories:
+/// - ON (Ontario)
+/// - QC (Quebec)
+/// - BC (British Columbia)
+/// - AB (Alberta)
+/// - SK (Saskatchewan)
+/// - MB (Manitoba)
+/// - NS (Nova Scotia)
+/// - NB (New Brunswick)
+/// - PE (Prince Edward Island)
+/// - NL (Newfoundland and Labrador)
+/// - YT (Yukon)
+/// - NT (Northwest Territories)
+/// - NU (Nunavut)
+/// 
+/// Validation Features:
+/// - Format validation using regex patterns
+/// - Province-specific format checking
+/// - Case-insensitive matching where applicable
+/// - Format examples for user guidance
+/// - Detailed error messages with expected formats
+/// 
+/// Note: This validation checks format only, not authenticity or validity of the license.
+/// For production use, consider integrating with official license verification services.
+/// </remarks>
 public class LicenseValidationService
 {
     // Driver's License Patterns by Province/Territory

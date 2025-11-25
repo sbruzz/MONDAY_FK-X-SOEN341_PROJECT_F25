@@ -5,15 +5,56 @@ using Microsoft.EntityFrameworkCore;
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Service for proximity calculations and carpool eligibility
-/// Uses Haversine formula for distance calculations
+/// Service for proximity calculations and carpool eligibility.
+/// Provides geographic distance calculations and carpool matching based on location.
 /// </summary>
+/// <remarks>
+/// This service uses the Haversine formula to calculate great-circle distances
+/// between two points on Earth's surface using their latitude and longitude coordinates.
+/// 
+/// Key Features:
+/// - Distance calculation between geographic coordinates
+/// - Driver eligibility checking based on proximity
+/// - Passenger eligibility checking with nearby offer matching
+/// - Nearby offer discovery sorted by distance
+/// - Travel time estimation
+/// - Distance formatting for display
+/// 
+/// The service supports optional geocoding (placeholder implementation) for converting
+/// addresses to coordinates. In production, this would integrate with a geocoding API
+/// such as Google Maps, OpenStreetMap, or similar services.
+/// 
+/// Proximity calculations are used to:
+/// - Match passengers with nearby carpool offers
+/// - Filter carpool offers by distance
+/// - Estimate travel times
+/// - Improve user experience by showing relevant offers
+/// </remarks>
 public class ProximityService
 {
+    /// <summary>
+    /// Database context for accessing carpool offers and related data.
+    /// </summary>
     private readonly AppDbContext _context;
-    private const double EarthRadiusKm = 6371.0; // Earth radius in kilometers
-    private const double DefaultProximityThresholdKm = 10.0; // 10km default threshold
+    
+    /// <summary>
+    /// Earth's radius in kilometers.
+    /// Used in Haversine formula for distance calculations.
+    /// Average radius: 6,371 km
+    /// </summary>
+    private const double EarthRadiusKm = 6371.0;
+    
+    /// <summary>
+    /// Default proximity threshold in kilometers.
+    /// Carpool offers within this distance are considered "nearby".
+    /// Default: 10 km
+    /// </summary>
+    private const double DefaultProximityThresholdKm = 10.0;
 
+    /// <summary>
+    /// Initializes a new instance of ProximityService.
+    /// </summary>
+    /// <param name="context">Database context for accessing carpool data</param>
     public ProximityService(AppDbContext context)
     {
         _context = context;
