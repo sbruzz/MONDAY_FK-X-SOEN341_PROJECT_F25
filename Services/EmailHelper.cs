@@ -1,9 +1,86 @@
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Utility class for email validation and formatting
-/// Provides email-related helper methods
+/// Utility class for email validation and formatting.
+/// Provides comprehensive email-related helper methods for validation, normalization,
+/// extraction, masking, and domain checking.
 /// </summary>
+/// <remarks>
+/// This class provides static utility methods for working with email addresses throughout
+/// the application. All methods handle null/empty input gracefully and return appropriate
+/// default values.
+/// 
+/// Key Features:
+/// - Email format validation using RFC 5322 compliant regex
+/// - Email normalization (lowercase, trim)
+/// - Domain and username extraction
+/// - Email masking for privacy
+/// - Common provider detection
+/// - Domain validation (basic format check)
+/// 
+/// Email Validation:
+/// - Uses simplified RFC 5322 compliant regex pattern
+/// - Case-insensitive matching
+/// - Validates format: username@domain.tld
+/// - Handles null/empty gracefully
+/// 
+/// Email Normalization:
+/// - Converts to lowercase (case-insensitive)
+/// - Trims whitespace
+/// - Ensures consistent email storage
+/// 
+/// Email Extraction:
+/// - ExtractDomain: Gets domain part (after @)
+/// - ExtractUsername: Gets username part (before @)
+/// - Handles invalid formats gracefully
+/// 
+/// Email Masking:
+/// - Masks username for privacy (e.g., "user@example.com" -> "u***@example.com")
+/// - Preserves first character of username
+/// - Keeps domain visible
+/// - Useful for displaying emails in logs/UI
+/// 
+/// Common Provider Detection:
+/// - Checks if email is from common providers (Gmail, Yahoo, etc.)
+/// - Useful for user experience features
+/// - Can be used for provider-specific handling
+/// 
+/// Domain Validation:
+/// - Basic domain format validation
+/// - Placeholder for full DNS MX record lookup
+/// - Validates domain structure
+/// - Does not verify domain existence (would require DNS lookup)
+/// 
+/// Example Usage:
+/// ```csharp
+/// // Validate email
+/// if (!EmailHelper.IsValidEmail(email))
+///     return (false, "Invalid email format", null);
+/// 
+/// // Normalize email before storage
+/// var normalized = EmailHelper.NormalizeEmail(userInput);
+/// user.Email = normalized;
+/// 
+/// // Extract domain for analysis
+/// var domain = EmailHelper.ExtractDomain(email);
+/// if (domain == "concordia.ca")
+///     // Handle Concordia email
+/// 
+/// // Mask email for display
+/// var masked = EmailHelper.MaskEmail(user.Email);
+/// // Display: "u***@example.com"
+/// 
+/// // Check if common provider
+/// if (EmailHelper.IsCommonProvider(email))
+///     // Show provider-specific features
+/// ```
+/// 
+/// Security Considerations:
+/// - Always normalize emails before storage
+/// - Validate email format before processing
+/// - Mask emails in logs/public displays
+/// - Consider rate limiting for email validation
+/// </remarks>
 public static class EmailHelper
 {
     /// <summary>

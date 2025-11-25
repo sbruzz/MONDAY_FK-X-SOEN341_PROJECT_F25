@@ -1,9 +1,93 @@
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Centralized error handling utility
-/// Provides consistent error message formatting and logging
+/// Centralized error handling utility.
+/// Provides consistent error message formatting, logging, and safe execution wrappers
+/// for operations throughout the application.
 /// </summary>
+/// <remarks>
+/// This class provides static utility methods for handling errors consistently across
+/// the application. It ensures that errors are logged properly, formatted consistently,
+/// and handled gracefully without exposing sensitive information to users.
+/// 
+/// Key Features:
+/// - User-friendly error message formatting
+/// - Comprehensive error logging with context
+/// - Standardized error/success response creation
+/// - Safe execution wrappers (sync and async)
+/// - Exception handling and logging
+/// 
+/// Error Message Formatting:
+/// - FormatErrorMessage: Creates user-friendly error messages
+/// - Includes operation context
+/// - Optionally includes additional details
+/// - Never exposes sensitive information
+/// 
+/// Error Logging:
+/// - LogError: Logs exceptions with full context
+/// - Includes timestamp, context, exception type, message, and stack trace
+/// - Currently uses console output (can be replaced with proper logging framework)
+/// - Preserves full exception information for debugging
+/// 
+/// Response Creation:
+/// - CreateErrorResponse: Creates standardized error response tuple
+/// - CreateSuccessResponse: Creates standardized success response tuple
+/// - Consistent format across all operations
+/// - Optional error codes for categorization
+/// 
+/// Safe Execution:
+/// - SafeExecute: Wraps synchronous operations with error handling
+/// - SafeExecuteAsync: Wraps asynchronous operations with error handling
+/// - Catches all exceptions
+/// - Logs errors automatically
+/// - Returns default value on error (prevents crashes)
+/// 
+/// Logging Implementation:
+/// - Currently uses Console.Error.WriteLine
+/// - In production, should use proper logging framework (Serilog, NLog, etc.)
+/// - Logs include:
+///   - Timestamp (UTC)
+///   - Context (where error occurred)
+///   - Additional information (if provided)
+///   - Exception type and message
+///   - Full stack trace
+/// 
+/// Example Usage:
+/// ```csharp
+/// // Format error message
+/// var errorMsg = ErrorHandler.FormatErrorMessage("creating event", "Invalid date");
+/// 
+/// // Log error
+/// try {
+///     // operation
+/// } catch (Exception ex) {
+///     ErrorHandler.LogError(ex, "EventService.CreateEvent", "Failed to create event");
+/// }
+/// 
+/// // Create error response
+/// var (success, message) = ErrorHandler.CreateErrorResponse("Event not found", "EVENT_404");
+/// 
+/// // Safe execution
+/// var result = ErrorHandler.SafeExecute(
+///     () => riskyOperation(),
+///     "Processing user request"
+/// );
+/// 
+/// // Safe async execution
+/// var result = await ErrorHandler.SafeExecuteAsync(
+///     async () => await riskyOperationAsync(),
+///     "Processing async operation"
+/// );
+/// ```
+/// 
+/// Best Practices:
+/// - Always log errors with context
+/// - Never expose sensitive information in error messages
+/// - Use safe execution wrappers for risky operations
+/// - Provide user-friendly error messages
+/// - Include error codes for API responses
+/// - Replace console logging with proper logging framework in production
+/// </remarks>
 public static class ErrorHandler
 {
     /// <summary>
