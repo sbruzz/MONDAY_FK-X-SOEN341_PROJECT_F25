@@ -31,7 +31,7 @@ The Campus Events & Ticketing System follows a **Layered Monolithic Architecture
 
 ### High-Level Architecture Diagram
 
-![alt text](<HL A dia.drawio.png>)
+<img width="496" height="781" alt="HL A dia drawio" src="https://github.com/user-attachments/assets/aa8f02b5-f83d-41dd-bfea-f77b37145273" />
 ---
 
 ## System Architecture
@@ -678,3 +678,4 @@ The Campus Events & Ticketing System architecture is designed for **rapid develo
 **Last Updated:** November 3, 2025
 **Team:** MONDAY_FK
 **Course:** SOEN 341 - Software Process (Fall 2025)
+
