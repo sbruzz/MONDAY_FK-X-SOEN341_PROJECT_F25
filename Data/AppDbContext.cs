@@ -4,15 +4,69 @@ using CampusEvents.Models;
 namespace CampusEvents.Data;
 
 /// <summary>
-/// Entity Framework Core database context for the Campus Events application
-/// Manages database connections, entity sets, and relationship configurations
+/// Entity Framework Core database context for the Campus Events application.
+/// Manages database connections, entity sets, and relationship configurations.
 /// </summary>
+/// <remarks>
+/// This class serves as the primary interface between the application and the database.
+/// It provides access to all entity sets and configures relationships, constraints, and indexes.
+/// 
+/// Key Responsibilities:
+/// - Entity set management (Users, Events, Tickets, etc.)
+/// - Relationship configuration (one-to-many, many-to-many)
+/// - Constraint definition (unique indexes, foreign keys)
+/// - Delete behavior configuration (Cascade, Restrict, SetNull)
+/// - Composite key configuration
+/// 
+/// Database Provider:
+/// - Default: SQLite (development)
+/// - Production: SQL Server or PostgreSQL (configurable)
+/// 
+/// Lifetime:
+/// - Registered as Scoped service (one instance per HTTP request)
+/// - Automatically disposed at end of request
+/// - Thread-safe within a single request context
+/// 
+/// Usage Example:
+/// ```csharp
+/// public class MyService
+/// {
+///     private readonly AppDbContext _context;
+///     
+///     public MyService(AppDbContext context)
+///     {
+///         _context = context;
+///     }
+///     
+///     public async Task<List<Event>> GetEventsAsync()
+///     {
+///         return await _context.Events
+///             .Include(e => e.Organizer)
+///             .ToListAsync();
+///     }
+/// }
+/// ```
+/// 
+/// Important Notes:
+/// - Always use async methods for database operations
+/// - Use Include() for eager loading related entities
+/// - Use AsNoTracking() for read-only queries
+/// - Dispose context properly (handled automatically with DI)
+/// </remarks>
 public class AppDbContext : DbContext
 {
     /// <summary>
-    /// Initializes a new instance of the AppDbContext
+    /// Initializes a new instance of the AppDbContext.
     /// </summary>
-    /// <param name="options">Database context options (typically configured in Program.cs)</param>
+    /// <param name="options">Database context options configured in Program.cs.
+    /// Contains connection string, database provider, and other configuration.</param>
+    /// <remarks>
+    /// The options are typically configured in Program.cs using:
+    /// ```csharp
+    /// builder.Services.AddDbContext<AppDbContext>(options =>
+    ///     options.UseSqlite(connectionString));
+    /// ```
+    /// </remarks>
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
@@ -81,12 +135,35 @@ public class AppDbContext : DbContext
     public DbSet<Notification> Notifications { get; set; }
 
     /// <summary>
-    /// Configures the model relationships, constraints, and indexes
-    /// Called by Entity Framework when creating the database model
+    /// Configures the model relationships, constraints, and indexes.
+    /// Called by Entity Framework Core when creating the database model.
     /// </summary>
-    /// <param name="modelBuilder">Model builder instance</param>
+    /// <param name="modelBuilder">Model builder instance used to configure entities.</param>
+    /// <remarks>
+    /// This method is called once when the DbContext is first created or when
+    /// migrations are generated. It configures:
+    /// 
+    /// 1. **Composite Keys**: SavedEvent uses composite primary key (UserId, EventId)
+    /// 2. **Foreign Keys**: All relationships with cascade/restrict behaviors
+    /// 3. **Unique Constraints**: Email (User), UniqueCode (Ticket)
+    /// 4. **Indexes**: Composite indexes for performance (RoomRental, Notification)
+    /// 5. **Delete Behaviors**: 
+    ///    - Cascade: Child entities deleted when parent deleted
+    ///    - Restrict: Prevents deletion if child entities exist
+    ///    - SetNull: Sets foreign key to null when parent deleted
+    /// 
+    /// Relationship Configuration:
+    /// - One-to-Many: User → Events, Event → Tickets, etc.
+    /// - Many-to-Many: User ↔ Event (via SavedEvent), CarpoolOffer ↔ User (via CarpoolPassenger)
+    /// 
+    /// Performance Considerations:
+    /// - Indexes added for frequently queried columns
+    /// - Composite indexes for multi-column queries
+    /// - Foreign keys automatically indexed by EF Core
+    /// </remarks>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Call base implementation first
         base.OnModelCreating(modelBuilder);
 
         // Configure SavedEvent as a many-to-many join table
