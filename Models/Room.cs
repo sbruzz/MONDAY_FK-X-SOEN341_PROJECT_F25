@@ -1,19 +1,109 @@
 namespace CampusEvents.Models;
 
 /// <summary>
-/// Room status managed by administrators
+/// Room status managed by administrators.
+/// Controls room availability and rental eligibility.
 /// </summary>
+/// <remarks>
+/// Room status workflow:
+/// - Enabled: Room is available for rental (default state)
+/// - Disabled: Room disabled by admin (overrides all rentals, cancels pending)
+/// - UnderMaintenance: Room temporarily unavailable (maintenance, repairs)
+/// 
+/// Status Effects:
+/// - Enabled: Room can be rented, all rentals proceed normally
+/// - Disabled: No new rentals allowed, pending rentals rejected, approved rentals notified
+/// - UnderMaintenance: Similar to disabled, but temporary
+/// </remarks>
 public enum RoomStatus
 {
+    /// <summary>
+    /// Room is enabled and available for rental
+    /// </summary>
     Enabled,
+    
+    /// <summary>
+    /// Room is disabled by administrator (overrides all rental status)
+    /// </summary>
     Disabled,
+    
+    /// <summary>
+    /// Room is under maintenance and temporarily unavailable
+    /// </summary>
     UnderMaintenance
 }
 
 /// <summary>
-/// Room entity for rental system (Task.42)
-/// Organizers can create rooms that students/organizers can rent
+/// Room entity for the room rental system (User Story US.04, Task.42).
+/// Represents a rentable room that organizers can create and students/organizers can rent.
 /// </summary>
+/// <remarks>
+/// The Room entity represents a physical space that can be rented for events, meetings,
+/// or other purposes. Rooms are created by organizers and can be rented by students
+/// or other organizers.
+/// 
+/// Key Features:
+/// - Room creation and management by organizers
+/// - Capacity management
+/// - Availability window configuration
+/// - Amenities listing
+/// - Pricing support (hourly rates)
+/// - Administrative controls (enable/disable)
+/// 
+/// Business Rules:
+/// - Only organizers can create rooms
+/// - Capacity must be positive
+/// - AvailabilityEnd must be after AvailabilityStart if both provided
+/// - HourlyRate is optional (free rooms supported)
+/// - Status can be changed by admin (overrides all rentals)
+/// - Disabled rooms reject all pending rentals
+/// 
+/// Availability Windows:
+/// - Optional start and end times for room availability
+/// - If specified, rentals must be within this window
+/// - Useful for rooms with restricted access hours
+/// 
+/// Amenities:
+/// - Comma-separated list of available amenities
+/// - Examples: "projector", "whiteboard", "wifi", "ac", "parking", "catering"
+/// - Helps renters find suitable rooms
+/// 
+/// Pricing:
+/// - HourlyRate: Optional hourly rental rate
+/// - If set, TotalCost calculated for rentals based on duration
+/// - Free rooms have null HourlyRate
+/// 
+/// Relationships:
+/// - Many-to-One: Room → User (organizer who manages the room)
+/// - One-to-Many: Room → RoomRental (rental bookings for this room)
+/// 
+/// Double Booking Prevention:
+/// - Overlapping rentals prevented at rental request time
+/// - Composite index on (RoomId, StartTime, EndTime) for efficient queries
+/// - Only Approved and Pending rentals block new rentals
+/// 
+/// Backward Compatibility:
+/// This class includes NotMapped properties for backward compatibility with
+/// older UI code that may reference properties by different names.
+/// 
+/// Example Usage:
+/// ```csharp
+/// // Create a room
+/// var room = new Room
+/// {
+///     OrganizerId = organizerId,
+///     Name = "Conference Room A",
+///     Address = "Hall Building, Room H-110",
+///     Capacity = 50,
+///     RoomInfo = "Large conference room with projector and whiteboard",
+///     Amenities = "projector,whiteboard,wifi,ac",
+///     HourlyRate = 25.00m,
+///     Status = RoomStatus.Enabled,
+///     AvailabilityStart = DateTime.UtcNow,
+///     AvailabilityEnd = DateTime.UtcNow.AddDays(90)
+/// };
+/// ```
+/// </remarks>
 public class Room
 {
     public int Id { get; set; }
