@@ -1,9 +1,30 @@
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Utility class for number operations and formatting
-/// Provides number manipulation and validation helpers
+/// Utility class for number operations and formatting.
+/// Provides number manipulation, validation, and formatting helpers for numeric types.
 /// </summary>
+/// <remarks>
+/// This class provides static utility methods for working with numeric values,
+/// including formatting, parsing, validation, and mathematical operations.
+/// 
+/// Key Features:
+/// - Number clamping and range validation
+/// - Number formatting with separators and decimal places
+/// - Safe parsing with default values
+/// - Percentage calculations
+/// - Rounding operations (round, ceiling, floor)
+/// 
+/// All parsing methods provide safe fallback values to prevent exceptions
+/// when parsing invalid input. This makes the code more robust and user-friendly.
+/// 
+/// Example usage:
+/// ```csharp
+/// int clamped = NumberHelper.Clamp(value, 0, 100);
+/// string formatted = NumberHelper.FormatWithSeparators(1234567); // "1,234,567"
+/// int parsed = NumberHelper.ParseInt("123", defaultValue: 0);
+/// ```
+/// </remarks>
 public static class NumberHelper
 {
     /// <summary>

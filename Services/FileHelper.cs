@@ -1,9 +1,34 @@
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Utility class for file operations and validation
-/// Provides file handling helpers for uploads and file management
+/// Utility class for file operations and validation.
+/// Provides file handling helpers for uploads, validation, and file management.
 /// </summary>
+/// <remarks>
+/// This class provides static utility methods for working with files, including
+/// validation, safe filename generation, MIME type detection, and file format checking.
+/// 
+/// Key Features:
+/// - File size validation
+/// - File extension validation
+/// - Safe filename generation (removes invalid characters)
+/// - CSV file format validation
+/// - MIME type detection based on file extension
+/// 
+/// Security Considerations:
+/// - Validates file extensions to prevent malicious file uploads
+/// - Validates file sizes to prevent DoS attacks
+/// - Generates safe filenames to prevent path traversal attacks
+/// - Removes invalid characters that could cause filesystem issues
+/// 
+/// Example usage:
+/// ```csharp
+/// bool isValid = FileHelper.IsValidFileSize(fileSize, maxSize);
+/// bool isAllowed = FileHelper.IsValidFileExtension(fileName, allowedExtensions);
+/// string safeName = FileHelper.GetSafeFileName(userFileName);
+/// string mimeType = FileHelper.GetMimeType(fileName);
+/// ```
+/// </remarks>
 public static class FileHelper
 {
     /// <summary>

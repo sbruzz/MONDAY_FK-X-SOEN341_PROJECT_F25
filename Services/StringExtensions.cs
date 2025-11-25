@@ -1,9 +1,26 @@
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Extension methods for string operations
-/// Provides convenient string manipulation utilities
+/// Extension methods for string operations.
+/// Provides convenient string manipulation utilities that extend the built-in string class.
 /// </summary>
+/// <remarks>
+/// This class contains extension methods that add functionality to the string type,
+/// making common string operations more convenient and readable throughout the application.
+/// 
+/// Extension methods allow you to call these methods as if they were instance methods
+/// on the string class, providing a more fluent API.
+/// 
+/// Example usage:
+/// ```csharp
+/// string text = "Hello World";
+/// string truncated = text.Truncate(5); // Returns "He..."
+/// string title = text.ToTitleCase(); // Returns "Hello World"
+/// ```
+/// 
+/// All methods handle null and empty strings gracefully, returning appropriate
+/// default values rather than throwing exceptions.
+/// </remarks>
 public static class StringExtensions
 {
     /// <summary>
