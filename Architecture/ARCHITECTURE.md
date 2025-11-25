@@ -38,7 +38,7 @@ The Campus Events & Ticketing System follows a **Layered Monolithic Architecture
 
 ### Component Diagram
 
-![alt text](<Component Diagram.drawio.png>)
+<img width="861" height="671" alt="Component Diagram drawio" src="https://github.com/user-attachments/assets/0c33a698-4aa4-45af-9e99-b6b927983778" />
 
 ---
 
@@ -410,11 +410,11 @@ bool isValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
 
 ### Development Environment
 
-![alt text](<dev en.drawio.png>)
+<img width="301" height="261" alt="dev en drawio" src="https://github.com/user-attachments/assets/be9ed4e6-6eb4-4ea8-b5e5-947e2035a5e2" />
 
 ### Production Environment (Proposed)
 
-![alt text](<Prod Env.drawio.png>)
+<img width="391" height="421" alt="Prod Env drawio" src="https://github.com/user-attachments/assets/3d34f016-0ef2-4bdb-a6fd-f3a396e1cca7" />
 
 ### CI/CD Pipeline (GitHub Actions)
 
@@ -678,4 +678,5 @@ The Campus Events & Ticketing System architecture is designed for **rapid develo
 **Last Updated:** November 3, 2025
 **Team:** MONDAY_FK
 **Course:** SOEN 341 - Software Process (Fall 2025)
+
 
