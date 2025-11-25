@@ -31,115 +31,14 @@ The Campus Events & Ticketing System follows a **Layered Monolithic Architecture
 
 ### High-Level Architecture Diagram
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Presentation Layer                       │
-│  ┌────────────┐  ┌────────────┐  ┌────────────────────────┐│
-│  │  Student   │  │ Organizer  │  │  Administrator         ││
-│  │   Pages    │  │   Pages    │  │     Pages              ││
-│  └────────────┘  └────────────┘  └────────────────────────┘│
-│       Razor Pages (.cshtml) + Page Models (.cshtml.cs)      │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     Business Logic Layer                     │
-│  ┌────────────────┐  ┌──────────────┐  ┌─────────────────┐ │
-│  │ Page Models    │  │  Services    │  │  Validation     │ │
-│  │ (Controllers)  │  │  - CSV Export│  │  - Input Rules  │ │
-│  └────────────────┘  └──────────────┘  └─────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                       Data Access Layer                      │
-│  ┌────────────────┐  ┌──────────────────────────────────┐  │
-│  │  AppDbContext  │  │   Entity Framework Core          │  │
-│  │  (DbContext)   │  │   - LINQ Queries                 │  │
-│  └────────────────┘  │   - Change Tracking              │  │
-│                      │   - Migrations                    │  │
-│                      └──────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                       Database Layer                         │
-│                 SQLite Database (campusevents.db)            │
-│    ┌────────┐ ┌────────┐ ┌────────┐ ┌──────────────────┐  │
-│    │ Users  │ │ Events │ │Tickets │ │ Organizations    │  │
-│    └────────┘ └────────┘ └────────┘ └──────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-```
-
+![alt text](<HL A dia.drawio.png>)
 ---
 
 ## System Architecture
 
 ### Component Diagram
 
-```
-┌───────────────────────────────────────────────────────────────┐
-│                      Web Application                          │
-│  ┌─────────────────────────────────────────────────────────┐ │
-│  │                    ASP.NET Core Pipeline                 │ │
-│  │  ┌──────────┐  ┌──────────┐  ┌─────────────────────┐  │ │
-│  │  │Middleware│  │ Routing  │  │ Session Management  │  │ │
-│  │  └──────────┘  └──────────┘  └─────────────────────┘  │ │
-│  └─────────────────────────────────────────────────────────┘ │
-│                                                               │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │               Page Components                          │  │
-│  │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐  │  │
-│  │  │   Student    │ │  Organizer   │ │    Admin     │  │  │
-│  │  │  - Home      │ │  - Home      │ │  - Home      │  │  │
-│  │  │  - Events    │ │  - Events    │ │  - Users     │  │  │
-│  │  │  - Tickets   │ │  - Analytics │ │  - Events    │  │  │
-│  │  │  - Calendar  │ │  - Export    │ │  - Analytics │  │  │
-│  │  └──────────────┘ └──────────────┘ └──────────────┘  │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                               │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │                 Domain Models                          │  │
-│  │  ┌──────┐ ┌──────┐ ┌────────┐ ┌──────────────────┐  │  │
-│  │  │ User │ │Event │ │ Ticket │ │ Organization     │  │  │
-│  │  └──────┘ └──────┘ └────────┘ └──────────────────┘  │  │
-│  │  ┌────────────┐ ┌────────────────────────────────┐  │  │
-│  │  │SavedEvent  │ │       Enums                    │  │  │
-│  │  └────────────┘ │  - UserRole                    │  │  │
-│  │                 │  - ApprovalStatus              │  │  │
-│  │                 │  - EventCategory               │  │  │
-│  │                 └────────────────────────────────┘  │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                               │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │                    Services                            │  │
-│  │  ┌──────────────────┐  ┌───────────────────────────┐ │  │
-│  │  │ DbCSVCommunicator│  │   QRCoder Library         │ │  │
-│  │  │ - ExportCSV      │  │   - QR Generation         │ │  │
-│  │  │ - DataSeeding    │  │   - PNG Output            │ │  │
-│  │  └──────────────────┘  └───────────────────────────┘ │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                               │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │              Data Access (EF Core)                     │  │
-│  │  ┌────────────────────────────────────────────────┐  │  │
-│  │  │            AppDbContext                         │  │  │
-│  │  │  - DbSet<User>                                  │  │  │
-│  │  │  - DbSet<Event>                                 │  │  │
-│  │  │  - DbSet<Ticket>                                │  │  │
-│  │  │  - DbSet<Organization>                          │  │  │
-│  │  │  - DbSet<SavedEvent>                            │  │  │
-│  │  │  - SaveChangesAsync()                           │  │  │
-│  │  └────────────────────────────────────────────────┘  │  │
-│  └───────────────────────────────────────────────────────┘  │
-└───────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-                    ┌──────────────────┐
-                    │  SQLite Database │
-                    │ (campusevents.db)│
-                    └──────────────────┘
-```
+![alt text](<Component Diagram.drawio.png>)
 
 ---
 
@@ -180,79 +79,7 @@ The Campus Events & Ticketing System follows a **Layered Monolithic Architecture
 
 ### Entity Relationship Diagram (ERD)
 
-```
-┌─────────────────────────┐
-│      Organization       │
-│─────────────────────────│
-│ PK  Id                  │
-│     Name                │
-│     Description         │
-│     Website             │
-│     ContactEmail        │
-│     CreatedAt           │
-└─────────────────────────┘
-            │
-            │ 1
-            │
-            │ N
-            ▼
-┌─────────────────────────┐          ┌─────────────────────────┐
-│         User            │          │         Event           │
-│─────────────────────────│          │─────────────────────────│
-│ PK  Id                  │          │ PK  Id                  │
-│     Email               │◄─────────│ FK  OrganizerId         │
-│     PasswordHash        │   N    1 │     Title               │
-│     Name                │          │     Description         │
-│     Role (Enum)         │          │     EventDate           │
-│     ApprovalStatus      │          │     Location            │
-│ FK  OrganizationId      │          │     Capacity            │
-│     StudentId           │          │     TicketsIssued       │
-│     PhoneNumber         │          │     Price               │
-│     Program             │          │     ImageUrl            │
-│     YearOfStudy         │          │     Category (Enum)     │
-│     Position            │          │     ApprovalStatus      │
-│     Department          │          │ FK  OrganizationId      │
-│     CreatedAt           │          │     CreatedAt           │
-└─────────────────────────┘          └─────────────────────────┘
-        │           │                          │
-        │ 1         │                          │ 1
-        │           │                          │
-        │ N         │ N                        │ N
-        ▼           │                          ▼
-┌─────────────────────────┐          ┌─────────────────────────┐
-│       Ticket            │          │      SavedEvent         │
-│─────────────────────────│          │─────────────────────────│
-│ PK  Id                  │          │ PK  Id                  │
-│ FK  UserId              │          │ FK  UserId              │
-│ FK  EventId             │◄─────────│ FK  EventId             │
-│     UniqueCode          │   N    1 │     SavedAt             │
-│     QrCodeBase64        │          └─────────────────────────┘
-│     ClaimedAt           │
-│     IsRedeemed          │
-│     RedeemedAt          │
-└─────────────────────────┘
-
-
-ENUMERATIONS:
-
-UserRole:
-  - Student (0)
-  - Organizer (1)
-  - Admin (2)
-
-ApprovalStatus:
-  - Pending (0)
-  - Approved (1)
-  - Rejected (2)
-
-EventCategory:
-  - Academic
-  - Social
-  - Career
-  - Sports
-  - Arts
-  - Other
-```
+![alt text](ERD.drawio.png)
 
 ### Entity Descriptions
 
@@ -583,54 +410,11 @@ bool isValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
 
 ### Development Environment
 
-```
-┌──────────────────────────────────────┐
-│    Developer Workstation             │
-│  ┌────────────────────────────────┐ │
-│  │   ASP.NET Core Dev Server      │ │
-│  │   (Kestrel)                    │ │
-│  │   Port: 5136 (HTTP)            │ │
-│  │   Port: 7295 (HTTPS)           │ │
-│  └────────────────────────────────┘ │
-│              │                       │
-│              ▼                       │
-│  ┌────────────────────────────────┐ │
-│  │  SQLite Database (File)        │ │
-│  │  campusevents.db               │ │
-│  └────────────────────────────────┘ │
-└──────────────────────────────────────┘
-```
+![alt text](<dev en.drawio.png>)
 
 ### Production Environment (Proposed)
 
-```
-┌─────────────────────────────────────────────────┐
-│              Cloud Provider (Azure/AWS)         │
-│                                                 │
-│  ┌───────────────────────────────────────────┐ │
-│  │         Load Balancer / CDN               │ │
-│  └───────────────────────────────────────────┘ │
-│                      │                         │
-│        ┌─────────────┴─────────────┐          │
-│        ▼                           ▼          │
-│  ┌─────────────┐            ┌─────────────┐  │
-│  │  Web Server │            │  Web Server │  │
-│  │  Instance 1 │            │  Instance 2 │  │
-│  │  (Kestrel)  │            │  (Kestrel)  │  │
-│  └─────────────┘            └─────────────┘  │
-│        │                           │          │
-│        └───────────┬───────────────┘          │
-│                    ▼                          │
-│         ┌─────────────────────┐              │
-│         │  PostgreSQL / MySQL │              │
-│         │  (Relational DB)    │              │
-│         └─────────────────────┘              │
-│                                               │
-│  ┌───────────────────────────────────────┐  │
-│  │     Blob Storage (Event Images)       │  │
-│  └───────────────────────────────────────┘  │
-└─────────────────────────────────────────────┘
-```
+![alt text](<Prod Env.drawio.png>)
 
 ### CI/CD Pipeline (GitHub Actions)
 
@@ -825,13 +609,8 @@ await _cache.SetStringAsync("events:popular", serializedEvents,
 
 #### 4. Horizontal Scaling
 **Load Balancer + Multiple Instances**:
-```
-     Load Balancer
-    /      |      \
-Server1  Server2  Server3
-    \      |      /
-      Database
-```
+
+![alt text](<horizontal scaling.drawio.png>)
 
 #### 5. Asynchronous Processing
 **Message Queue (RabbitMQ / Azure Service Bus)**:
