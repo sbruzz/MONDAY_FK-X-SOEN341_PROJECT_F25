@@ -34,9 +34,7 @@ The Campus Events & Ticketing System backend follows a **layered architecture** 
 
 ## High-Level Backend Architecture
 
-```
-![alt text](BACKEND.drawio.png)
----
+<img width="1091" height="1881" alt="BACKEND drawio" src="https://github.com/user-attachments/assets/b5cb0a67-49b6-44e6-a37f-feff69d9f8ce" />
 
 ## Backend Component Breakdown
 
@@ -711,7 +709,7 @@ Tables:
 
 **Complete Schema Diagram**:
 
-![alt text](schemaDiagram.png)
+<img width="946" height="1254" alt="schemaDiagram" src="https://github.com/user-attachments/assets/419d333d-15f4-4230-945c-438ffcd74e2b" />
 
 #### Database Connection Configuration
 
@@ -1470,3 +1468,4 @@ This backend architecture provides a **solid foundation** for the Campus Events 
 **Members:** Kevin Ung, Salvatore Bruzzese, Dmitrii Cazacu, Souleymane Camara, Nand Patel
 **Course:** SOEN 341 - Software Process (Fall 2025)
 **Sprint:** Sprint 3
+
