@@ -4,9 +4,42 @@ using Microsoft.EntityFrameworkCore;
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Extension methods for service registration and dependency injection
-/// Provides convenient methods for configuring services
+/// Extension methods for service registration and dependency injection.
+/// Provides convenient methods for configuring Campus Events services in a fluent, reusable way.
 /// </summary>
+/// <remarks>
+/// This class contains extension methods for IServiceCollection that simplify
+/// service registration and configuration. These methods encapsulate common
+/// service registration patterns and make the Program.cs file cleaner and more maintainable.
+/// 
+/// Key Features:
+/// - Fluent API for service registration
+/// - Grouped service registration (AddCampusEventsServices)
+/// - Database context configuration with development options
+/// - Session configuration with sensible defaults
+/// - Method chaining support for clean configuration
+/// 
+/// Benefits:
+/// - Reduces boilerplate in Program.cs
+/// - Centralizes service configuration logic
+/// - Makes it easier to switch between development and production configurations
+/// - Provides consistent service registration patterns
+/// 
+/// Example usage in Program.cs:
+/// ```csharp
+/// builder.Services
+///     .AddCampusEventsDbContext(connectionString)
+///     .AddCampusEventsSession(timeoutMinutes: 30)
+///     .AddCampusEventsServices();
+/// ```
+/// 
+/// Development Features:
+/// - EnableSensitiveDataLogging: Logs parameter values in SQL queries (DEBUG only)
+/// - EnableDetailedErrors: Provides more detailed error messages (DEBUG only)
+/// 
+/// These development features are automatically disabled in Release builds
+/// for security and performance reasons.
+/// </remarks>
 public static class ServiceExtensions
 {
     /// <summary>

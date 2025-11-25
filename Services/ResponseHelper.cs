@@ -1,9 +1,50 @@
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Utility class for creating standardized API responses
-/// Provides consistent response formatting across the application
+/// Utility class for creating standardized API responses.
+/// Provides consistent response formatting across the application using tuple-based results.
 /// </summary>
+/// <remarks>
+/// This class provides static helper methods for creating standardized response tuples
+/// that are used throughout the application for consistent error handling and response formatting.
+/// 
+/// Response Pattern:
+/// All methods return tuples in the format: (bool Success, string Message, T? Data)
+/// 
+/// Key Features:
+/// - Success responses with optional data
+/// - Error responses with error codes
+/// - Specialized error types (Validation, NotFound, Unauthorized, Conflict)
+/// - Result wrapping for null-safe responses
+/// - Consistent error code formatting
+/// 
+/// Error Codes:
+/// - VALIDATION_ERROR: Input validation failed
+/// - NOT_FOUND: Resource not found
+/// - UNAUTHORIZED: Authentication/authorization failed
+/// - CONFLICT: Resource conflict (e.g., duplicate)
+/// 
+/// Example usage:
+/// ```csharp
+/// // Success response
+/// var (success, message, data) = ResponseHelper.CreateSuccess("Operation completed", result);
+/// 
+/// // Error response
+/// var (success, message) = ResponseHelper.CreateError("Operation failed", "ERROR_CODE");
+/// 
+/// // Validation error
+/// var (success, message) = ResponseHelper.CreateValidationError("Email", "Invalid format");
+/// 
+/// // Not found error
+/// var (success, message) = ResponseHelper.CreateNotFoundError("User", userId.ToString());
+/// 
+/// // Wrap result
+/// var (success, message, user) = ResponseHelper.WrapResult(user, "User found", "User not found");
+/// ```
+/// 
+/// This pattern provides a consistent way to handle operation results without
+/// throwing exceptions for business logic errors, making error handling more explicit.
+/// </remarks>
 public static class ResponseHelper
 {
     /// <summary>

@@ -1,9 +1,44 @@
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Utility class for application logging operations
-/// Provides structured logging helpers for consistent log formatting
+/// Utility class for application logging operations.
+/// Provides structured logging helpers for consistent log formatting across the application.
 /// </summary>
+/// <remarks>
+/// This class provides static methods for logging at different levels (Info, Warning, Error, Debug)
+/// with consistent formatting that includes timestamps, log levels, and optional context information.
+/// 
+/// Log Format:
+/// [YYYY-MM-DD HH:MM:SS] LEVEL [Context]: Message
+/// 
+/// Key Features:
+/// - Structured log formatting with timestamps
+/// - Multiple log levels (Info, Warning, Error, Debug)
+/// - Context information for better traceability
+/// - Method entry/exit logging for debugging
+/// - Performance metrics logging
+/// - Debug logging only in DEBUG builds
+/// 
+/// Important Notes:
+/// - This is a simple logging helper that writes to console
+/// - For production, consider using a proper logging framework (Serilog, NLog, etc.)
+/// - Debug messages are only logged in DEBUG builds (compiled out in Release)
+/// - Error messages are written to Console.Error, others to Console.Out
+/// 
+/// Example usage:
+/// ```csharp
+/// LoggingHelper.LogInfo("User logged in", "Authentication");
+/// LoggingHelper.LogWarning("Invalid login attempt", "Security");
+/// LoggingHelper.LogError("Database connection failed", "DataAccess");
+/// LoggingHelper.LogDebug("Processing request", "RequestHandler");
+/// LoggingHelper.LogPerformance("DatabaseQuery", TimeSpan.FromMilliseconds(150));
+/// ```
+/// 
+/// For production applications, consider replacing this with:
+/// - Serilog with file/console sinks
+/// - Application Insights for cloud deployments
+/// - ELK stack for centralized logging
+/// </remarks>
 public static class LoggingHelper
 {
     /// <summary>
