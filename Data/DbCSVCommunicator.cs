@@ -3,17 +3,55 @@ using CampusEvents.Models;
 using CampusEvents.Data;
 
 /// <summary>
-/// Service for database communication and CSV data operations
-/// Handles database seeding, CSV import/export, and data initialization
+/// Service for database communication and CSV data operations.
+/// Handles database seeding, CSV import/export, and data initialization for development and testing.
 /// </summary>
+/// <remarks>
+/// This service provides functionality for:
+/// - Database seeding with test/demo data
+/// - CSV export of event attendees
+/// - Database initialization and setup
+/// 
+/// Key Features:
+/// - Automatic admin account creation on first run
+/// - Comprehensive demo data seeding (users, events, carpools, rooms)
+/// - CSV export functionality for event attendee lists
+/// - Idempotent seeding (safe to run multiple times)
+/// 
+/// Seeding Strategy:
+/// - Checks for existing data before seeding (prevents duplicates)
+/// - Creates admin account if it doesn't exist
+/// - Seeds demo users (students, organizers, pending organizers)
+/// - Seeds organizations and links them to organizers
+/// - Seeds events with various categories and statuses
+/// - Seeds drivers, carpool offers, rooms, and rentals
+/// 
+/// Security Notes:
+/// - Default admin credentials are created for development only
+/// - In production, admin account should be created manually
+/// - Default passwords should be changed immediately after first login
+/// 
+/// CSV Export:
+/// - Exports event attendee user IDs to CSV file
+/// - File named as {EventId}.csv
+/// - Used by organizers to export attendee lists
+/// 
+/// Lifetime:
+/// - Registered as Transient service (new instance each time)
+/// - Typically called once at application startup
+/// </remarks>
 public class DbCSVCommunicator
 {
+    /// <summary>
+    /// Database context for accessing and modifying database entities.
+    /// </summary>
     private readonly AppDbContext _context;
 
     /// <summary>
-    /// Initializes a new instance of DbCSVCommunicator
+    /// Initializes a new instance of DbCSVCommunicator.
     /// </summary>
-    /// <param name="context">Database context for data operations</param>
+    /// <param name="context">Database context for data operations.
+    /// Used to access and modify database entities during seeding and CSV operations.</param>
     public DbCSVCommunicator(AppDbContext context)
     {
         _context = context;
@@ -21,19 +59,49 @@ public class DbCSVCommunicator
 
     // Use relative path that works on all platforms (Windows, Mac, Linux)
     /// <summary>
-    /// Database connection string location
+    /// Database connection string location.
+    /// Static field storing the SQLite database connection string.
     /// </summary>
+    /// <remarks>
+    /// Format: "Data Source=campusevents.db"
+    /// This is used for direct SQLite operations (CSV export) that bypass Entity Framework.
+    /// </remarks>
     static String DatabaseLocation = $"Data Source=campusevents.db";
     
     /// <summary>
-    /// Extracted database file path
+    /// Extracted database file path from connection string.
+    /// Used for file operations on the database file.
     /// </summary>
     static String dbPath = DatabaseLocation.Replace("Data Source=", "").Trim();
 
     /// <summary>
-    /// Initializes and seeds the database with test data
-    /// Creates admin account and demo users/events if they don't exist
+    /// Initializes and seeds the database with test data.
+    /// Creates admin account and demo users/events if they don't exist.
     /// </summary>
+    /// <remarks>
+    /// This method is called automatically on application startup to ensure
+    /// the database has initial data for development and testing.
+    /// 
+    /// Seeding Process:
+    /// 1. Creates admin account (if doesn't exist)
+    /// 2. Seeds demo users (students, organizers, pending organizers)
+    /// 3. Seeds organizations and links to organizers
+    /// 4. Seeds events with various categories and approval statuses
+    /// 5. Seeds drivers (pending approval)
+    /// 6. Seeds carpool offers
+    /// 7. Seeds rooms and room rentals
+    /// 
+    /// Idempotent Design:
+    /// - Checks for existing data before creating
+    /// - Safe to call multiple times
+    /// - Won't create duplicate data
+    /// 
+    /// Default Credentials:
+    /// - Admin: admin@campusevents.com / Admin@123
+    /// - Demo Users: {email} / Demo@123
+    /// 
+    /// ⚠️ IMPORTANT: Change default passwords after first login!
+    /// </remarks>
     public void Test()
     {
         Console.WriteLine("DbMainTest Launched");
