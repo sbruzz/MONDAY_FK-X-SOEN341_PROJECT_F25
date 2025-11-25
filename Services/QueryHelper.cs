@@ -4,9 +4,25 @@ using Microsoft.EntityFrameworkCore;
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Helper class for common database query operations
-/// Provides reusable query patterns and filtering utilities
+/// Helper class for common database query operations.
+/// Provides reusable query patterns and filtering utilities using extension methods.
 /// </summary>
+/// <remarks>
+/// This class contains extension methods for IQueryable&lt;T&gt; that provide
+/// common query patterns used throughout the application. These methods allow
+/// for composable, reusable query logic that can be chained together.
+/// 
+/// Benefits:
+/// - Reduces code duplication
+/// - Provides consistent query patterns
+/// - Improves code readability
+/// - Makes queries more maintainable
+/// - Supports deferred execution (queries are not executed until enumerated)
+/// 
+/// All methods return IQueryable&lt;T&gt; to support query composition and
+/// deferred execution. Queries are only executed when ToListAsync() or similar
+/// methods are called.
+/// </remarks>
 public static class QueryHelper
 {
     /// <summary>

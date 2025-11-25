@@ -1,9 +1,21 @@
 namespace CampusEvents.Services;
 
 /// <summary>
-/// Application-wide constants and configuration values
-/// Centralizes magic numbers and string literals for maintainability
+/// Application-wide constants and configuration values.
+/// Centralizes magic numbers and string literals for maintainability and consistency.
 /// </summary>
+/// <remarks>
+/// This class provides a centralized location for all application constants,
+/// making it easier to maintain and update values across the application.
+/// Constants are organized into nested classes by category for better organization.
+/// 
+/// Benefits of using this class:
+/// - Single source of truth for configuration values
+/// - Easy to update values in one place
+/// - Prevents magic numbers in code
+/// - Improves code readability
+/// - Facilitates testing and configuration changes
+/// </remarks>
 public static class Constants
 {
     /// <summary>
