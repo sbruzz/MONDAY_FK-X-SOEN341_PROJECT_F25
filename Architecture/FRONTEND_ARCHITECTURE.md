@@ -37,7 +37,8 @@ The Campus Events & Ticketing System frontend follows the **Razor Pages (MVPM)**
 
 ## High-Level Frontend Architecture
 
-![alt text](Frontend.drawio.png)
+![Frontend](https://github.com/user-attachments/assets/6731c84b-e951-4ce7-8a67-1357eac94e41)
+
 ---
 
 ## Frontend Component Breakdown
@@ -89,7 +90,7 @@ Pages/
 
 **Layout Hierarchy**:
 
-![alt text](<Layout Heirarchy.drawio.png>)
+![Frontend](https://github.com/user-attachments/assets/0ce93729-d38c-467d-8621-fd02e9c0668e)
 
 **Layout Components**:
 
