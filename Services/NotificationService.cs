@@ -4,15 +4,53 @@ using CampusEvents.Models;
 
 namespace CampusEvents.Services;
 
+/// <summary>
+/// Service for managing user notifications in the Campus Events system.
+/// Provides functionality to create, retrieve, and manage notifications for various system events.
+/// </summary>
+/// <remarks>
+/// Notifications are used to inform users about:
+/// - Room rental approvals/rejections
+/// - Room status changes (disabled, maintenance)
+/// - Event updates and cancellations
+/// - Driver status changes
+/// - Other important system events
+/// 
+/// This service is typically called by other services (CarpoolService, RoomRentalService)
+/// to send notifications after state changes.
+/// </remarks>
 public class NotificationService
 {
+    /// <summary>
+    /// Database context for accessing notification data.
+    /// </summary>
     private readonly AppDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of NotificationService.
+    /// </summary>
+    /// <param name="context">Database context for notification operations</param>
     public NotificationService(AppDbContext context)
     {
         _context = context;
     }
 
+    /// <summary>
+    /// Creates a new notification for a user.
+    /// </summary>
+    /// <param name="userId">ID of the user to notify</param>
+    /// <param name="type">Type of notification (Info, Success, Warning, Error, etc.)</param>
+    /// <param name="title">Notification title (max 200 characters)</param>
+    /// <param name="message">Notification message (max 1000 characters)</param>
+    /// <param name="relatedEntityId">Optional ID of related entity (e.g., rental ID, event ID)</param>
+    /// <param name="relatedEntityType">Optional type of related entity (e.g., "RoomRental", "Event")</param>
+    /// <param name="actionUrl">Optional URL for notification action (e.g., "/Student/Rentals")</param>
+    /// <returns>Created notification entity</returns>
+    /// <remarks>
+    /// The notification is created with IsRead = false and CreatedAt = DateTime.UtcNow.
+    /// RelatedEntityId and RelatedEntityType are used to link notifications to specific entities
+    /// for navigation purposes in the UI.
+    /// </remarks>
     public async Task<Notification> CreateNotificationAsync(
         int userId,
         NotificationType type,
@@ -22,6 +60,7 @@ public class NotificationService
         string? relatedEntityType = null,
         string? actionUrl = null)
     {
+        // Create new notification entity with provided parameters
         var notification = new Notification
         {
             UserId = userId,
@@ -31,11 +70,14 @@ public class NotificationService
             RelatedEntityId = relatedEntityId,
             RelatedEntityType = relatedEntityType,
             ActionUrl = actionUrl,
-            IsRead = false,
-            CreatedAt = DateTime.UtcNow
+            IsRead = false,  // New notifications are unread by default
+            CreatedAt = DateTime.UtcNow  // Timestamp in UTC
         };
 
+        // Add notification to database context
         _context.Notifications.Add(notification);
+        
+        // Save changes to database
         await _context.SaveChangesAsync();
 
         return notification;
