@@ -7,23 +7,23 @@
 <div class="login-container">
     <div class="login-card">
         <h2 class="text-center mb-4">Campus Events Login</h2>
+        <form method="post" asp-page-handler="Login">
+            <!-- Three-way Toggle Tabs (Visual only for signup) -->
+            <div class="roletabs mb-4">
+                <input type="radio" name="roletab" id="student-tab" value="Student" checked>
+                <input type="radio" name="roletab" id="organizer-tab" value="Organizer">
+                <input type="radio" name="roletab" id="admin-tab" value="Admin">
 
-        <!-- Three-way Toggle Tabs (Visual only for signup) -->
-        <div class="role-tabs mb-4">
-            <input type="radio" name="role-tab" id="student-tab" value="Student" checked>
-            <input type="radio" name="role-tab" id="organizer-tab" value="Organizer">
-            <input type="radio" name="role-tab" id="admin-tab" value="Admin">
+                <label for="student-tab" class="tab-label">Student</label>
+                <label for="organizer-tab" class="tab-label">Organizer</label>
+                <label for="admin-tab" class="tab-label">Admin</label>
 
-            <label for="student-tab" class="tab-label">Student</label>
-            <label for="organizer-tab" class="tab-label">Organizer</label>
-            <label for="admin-tab" class="tab-label">Admin</label>
+                <div class="tab-indicator"></div>
+            </div>
 
-            <div class="tab-indicator"></div>
-        </div>
+            <!-- Login Form -->
+            <div class="auth-section" id="login-section">
 
-        <!-- Login Form -->
-        <div class="auth-section" id="login-section">
-            <form method="post" asp-page-handler="Login">
                 <div class="mb-3">
                     <label for="login-email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="login-email" name="Email" required>
@@ -33,11 +33,12 @@
                     <input type="password" class="form-control" id="login-password" name="Password" required>
                 </div>
                 <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
-            </form>
-            <p class="text-center mb-0">
-                Don't have an account? <a href="/Signup" id="show-signup">Sign up</a>
-            </p>
-        </div>
+
+                <p class="text-center mb-0">
+                    Don't have an account? <a href="/Signup" id="show-signup">Sign up</a>
+                </p>
+            </div>
+        </form>
 
         @if (TempData["Message"] != null)
         {
@@ -80,7 +81,7 @@
         padding: 3rem;
         max-width: 480px;
         width: 100%;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
         border: 1px solid rgba(213, 189, 175, 0.2);
     }
 
@@ -90,7 +91,7 @@
     }
 
     /* Three-way Toggle Tabs */
-    .role-tabs {
+    .roletabs {
         position: relative;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -100,7 +101,7 @@
         gap: 4px;
     }
 
-    .role-tabs input[type="radio"] {
+    .roletabs input[type="radio"] {
         display: none;
     }
 
@@ -116,10 +117,6 @@
         color: var(--text-light);
     }
 
-    .role-tabs input[type="radio"]:checked + label {
-        color: white;
-    }
-
     .tab-indicator {
         position: absolute;
         height: calc(100% - 12px);
@@ -133,15 +130,15 @@
         box-shadow: 0 2px 8px rgba(213, 189, 175, 0.3);
     }
 
-    #student-tab:checked ~ .tab-indicator {
+    #student-tab:checked~.tab-indicator {
         transform: translateX(0);
     }
 
-    #organizer-tab:checked ~ .tab-indicator {
+    #organizer-tab:checked~.tab-indicator {
         transform: translateX(calc(100% + 4px));
     }
 
-    #admin-tab:checked ~ .tab-indicator {
+    #admin-tab:checked~.tab-indicator {
         transform: translateX(calc(200% + 8px));
     }
 
@@ -154,6 +151,7 @@
             opacity: 0;
             transform: translateY(10px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -221,12 +219,12 @@
 <script>
 
     // Update signup button text and hidden role field based on selected tab
-    const tabs = document.querySelectorAll('input[name="role-tab"]');
+    const tabs = document.querySelectorAll('input[name="roletab"]');
     const signupBtn = document.getElementById('signup-btn');
     const roleInput = document.getElementById('signup-role');
 
     tabs.forEach(tab => {
-        tab.addEventListener('change', function() {
+        tab.addEventListener('change', function () {
             const role = this.value;
             roleInput.value = role;
 
@@ -241,7 +239,7 @@
     // Password confirmation validation (only if signup form exists)
     const signupForm = document.getElementById('signup-form');
     if (signupForm) {
-        signupForm.addEventListener('submit', function(e) {
+        signupForm.addEventListener('submit', function (e) {
             const password = document.getElementById('signup-password').value;
             const confirmPassword = document.getElementById('signup-confirm-password').value;
 

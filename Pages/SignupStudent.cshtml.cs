@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using CampusEvents.Data;
 using CampusEvents.Models;
 using BCrypt.Net;
+using System.Text.RegularExpressions;
+using System.Net.Mail;
 
 namespace CampusEvents.Pages;
 
@@ -45,26 +47,39 @@ public class SignupStudentModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        // Check if email already exists
-        if (await _context.Users.AnyAsync(u => u.Email == Email))
+        // Check if email or student id already exists
+        if (await _context.Users.AnyAsync(u => u.Email == Email || u.StudentId == StudentId))
         {
-            ErrorMessage = "An account with this email already exists.";
+            ErrorMessage = "An account with this email or student id already exists.";
             return Page();
         }
 
-        // Create new student user
-        var user = new User
+
+        if (!IsValidEmail(Email))
         {
-            Name = Name,
-            Email = Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(Password),
-            Role = UserRole.Student,
-            ApprovalStatus = ApprovalStatus.Approved, // Students are auto-approved
-            StudentId = StudentId,
-            Program = Program,
-            YearOfStudy = YearOfStudy,
-            PhoneNumber = PhoneNumber
-        };
+            ErrorMessage = "This is not a valid email address";
+            return Page();            
+        }
+        
+        if (!Regex.IsMatch(PhoneNumber, @"^\d{10}$"))
+        {
+            ErrorMessage = "This is not a valid phone number";
+            return Page();
+        }
+
+            // Create new student user
+            var user = new User
+            {
+                Name = Name,
+                Email = Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(Password),
+                Role = UserRole.Student,
+                ApprovalStatus = ApprovalStatus.Approved, // Students are auto-approved
+                StudentId = StudentId,
+                Program = Program,
+                YearOfStudy = YearOfStudy,
+                PhoneNumber = PhoneNumber
+            };
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
@@ -73,5 +88,19 @@ public class SignupStudentModel : PageModel
         HttpContext.Session.SetInt32("UserId", user.Id);
 
         return RedirectToPage("/Student/Home");
+    }
+
+    public bool IsValidEmail(string emailaddress)
+    {
+        try
+        {
+            MailAddress m = new MailAddress(emailaddress);
+
+            return true;
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
     }
 }

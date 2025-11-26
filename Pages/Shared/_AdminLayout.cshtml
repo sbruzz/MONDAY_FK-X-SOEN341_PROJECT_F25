@@ -933,8 +933,8 @@
             </nav>
             <div class="header-user">
                 <div class="user-avatar">@userName.Substring(0, 1).ToUpper()</div>
-                <div class="user-info">
-                    <div class="user-name">@userName</div>
+                <div>
+                    <div class="user-name">@(userName.Length <= 45? userName: userName.Substring(0, 42)+"...")</div>
                     <div class="role-badge">Administrator</div>
                 </div>
             </div>

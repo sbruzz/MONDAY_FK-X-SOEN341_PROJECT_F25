@@ -20,8 +20,8 @@
     <div class="filters-grid">
         <div class="filter-group">
             <label class="filter-label">Search Events</label>
-            <input type="text" name="SearchTerm" value="@Model.SearchTerm"
-                   class="filter-input" placeholder="Search by title, description, or location...">
+            <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="filter-input"
+                placeholder="Search by title, description, or location...">
         </div>
         <div class="filter-group">
             <label class="filter-label">Category</label>
@@ -32,6 +32,7 @@
                 <option value="Sports" selected="@(Model.CategoryFilter == "Sports")">Sports</option>
                 <option value="Cultural" selected="@(Model.CategoryFilter == "Cultural")">Cultural</option>
                 <option value="Career" selected="@(Model.CategoryFilter == "Career")">Career</option>
+                <option value="Competition" selected="@(Model.CategoryFilter == "Competition")">Competition</option>
                 <option value="Workshop" selected="@(Model.CategoryFilter == "Workshop")">Workshop</option>
                 <option value="Other" selected="@(Model.CategoryFilter == "Other")">Other</option>
             </select>
@@ -42,18 +43,25 @@
                 <option value="">All Organizations</option>
                 @foreach (var org in Model.Organizations)
                 {
-                    <option value="@org.Id" selected="@(Model.OrganizationId == org.Id)">@org.Name</option>
+                    <option value="@org.Id" selected="@(Model.OrganizationId == org.Id)">@(org.Name.Length < 30? org.Name:
+                                            org.Name.Substring(0, 27) + "...")</option>
                 }
             </select>
         </div>
         <div class="filter-group">
-            <label class="filter-label">Date</label>
-            <select name="DateFilter" class="filter-input">
-                <option value="all" selected="@(Model.DateFilter == "all")">All Upcoming</option>
-                <option value="today" selected="@(Model.DateFilter == "today")">Today</option>
-                <option value="week" selected="@(Model.DateFilter == "week")">This Week</option>
-                <option value="month" selected="@(Model.DateFilter == "month")">This Month</option>
-            </select>
+            <label asp-for="@Model.StartTime" class="filter-label">
+                Start Time <span class="text-danger">*</span>
+            </label>
+            <input type="datetime-local" asp-for="@Model.StartTime" class="filter-label" required />
+            <span asp-validation-for="@Model.StartTime" class="text-danger"></span>
+        </div>
+
+        <div class="filter-group">
+            <label asp-for="@Model.EndTime" class="filter-label">
+                End Time <span class="text-danger">*</span>
+            </label>
+            <input type="datetime-local" asp-for="@Model.EndTime" class="filter-label" required />
+            <span asp-validation-for="@Model.EndTime" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-primary">
             <i class="bi bi-search"></i>

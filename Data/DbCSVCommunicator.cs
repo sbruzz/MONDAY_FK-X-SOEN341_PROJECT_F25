@@ -126,6 +126,7 @@ public class DbCSVCommunicator
             Console.WriteLine("   ⚠️  IMPORTANT: Change this password after first login!");
         }
 
+
         // Seed comprehensive demo data
         if (!_context.Users.Any(u => u.Id >= 501 && u.Id <= 515))
         {
@@ -333,7 +334,6 @@ public class DbCSVCommunicator
         {
             DataForCSV = DataForCSV.Remove(0, 1);
         }
-        ;
 
         string CSVFilePath = EventId + ".csv";
 

@@ -85,7 +85,7 @@ else
             <!-- Sidebar -->
             <div class="col-lg-4">
                 <!-- Ticket Card -->
-                <div class="card shadow-sm mb-4" style="position: sticky; top: 20px; z-index: 1020;">
+                <div class="card shadow-sm mb-4" style="position: sticky; top: 20px;">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0"><i class="bi bi-ticket-perforated"></i> Get Your Ticket</h5>
                     </div>
@@ -107,20 +107,23 @@ else
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <small>Tickets Available</small>
-                                <small><strong>@(Model.Event.Capacity - Model.Event.TicketsIssued)</strong> / @Model.Event.Capacity</small>
+                                <small><strong>@(Model.Event.Capacity - Model.Event.TicketsIssued)</strong> /
+                                    @Model.Event.Capacity</small>
                             </div>
                             <div class="progress" style="height: 10px;">
                                 @{
-                                    var percentFull = Model.Event.Capacity > 0 ? (Model.Event.TicketsIssued * 100.0 / Model.Event.Capacity) : 0;
+                                    var percentFull = Model.Event.Capacity > 0 ? (Model.Event.TicketsIssued * 100.0 /
+                                    Model.Event.Capacity) : 0;
                                 }
                                 <div class="progress-bar @(percentFull >= 90 ? "bg-danger" : percentFull >= 70 ? "bg-warning" : "bg-success")"
-                                     style="width: @percentFull%"></div>
+                                    style="width: @percentFull%"></div>
                             </div>
                         </div>
 
                         @if (!string.IsNullOrEmpty(Model.Message))
                         {
-                            <div class="alert @(Model.IsSuccess ? "alert-success" : "alert-danger") alert-dismissible fade show">
+                            <div
+                                class="alert @(Model.IsSuccess ? "alert-success" : "alert-danger") alert-dismissible fade show">
                                 @Model.Message
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
@@ -294,7 +297,8 @@ else
                                 <i class="bi bi-link-45deg"></i> Copy Link
                             </button>
                         </div>
-                        <input type="hidden" id="eventLink" value="@Url.PageLink("/Student/EventDetails", values: new { id = Model.Event.Id })">
+                        <input type="hidden" id="eventLink"
+                            value="@Url.PageLink("/Student/EventDetails", values: new { id = Model.Event.Id })">
                     </div>
                 </div>
             </div>
@@ -426,6 +430,15 @@ else
             </div>
         </div>
     </div>
+}
+
+@section Styles {
+    <style>
+        .breadcrumb-item {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
 }
 
 @section Scripts {

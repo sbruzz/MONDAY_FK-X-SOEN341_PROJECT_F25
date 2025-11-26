@@ -28,6 +28,9 @@ public class LoginModel : PageModel
     [BindProperty]
     public string Role { get; set; } = "Student";
 
+    [BindProperty]
+    public string roletab { get; set; }= "Student";
+
     public void OnGet()
     {
     }
@@ -58,6 +61,19 @@ public class LoginModel : PageModel
             return Page();
         }
 
+
+        Console.Write(user.Role.ToString() +"::"+roletab);
+        if (user.Role.ToString() != roletab)
+        {
+            TempData["Error"] = "Invalid Role";
+            return Page();
+        }
+
+        if (user.ApprovalStatus == ApprovalStatus.Rejected)
+        {
+            TempData["Error"] = "Your account has been rejected. Please contact the administrator.";
+            return Page();
+        }
         Console.WriteLine($"[LOGIN] Login successful for {Email}");
 
         // Check if organizer/admin needs approval

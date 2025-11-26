@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using CampusEvents.Data;
 using CampusEvents.Models;
+using System.Text;
 
 namespace CampusEvents.Pages.Admin;
 
@@ -152,35 +153,43 @@ public class EventsModel : PageModel
         return RedirectToPage();
     }
 
-    public async Task<IActionResult> OnPostDownloadStudentsWithTicketsCSVAsync(int id)
+    public async Task<IActionResult> OnPostDownloadStudentsWithTicketsCSV(int id, String name)
     {
-        var evt = await _context.Events.FindAsync(id);
-        if (evt == null)
+        var userId = HttpContext.Session.GetInt32("UserId");
+        if (userId == null)
         {
-            Message = "Event not found.";
-            IsSuccess = false;
-            return RedirectToPage();
+            return RedirectToPage("/Login");
         }
 
-        // Get tickets for this event
+        // Load all tickets for this event
         var tickets = await _context.Tickets
             .Include(t => t.User)
             .Where(t => t.EventId == id)
+            .OrderBy(t => t.ClaimedAt)
             .ToListAsync();
 
-        // Build CSV content
-        var csvBuilder = new System.Text.StringBuilder();
-        csvBuilder.AppendLine("User ID,Name,Email,Student ID,Ticket Code,Claimed At,Is Redeemed");
+        // Generate CSV content with UTF-8 BOM for better Excel compatibility
+        var csv = new StringBuilder();
 
+        // CSV Header - using shorter date format to prevent ##### in Excel
+        csv.AppendLine("User ID,Name");
+
+        
+        // CSV Rows
         foreach (var ticket in tickets)
         {
-            csvBuilder.AppendLine($"{ticket.UserId},{ticket.User.Name},{ticket.User.Email},{ticket.User.StudentId ?? "N/A"},{ticket.UniqueCode},{ticket.ClaimedAt:yyyy-MM-dd HH:mm:ss},{ticket.IsRedeemed}");
+            csv.AppendLine($"{ticket.UserId},{ticket.User.Name}");
         }
 
-        // Return as downloadable file
-        var bytes = System.Text.Encoding.UTF8.GetBytes(csvBuilder.ToString());
-        var fileName = $"Event_{id}_{evt.Title.Replace(" ", "_")}_Attendees_{DateTime.Now:yyyyMMdd}.csv";
+        // Add UTF-8 BOM for Excel compatibility
+        var preamble = Encoding.UTF8.GetPreamble();
+        var csvBytes = Encoding.UTF8.GetBytes(csv.ToString());
+        var bytesWithBOM = new byte[preamble.Length + csvBytes.Length];
+        Buffer.BlockCopy(preamble, 0, bytesWithBOM, 0, preamble.Length);
+        Buffer.BlockCopy(csvBytes, 0, bytesWithBOM, preamble.Length, csvBytes.Length);
 
-        return File(bytes, "text/csv", fileName);
+        var fileName = $"{name}.csv";
+
+        return File(bytesWithBOM, "text/csv", fileName);
     }
 }

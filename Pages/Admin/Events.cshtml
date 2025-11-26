@@ -26,7 +26,9 @@
                 <div class="col-md-4">
                     <label for="status" class="form-label">Filter by Status</label>
                     <select id="status" name="StatusFilter" class="form-select">
-                        <option value="All" selected="@(string.IsNullOrEmpty(Model.StatusFilter) || Model.StatusFilter == "All")">All Statuses</option>
+                        <option value="All"
+                            selected="@(string.IsNullOrEmpty(Model.StatusFilter) || Model.StatusFilter == "All")">All
+                            Statuses</option>
                         <option value="Pending" selected="@(Model.StatusFilter == "Pending")">Pending</option>
                         <option value="Approved" selected="@(Model.StatusFilter == "Approved")">Approved</option>
                         <option value="Rejected" selected="@(Model.StatusFilter == "Rejected")">Rejected</option>
@@ -35,7 +37,9 @@
                 <div class="col-md-4">
                     <label for="category" class="form-label">Filter by Category</label>
                     <select id="category" name="CategoryFilter" class="form-select">
-                        <option value="All" selected="@(string.IsNullOrEmpty(Model.CategoryFilter) || Model.CategoryFilter == "All")">All Categories</option>
+                        <option value="All"
+                            selected="@(string.IsNullOrEmpty(Model.CategoryFilter) || Model.CategoryFilter == "All")">
+                            All Categories</option>
                         <option value="Academic" selected="@(Model.CategoryFilter == "Academic")">Academic</option>
                         <option value="Career" selected="@(Model.CategoryFilter == "Career")">Career</option>
                         <option value="Competition" selected="@(Model.CategoryFilter == "Competition")">Competition</option>
@@ -48,7 +52,8 @@
                     </select>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Apply Filters</button>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Apply
+                        Filters</button>
                 </div>
             </form>
         </div>
@@ -147,8 +152,9 @@
                                 </div>
                             }
                             <form method="post" asp-page-handler="Delete" asp-route-id="@evt.Id" class="mt-2"
-                                  onsubmit="return confirm('Are you sure you want to delete @evt.Title? This action cannot be undone.');">
-                                <button type="submit" class="btn btn-outline-danger btn-sm w-100" @(evt.TicketsIssued > 0 ? "disabled" : "")>
+                                onsubmit="return confirm('Are you sure you want to delete @evt.Title? This action cannot be undone.');">
+                                <button type="submit" class="btn btn-outline-danger btn-sm w-100" @(evt.TicketsIssued > 0 ?
+                                                                                                                              "disabled" : "")>
                                     <i class="bi bi-trash"></i> Delete
                                     @if (evt.TicketsIssued > 0)
                                     {
@@ -156,11 +162,14 @@
                                     }
                                 </button>
                             </form>
-                            <form method="post" asp-page-handler="DownloadStudentsWithTicketsCSV" asp-route-id="@evt.Id" class="mt-2">
+                            <form method="post" asp-page-handler="DownloadStudentsWithTicketsCSV" id="exportCSV" class="mt-2">
+                                <input type="hidden" name="id" value="@evt.Id" />
+                                <input type="hidden" name="name" value="@evt.Title"/>
                                 <button type="submit" class="btn btn-outline-primary w-100">
                                     <i class="bi bi-download"></i> Download CSV
                                 </button>
                             </form>
+                            
                         </div>
                     </div>
                 </div>
@@ -258,6 +267,8 @@
         align-items: center;
         gap: 0.5rem;
         margin-bottom: 0.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .detail-item i {

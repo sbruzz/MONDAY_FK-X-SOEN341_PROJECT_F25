@@ -24,7 +24,8 @@
             <h1 class="display-4"><i class="bi bi-qr-code-scan"></i> Ticket Validation</h1>
             @if (Model.Event != null)
             {
-                <p class="lead">Scanning for: <strong>@Model.Event.Title</strong></p>
+                <p class="lead">Scanning for: <strong>@(Model.Event.Title.Length <= 90? Model.Event.Title:
+                                            Model.Event.Title.Substring(0, 87) + "....")</strong></p>
             }
         </div>
     </div>
@@ -172,8 +173,8 @@
                         <div class="progress" style="height: 25px;">
                             @{
                                 var checkInRate = Model.Event.TicketsIssued > 0
-                                    ? (Model.CheckedInCount * 100.0 / Model.Event.TicketsIssued)
-                                    : 0;
+                                ? (Model.CheckedInCount * 100.0 / Model.Event.TicketsIssued)
+                                : 0;
                             }
                             <div class="progress-bar bg-success" style="width: @checkInRate%">
                                 @checkInRate.ToString("F1")% Checked In
@@ -224,6 +225,15 @@
         </div>
     }
 </div>
+
+@section Styles {
+    <style>
+        .breadcrumb-item {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+}
 
 @section Scripts {
     <!-- html5-qrcode library for QR scanning (bundled locally) -->

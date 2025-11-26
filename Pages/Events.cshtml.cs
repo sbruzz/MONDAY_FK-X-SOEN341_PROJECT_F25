@@ -28,7 +28,10 @@ public class EventsModel : PageModel
     public int? OrganizationId { get; set; }
 
     [BindProperty(SupportsGet = true)]
-    public string DateFilter { get; set; } = "all";
+    public DateTime StartTime { get; set; } = new DateTime(2020, 1, 1);
+
+    [BindProperty(SupportsGet = true)]
+    public DateTime EndTime { get; set; } = new DateTime(2030, 1, 1);
 
     public async Task OnGetAsync()
     {
@@ -48,9 +51,9 @@ public class EventsModel : PageModel
         if (!string.IsNullOrWhiteSpace(SearchTerm))
         {
             query = query.Where(e =>
-                e.Title.Contains(SearchTerm) ||
-                e.Description.Contains(SearchTerm) ||
-                e.Location.Contains(SearchTerm));
+                e.Title.ToUpper().Contains(SearchTerm.ToUpper()) ||
+                e.Description.ToUpper().Contains(SearchTerm.ToUpper()) ||
+                e.Location.ToUpper().Contains(SearchTerm.ToUpper()));
         }
 
         // Apply category filter
@@ -68,26 +71,9 @@ public class EventsModel : PageModel
             query = query.Where(e => e.OrganizationId == OrganizationId.Value);
         }
 
-        // Apply date filter
-        var now = DateTime.UtcNow;
-        switch (DateFilter)
-        {
-            case "today":
-                var today = now.Date;
-                query = query.Where(e => e.EventDate.Date == today);
-                break;
-            case "week":
-                var weekEnd = now.AddDays(7);
-                query = query.Where(e => e.EventDate >= now && e.EventDate <= weekEnd);
-                break;
-            case "month":
-                var monthEnd = now.AddMonths(1);
-                query = query.Where(e => e.EventDate >= now && e.EventDate <= monthEnd);
-                break;
-            default: // "all"
-                query = query.Where(e => e.EventDate >= now); // Only future events
-                break;
-        }
+
+        query = query.Where(e => e.EventDate.Date >= StartTime && e.EventDate.Date <= EndTime);
+
 
         // Order by date and load events
         Events = await query

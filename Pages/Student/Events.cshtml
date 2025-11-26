@@ -12,30 +12,33 @@
             <h1 class="page-title">Browse All Events</h1>
             <p class="page-subtitle">Discover and filter campus events to find what interests you</p>
         </div>
-
-        <!-- Integrated Filter Bar -->
         <form method="get" class="filter-form">
-            <div class="filter-bar">
+            <div class="filter-bar" display="inline-flex" flex-wrap="wrap">
                 <div class="search-group">
                     <i class="bi bi-search filter-icon"></i>
-                    <input type="text" name="searchTerm" value="@Model.SearchTerm"
-                           class="filter-search" placeholder="Search events...">
+                    <input type="text" name="searchTerm" value="@Model.SearchTerm" class="filter-search"
+                        placeholder="Search events...">
                 </div>
 
                 <select name="category" class="filter-select">
                     <option value="">All Categories</option>
-                    <option value="Academic" selected="@(Model.Category == EventCategory.Academic)">Academic</option>
+                    <option value="Academic" selected="@(Model.Category == EventCategory.Academic)">Academic
+                    </option>
                     <option value="Career" selected="@(Model.Category == EventCategory.Career)">Career</option>
-                    <option value="Competition" selected="@(Model.Category == EventCategory.Competition)">Competition</option>
+                    <option value="Competition" selected="@(Model.Category == EventCategory.Competition)">
+                        Competition
+                    </option>
                     <option value="Concert" selected="@(Model.Category == EventCategory.Concert)">Concert</option>
-                    <option value="Cultural" selected="@(Model.Category == EventCategory.Cultural)">Cultural</option>
+                    <option value="Cultural" selected="@(Model.Category == EventCategory.Cultural)">Cultural
+                    </option>
                     <option value="Social" selected="@(Model.Category == EventCategory.Social)">Social</option>
                     <option value="Sports" selected="@(Model.Category == EventCategory.Sports)">Sports</option>
-                    <option value="Workshop" selected="@(Model.Category == EventCategory.Workshop)">Workshop</option>
+                    <option value="Workshop" selected="@(Model.Category == EventCategory.Workshop)">Workshop
+                    </option>
                     <option value="Other" selected="@(Model.Category == EventCategory.Other)">Other</option>
                 </select>
 
-                <select name="organization" class="filter-select">
+                <select name="OrganizationId" class="filter-select">
                     <option value="">All Organizations</option>
                     @foreach (var org in Model.Organizations)
                     {
@@ -43,19 +46,28 @@
                     }
                 </select>
 
-                <select name="dateFilter" class="filter-select">
-                    <option value="all" selected="@(Model.DateFilter == "all")">All Dates</option>
-                    <option value="today" selected="@(Model.DateFilter == "today")">Today</option>
-                    <option value="week" selected="@(Model.DateFilter == "week")">This Week</option>
-                    <option value="month" selected="@(Model.DateFilter == "month")">This Month</option>
-                </select>
 
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Date Filter -->
+                    <label asp-for="@Model.StartTime" class="form-label">
+                        Start Time <span class="text-danger">*</span>
+                    </label>
+                    <input type="datetime-local" asp-for="@Model.StartTime" class="filter-label" required />
+                    <span asp-validation-for="@Model.StartTime" class="text-danger"></span>
+
+                    <label asp-for="@Model.EndTime" class="form-label">
+                        End Time <span class="text-danger">*</span>
+                    </label>
+                    <input type="datetime-local" asp-for="@Model.EndTime" class="filter-label" required />
+                    <span asp-validation-for="@Model.EndTime" class="text-danger"></span>
+                </div>
                 <button type="submit" class="filter-apply-btn">
                     <i class="bi bi-check-circle"></i>
                     Apply
                 </button>
 
-                <a href="/Student/Events" class="filter-clear-btn">
+                <a href="/Student/Events" class="filter-clear-btn"
+                    style="transform: translateY(4px); margin-left: 12px; margin-right: 12px;">
                     <i class="bi bi-x-circle"></i>
                 </a>
             </div>
@@ -70,7 +82,8 @@
         <div class="col">
             <p class="results-summary">
                 Found <strong>@Model.Events.Count</strong> event(s)
-                @if (!string.IsNullOrEmpty(Model.SearchTerm) || Model.Category.HasValue || Model.OrganizationId.HasValue || Model.DateFilter != "all")
+                @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.Category.ToString()) ||
+                                Model.OrganizationId.HasValue || Model.DateFilter != "all")
                 {
                     <span>matching your filters</span>
                 }
@@ -122,7 +135,7 @@
                                     var percentFull = evt.Capacity > 0 ? (evt.TicketsIssued * 100.0 / evt.Capacity) : 0;
                                 }
                                 <div class="progress-bar @(percentFull >= 90 ? "bg-danger" : percentFull >= 70 ? "bg-warning" : "bg-success")"
-                                     style="width: @percentFull%"></div>
+                                    style="width: @percentFull%"></div>
                             </div>
                             <small class="text-muted">
                                 @evt.TicketsIssued / @evt.Capacity tickets claimed
