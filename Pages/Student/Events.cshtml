@@ -38,7 +38,7 @@
                     <option value="Other" selected="@(Model.Category == EventCategory.Other)">Other</option>
                 </select>
 
-                <select name="organization" class="filter-select">
+                <select name="OrganizationId" class="filter-select">
                     <option value="">All Organizations</option>
                     @foreach (var org in Model.Organizations)
                     {

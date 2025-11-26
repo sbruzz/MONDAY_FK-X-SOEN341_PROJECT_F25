@@ -68,9 +68,9 @@ namespace CampusEvents.Pages.Student
             if (!string.IsNullOrWhiteSpace(SearchTerm))
             {
                 query = query.Where(e =>
-                    e.Title.Contains(SearchTerm) ||
-                    e.Description.Contains(SearchTerm) ||
-                    e.Location.Contains(SearchTerm));
+                    e.Title.ToUpper().Contains(SearchTerm.ToUpper()) ||
+                    e.Description.ToUpper().Contains(SearchTerm.ToUpper()) ||
+                    e.Location.ToUpper().Contains(SearchTerm.ToUpper()));
             }
 
             // Apply category filter

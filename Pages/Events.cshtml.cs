@@ -28,9 +28,6 @@ public class EventsModel : PageModel
     public int? OrganizationId { get; set; }
 
     [BindProperty(SupportsGet = true)]
-    public string DateFilter { get; set; } = "all";
-
-    [BindProperty(SupportsGet = true)]
     public DateTime StartTime { get; set; } = new DateTime(2020, 1, 1);
 
     [BindProperty(SupportsGet = true)]
@@ -54,9 +51,9 @@ public class EventsModel : PageModel
         if (!string.IsNullOrWhiteSpace(SearchTerm))
         {
             query = query.Where(e =>
-                e.Title.Contains(SearchTerm) ||
-                e.Description.Contains(SearchTerm) ||
-                e.Location.Contains(SearchTerm));
+                e.Title.ToUpper().Contains(SearchTerm.ToUpper()) ||
+                e.Description.ToUpper().Contains(SearchTerm.ToUpper()) ||
+                e.Location.ToUpper().Contains(SearchTerm.ToUpper()));
         }
 
         // Apply category filter
